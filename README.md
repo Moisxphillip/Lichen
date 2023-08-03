@@ -1,2 +1,2 @@
 # Lichen
-An upgraded version of my Fog game engine.
+An upgraded version of my LICHEN game engine.
