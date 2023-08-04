@@ -87,8 +87,9 @@ std::weak_ptr<GameObject> State::GetLateRenderObjPtr(GameObject* ComparePtr)
 	return {};
 }
 
-void State::_StartArray()
+void State::StateStart()
 {
+	Start();
     for(int i = 0; i< (int)(GameObjVec.size()); i++)
     {
         GameObjVec[i]->Start();
@@ -96,9 +97,44 @@ void State::_StartArray()
     _Started = true;
 }
 
-void State::_UpdateArray(float Dt)
+void State::StatePhysicsUpdate(float Dt)
 {
-	//Game Object Updates
+	PhysicsUpdate(Dt);
+	//Engine Object Updates
+	for(int i = 0; i< (int)(GameObjVec.size()); i++)
+	{
+		GameObjVec[i]->PhysicsUpdate(Dt);//Updates based on input and Dt
+	}
+	
+	for(int i = 0; i< (int)(GameObjVec.size()); i++)
+	{
+		if(GameObjVec[i]->IsDead())
+		{
+			GameObjVec.erase(GameObjVec.begin()+i); //Removes stuff discarded by RequestDelete()
+			i--;
+		}
+	}
+
+	//Late Render Updates
+	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
+	{
+		LateRenderVec[i]->PhysicsUpdate(Dt); //Calls render procedure for the late stuff
+	}
+
+	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
+	{
+		if(LateRenderVec[i]->IsDead())
+		{
+			LateRenderVec.erase(LateRenderVec.begin()+i); //Removes stuff discarded by RequestDelete()
+			i--;
+		}
+	}
+}
+
+void State::StateUpdate(float Dt)
+{
+	Update(Dt);
+	//Engine Object Updates
 	for(int i = 0; i< (int)(GameObjVec.size()); i++)
 	{
 		GameObjVec[i]->Update(Dt);//Updates based on input and Dt
@@ -129,8 +165,10 @@ void State::_UpdateArray(float Dt)
 	}
 }
 
-void State::_RenderArray()
+
+void State::StateRender()
 {
+	Cam.Update(0);
     for(int i = 0; i< (int)(GameObjVec.size()); i++)
 	{
 		GameObjVec[i]->Render(); //Calls render procedure for each existing GameObject
@@ -140,8 +178,18 @@ void State::_RenderArray()
 	{
 		LateRenderVec[i]->Render(); //Calls render procedure for the late stuff
 	}
+	Render();
 }
 
+void State::StatePause()
+{
+	Pause();
+}
+
+void State::StateResume()
+{
+	Resume();
+}
 
 void State::Start()
 {
@@ -156,6 +204,10 @@ void State::Resume()
 }
 
 void State::LoadAssets()
+{
+}
+
+void State::PhysicsUpdate(float Dt)
 {
 }
 

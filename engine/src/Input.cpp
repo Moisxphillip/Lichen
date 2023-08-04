@@ -1,5 +1,5 @@
 #include "../lib/Input.hpp"
-#include "../lib/Game.hpp"
+#include "../lib/Engine.hpp"
 #include "../lib/Vector2.hpp"
 
 //Set value for singleton class
@@ -7,7 +7,7 @@ Input* Input::_InputM = nullptr;
 
 Input& Input::Instance()
 {
-    if(_InputM == nullptr) //Only creates a new Game if there's no other instance of the class currently running
+    if(_InputM == nullptr) //Only creates a new Engine if there's no other instance of the class currently running
     {
         _InputM = new Input();
     }
@@ -41,7 +41,7 @@ Input::Input()
     _MouseY = 0;
     _UpdateCounter = 0;
 
-    //will only change based on game or SDL requests
+    //will only change based on Engine or SDL requests
     this->_QuitRequested = false;
 
 }
@@ -142,12 +142,12 @@ bool Input::IsMouseDown(int Switch)
 
 int Input::GetMouseX()
 {
-    return _MouseX; //+ Game::Instance().GetState().Cam.Position.x;
+    return _MouseX + Engine::Instance().GetState().Cam.Position.x;
 }
 
 int Input::GetMouseY()
 {
-    return _MouseY; //+ Game::Instance().GetState().Cam.Position.y;
+    return _MouseY + Engine::Instance().GetState().Cam.Position.y;
 }
 
 Vector2 Input::GetMouseVector2()

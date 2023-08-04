@@ -1,4 +1,4 @@
-#include "../lib/Game.hpp"
+#include "../lib/Engine.hpp"
 #include "../lib/Resources.hpp"
 #include "../lib/Input.hpp"
 #include "../lib/Tools.hpp"
@@ -6,51 +6,52 @@
 #define SOUNDCHANNELS 32
 
 //Set value for singleton class
-Game* Game::_GameInstance = nullptr;
+Engine* Engine::_GameInstance = nullptr;
 
-void Game::_GameInitSDL()
+void Engine::_GameInitSDL()
 {
     //init SDL
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0)
     {
-        //Error("Game::_GameInitSDL: SDL could not be initialized");
+        Error("Engine::_GameInitSDL: SDL could not be initialized");
     }
     
     //init Image, Initialized systems = return flags
     if(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG) 
                 != (IMG_INIT_JPG | IMG_INIT_PNG))
     {
-        //Error("Game::_GameInitSDL: IMG could not initialize one of its dependencies");
+        Error("Engine::_GameInitSDL: IMG could not initialize one of its dependencies");
     }
 
     //init Audio, Initialized systems = return flags
     if(Mix_Init(MIX_INIT_FLAC | MIX_INIT_OGG | MIX_INIT_MP3) 
                 != (MIX_INIT_FLAC | MIX_INIT_OGG | MIX_INIT_MP3))
     {
-        //Error("Game::_GameInitSDL: Mix could not initialize one of its dependencies");
+        Error("Engine::_GameInitSDL: Mix could not initialize one or more of its dependencies");
     }
 
     if(Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, MIX_DEFAULT_CHANNELS, 1024) != 0)
     {
-        //Error("Game::_GameInitSDL: OpenAudio could not be initialized");
+        Error("Engine::_GameInitSDL: OpenAudio could not be initialized");
     }
     
     if(Mix_AllocateChannels(_MixChannels) < _MixChannels) //Channel allocation for different audio tracks
     {
-        //Error("Game::_GameInitSDL: Mix_AllocateChannels could not allocate the requested number of channels");
+        Error("Engine::_GameInitSDL: Mix_AllocateChannels could not allocate the requested number of channels");
     }
 
     if(TTF_Init() != 0)
     {
-        //Error("Game::_GameInitSDL: TTF_Init could not be initialized");
+        Error("Engine::_GameInitSDL: TTF_Init could not be initialized");
     }
 }
 
-Game::Game(std::string Name = "LichenEngine", int Width = 1024, int Height = 600)
+Engine::Engine(std::string Name = "LichenEngine", int Width = 1024, int Height = 600)
 {
+    _NoVSync = false;
     if(_GameInstance != nullptr)//Report //Error if there is another instance working already
     {
-        //Error("Game::Game: Instance already exists");
+        Error("Engine::Engine: Instance already exists");
         return;
     }
     else //Register window info
@@ -62,6 +63,9 @@ Game::Game(std::string Name = "LichenEngine", int Width = 1024, int Height = 600
         _GameInstance = this;
     }
 
+    _WindowWidth = _GameWidth;
+    _WindowHeight = _GameHeight;
+
     //Init SDL Resources
     _GameInitSDL();
 
@@ -70,7 +74,7 @@ Game::Game(std::string Name = "LichenEngine", int Width = 1024, int Height = 600
     SDL_WINDOWPOS_CENTERED, _GameWidth, _GameHeight, SDL_WINDOW_SHOWN);
     if(_GameWindow == nullptr)
     {
-        //Error("Game::Game: Window could not be created");   
+        Error("Engine::Engine: Window could not be created");   
     }
     
     //Renderer creation
@@ -78,16 +82,19 @@ Game::Game(std::string Name = "LichenEngine", int Width = 1024, int Height = 600
     _GameRenderer = SDL_CreateRenderer(_GameWindow, -1, SDL_RENDERER_ACCELERATED);
     if(_GameRenderer == nullptr) 
     {
-        //Error("Game::Game: Renderer could not be created");   
+        Error("Engine::Engine: Renderer could not be created");   
+    }
+    if (SDL_RenderSetVSync(_GameRenderer,1) != 0) {
+        _NoVSync = true;
     }
 
     _FrameStart = SDL_GetTicks();
     _Dt = 0.0f;
 
-    _GameState = nullptr;//new StageState; //Creates a base state for the game 
+    _GameState = nullptr;//new StageState; //Creates a base state for the Engine 
 }
 
-Game::~Game()
+Engine::~Engine()
 {
     //Clear memory used by Resources class
     Resources::FlushContext();
@@ -115,13 +122,13 @@ Game::~Game()
     delete _GameInstance;
 }
 
-bool Game::_ChangeState()
+bool Engine::_ChangeState()
 {
     if(_GameState != nullptr)
     {
         if(!StateStack.empty())
         {
-            StateStack.top()->Pause();
+            StateStack.top()->StatePause();
         }
         StateStack.push(std::unique_ptr<State>(_GameState));
         _GameState = nullptr;
@@ -130,28 +137,30 @@ bool Game::_ChangeState()
     return false;
 }
 
-void Game::Run()
+void Engine::Run()
 {   
     _ChangeState();
     while(!StateStack.empty() && !StateStack.top()->QuitRequested())    //Wait for quit state
     {
         if(!StateStack.top()->HasStarted())
         {
-            StateStack.top()->Start();
-        }
-        else
-        {
-            StateStack.top()->Resume();
+            StateStack.top()->StateStart();
         }
 
         while(!StateStack.top()->PopRequested())
         {
             _CalculateDt();
             Input::Instance().Update();
-            StateStack.top()->Update(GetDt());//Calls update for all GameObject inside a scene
-            StateStack.top()->Render(); //Calls render for all GameObject...
+            
+            StateStack.top()->StatePhysicsUpdate(1/60);//Calls physics update for all GameObject inside a scene
+            StateStack.top()->StateUpdate(GetDt());//Calls update for all GameObject inside a scene
+            StateStack.top()->StateRender(); //Calls render for all GameObject...
+
             SDL_RenderPresent(_GameRenderer);//Presents the new rendered stuff on screen
-            SDL_Delay(Fps(30));//controls the framerate
+            if (_NoVSync)
+            {
+                SDL_Delay(Fps(60));//controls the framerate
+            }
             if(_ChangeState())
             {
                 break;
@@ -165,43 +174,62 @@ void Game::Run()
             {
                 StateStack.top()->RequestQuit();
             }
+            else if(!StateStack.empty())
+            {
+                StateStack.top()->StateResume();
+            }
         }
     } 
     
 }
 
-SDL_Renderer* Game::GetRenderer()
+SDL_Renderer* Engine::GetRenderer()
 {
     return _GameRenderer;
 }
 
-State& Game::GetState()
+State& Engine::GetState()
 {
     return *StateStack.top().get();
 }
 
-void Game::Push(State* NewState)
+void Engine::Push(State* NewState)
 {
     _GameState = NewState;
 }
 
-Game& Game::Instance()
+Engine& Engine::Instance()
 {
-    if(_GameInstance == nullptr) //Only creates a new Game if there's no other instance of the class currently running
+    if(_GameInstance == nullptr) //Only creates a new Engine if there's no other instance of the class currently running
     {
-        _GameInstance = new Game("Lichen", 1024, 600);
+        _GameInstance = new Engine("Lichen", 1024, 600);
     }
     return *_GameInstance;
 }
 
-inline void Game::_CalculateDt()
+inline void Engine::_CalculateDt()
 {
     int FrameEnd = SDL_GetTicks(); //Get Ms count since app start
     _Dt = (FrameEnd - _FrameStart)/1000.0f;//Ms->s is done by the division
     _FrameStart = FrameEnd;
 }
 
-inline float Game::GetDt()
+inline float Engine::GetDt()
 {
     return _Dt;
+}
+
+Vector2 Engine::GetWindowSize()
+{
+    return Vector2(_WindowWidth, _WindowHeight);
+}
+
+Vector2 Engine::GetRenderSize()
+{
+    return Vector2(_GameWidth, _GameHeight);
+}
+
+int Engine::GetSoundChannels()
+{
+    return _MixChannels;
 }

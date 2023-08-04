@@ -1,12 +1,11 @@
 #include "../lib/Sprite.hpp"
-#include "../lib/Game.hpp"
+#include "../lib/Engine.hpp"
 #include "../lib/Resources.hpp"
 #include "../lib/Tools.hpp"
 
 Sprite::Sprite(GameObject& GameObj)
 : Component(GameObj)
 {
-    ComponentFlags = Uses::Render | Uses::Update;
     _SpriteTexture = nullptr;
     _Scale = Vector2(1,1);
     _FrameCount = 0;
@@ -134,23 +133,23 @@ bool Sprite::Is(std::string Type)
 
 void Sprite::Render()
 {
-    Render(GameObjAssoc.Box.x, GameObjAssoc.Box.y);
+    Render(Parent.Box.x, Parent.Box.y);
 }
 
 void Sprite::Render(float x, float y)
 {
-    Render(x, y, GameObjAssoc.Angle);
+    Render(x, y, Parent.Angle);
 }
 
 void Sprite::Render(float x, float y, float Angle)
 {
     SDL_Rect DestinyRect;
-    DestinyRect.x = x - Game::Instance().GetState().Cam.Position.x;
-    DestinyRect.y = y - Game::Instance().GetState().Cam.Position.y;
+    DestinyRect.x = x - Engine::Instance().GetState().Cam.Position.x;
+    DestinyRect.y = y - Engine::Instance().GetState().Cam.Position.y;
     DestinyRect.w = _ClipRect.w  * _Scale.x;
     DestinyRect.h = _ClipRect.h * _Scale.y;
 
-    if(SDL_RenderCopyEx(Game::Instance().GetRenderer(), _SpriteTexture, &_ClipRect, &DestinyRect, Vector2::RadToDeg(Angle), nullptr, (SDL_RendererFlip) _Orientation))
+    if(SDL_RenderCopyEx(Engine::Instance().GetRenderer(), _SpriteTexture, &_ClipRect, &DestinyRect, Vector2::RadToDeg(Angle), nullptr, (SDL_RendererFlip) _Orientation))
     {
         Error("Sprite::Render: Sprite copy to render device has failed");
     }
@@ -167,7 +166,7 @@ void Sprite::Update(float Dt)
         ToSelfDestruct.Update(Dt);
         if(ToSelfDestruct.Get() >= LifeTime)
         {
-            GameObjAssoc.RequestDelete();
+            Parent.RequestDelete();
         }
     }
 

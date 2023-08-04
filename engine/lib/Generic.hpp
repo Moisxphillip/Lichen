@@ -37,6 +37,6 @@ class Generic : public Component
         void Update(float);
 
 };
-//Use this class for short-lived and simple game objects. For now, only tests!
+//Use this class for short-lived and simple Engine objects. For now, only tests!
 
 #endif//LICHEN_GENERIC

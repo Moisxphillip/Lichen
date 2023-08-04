@@ -2,7 +2,7 @@
 #include "../lib/StageState.hpp"
 #include "../lib/Path.hpp"
 
-#include "../../engine/lib/Game.hpp"
+#include "../../engine/lib/Engine.hpp"
 #include "../../engine/lib/Input.hpp"
 #include "../../engine/lib/Sprite.hpp"
 #include "../../engine/lib/Text.hpp"
@@ -62,26 +62,26 @@ void TitleState::Update(float Dt)
     if(Input::Instance().KeyPress(K_SPACE))
     {
         StageState* Play = new StageState;
-        Game::Instance().Push(Play);
+        Engine::Instance().Push(Play);
     }
     if((Input::Instance().IsKeyDown(K_ESC) || Input::Instance().QuitRequested())) 
 	{
 		_PopRequested = true;
 		_QuitRequested = true;
     }
-    _UpdateArray(Dt);
+    // StateUpdate(Dt);
 }
 
 void TitleState::Render()
 {
-    _RenderArray();
+    // StateRender();
 }
 
 
 void TitleState::Start()
 {
     LoadAssets();
-    _StartArray();
+    // StateStart();
 }
 
 void TitleState::Pause()

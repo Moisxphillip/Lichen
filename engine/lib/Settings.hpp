@@ -24,20 +24,20 @@
 //from a file or creating a file with the default settings.
 
 
-enum Uses //Bitwise-based flags
-{
-    None = 0,
-    All = 0xFFFF,
-    Collision = 1 << 0,
-    Render = 1 << 1,
-    Start =  1 << 2,
-    Update = 1 << 3
-};
+// enum Uses //Bitwise-based flags Unnecessary bit-brushing
+// {
+//     None = 0,
+//     All = 0xFFFF,
+//     Collision = 1 << 0,
+//     Render = 1 << 1,
+//     Start =  1 << 2,
+//     Update = 1 << 3
+// };
 
-inline Uses operator|(Uses a, Uses b)
-{
-    return static_cast<Uses>(static_cast<int>(a) | static_cast<int>(b));
-}
+// inline Uses operator|(Uses a, Uses b)
+// {
+//     return static_cast<Uses>(static_cast<int>(a) | static_cast<int>(b));
+// }
 
 
 typedef enum

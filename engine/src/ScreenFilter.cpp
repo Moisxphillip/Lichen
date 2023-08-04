@@ -1,5 +1,6 @@
 #include "../lib/ScreenFilter.hpp"
-#include "../lib/Game.hpp"
+#include "../lib/Engine.hpp"
+#include "../lib/Settings.hpp"
 
 
 ScreenFilter::ScreenFilter(GameObject& GameObj, Color FilterColor)
@@ -7,7 +8,8 @@ ScreenFilter::ScreenFilter(GameObject& GameObj, Color FilterColor)
 {
     this->FilterColor = FilterColor;
     _FilterSurface = nullptr;
-    _FilterSurface = SDL_CreateRGBSurface(0,LICHEN_SCRWIDTH, LICHEN_SCRHEIGHT, 32, 0,0,0,0);
+    Vector2 Dimensions = Engine::Instance().GetRenderSize();
+    _FilterSurface = SDL_CreateRGBSurface(0,(int)Dimensions.x, (int)Dimensions.y, 32, 0,0,0,0);
 }
 
 ScreenFilter::~ScreenFilter()
@@ -26,9 +28,9 @@ bool ScreenFilter::Is(std::string Type)
 
 void ScreenFilter::Render()
 {
-    SDL_Texture* ToShow = SDL_CreateTextureFromSurface(Game::Instance().GetRenderer(), _FilterSurface);
+    SDL_Texture* ToShow = SDL_CreateTextureFromSurface(Engine::Instance().GetRenderer(), _FilterSurface);
     SDL_SetTextureBlendMode(ToShow, SDL_BLENDMODE_BLEND);
-	SDL_RenderCopy(Game::Instance().GetRenderer(), ToShow, nullptr, nullptr);
+	SDL_RenderCopy(Engine::Instance().GetRenderer(), ToShow, nullptr, nullptr);
 	SDL_DestroyTexture(ToShow);
 }
 

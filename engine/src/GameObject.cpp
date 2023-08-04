@@ -42,6 +42,14 @@ void GameObject::Update(float Dt)
     }
 }
 
+void GameObject::PhysicsUpdate(float Dt)
+{
+    for (int i = 0; i < (int)(_GameObjComponents.size()); i++)
+    {
+        _GameObjComponents[i]->PhysicsUpdate(Dt);//Calls update from each component belonging to this GameObject
+    }
+}
+
 void GameObject::Collided(GameObject& Other)
 {
     for(int i = 0; i < (int)(_GameObjComponents.size()); i++)

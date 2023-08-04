@@ -1,7 +1,7 @@
 #include <algorithm>
 
 #include "../lib/Resources.hpp"
-#include "../lib/Game.hpp"
+#include "../lib/Engine.hpp"
 #include "../lib/Tools.hpp"
 
 std::unordered_map<std::string, SDL_Texture*> Resources::_ImageTable;
@@ -14,7 +14,7 @@ SDL_Texture* Resources::GetImage(std::string& File)
 {
     if(!_ImageTable.count(File))
     {
-        SDL_Texture* NewImage = IMG_LoadTexture(Game::Instance().GetRenderer(), File.c_str());
+        SDL_Texture* NewImage = IMG_LoadTexture(Engine::Instance().GetRenderer(), File.c_str());
         if(NewImage == nullptr)
         {
             Error("Resources::GetImage: Texture could not be loaded");

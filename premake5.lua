@@ -11,7 +11,7 @@ project "LichenEngine"
     cppdialect "C++17"
     targetdir "bin/"
     targetname "%{prj.name}_%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-    objdir "obj/"
+    objdir "bin/obj/"
     
     files 
     {

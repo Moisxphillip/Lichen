@@ -5,7 +5,7 @@
 #include "../lib/Alien.hpp"
 #include "../lib/Path.hpp"
 
-#include "../../engine/lib/Game.hpp"
+#include "../../engine/lib/Engine.hpp"
 #include "../../engine/lib/Input.hpp"
 #include "../../engine/lib/CameraFollower.hpp"
 #include "../../engine/lib/Collision.hpp"
@@ -43,7 +43,7 @@ StageState::~StageState()
 void StageState::Start()
 {
 	LoadAssets();
-	_StartArray();
+	// StateStart();
 }
 
 void StageState::Pause()
@@ -117,7 +117,7 @@ void StageState::Update(float Dt)
 		if(Alien::AlienCount == 0 || PenguinBody::Player == nullptr)
 		{
 			EndState* Ended = new EndState();
-			Game::Instance().Push(Ended);
+			Engine::Instance().Push(Ended);
 		}
 		Screener = nullptr;
 		_PopRequested = true;
@@ -175,7 +175,7 @@ void StageState::Update(float Dt)
 	}
 
 
-	Cam.Update(Dt);
+	// Cam.Update(Dt);
 		
 	for(int i = 0; i< (int)GameObjVec.size()-1; i++)
 	{
@@ -197,12 +197,12 @@ void StageState::Update(float Dt)
 		}
 	}
 	//Calls updates for contained objects and remove dead objects
-	_UpdateArray(Dt);
+	// StateUpdate(Dt);
 
 }
 
 
 void StageState::Render()
 {
-	_RenderArray();
+	// StateRender();
 }

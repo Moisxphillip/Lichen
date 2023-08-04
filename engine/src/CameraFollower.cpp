@@ -1,5 +1,5 @@
 #include "../lib/CameraFollower.hpp"
-#include "../lib/Game.hpp"
+#include "../lib/Engine.hpp"
 
 CameraFollower::CameraFollower(GameObject& GameObj)
 : Component(GameObj)
@@ -9,8 +9,8 @@ CameraFollower::CameraFollower(GameObject& GameObj)
 
 void CameraFollower::Update(float Dt)
 {
-    GameObjAssoc.Box.x = Game::Instance().GetState().Cam.Position.x + Offset.x;
-    GameObjAssoc.Box.y = Game::Instance().GetState().Cam.Position.y + Offset.y;
+    Parent.Box.x = Engine::Instance().GetState().Cam.Position.x + Offset.x;
+    Parent.Box.y = Engine::Instance().GetState().Cam.Position.y + Offset.y;
 }
 
 void CameraFollower::Render()

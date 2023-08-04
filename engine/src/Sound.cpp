@@ -1,5 +1,5 @@
 #include "../lib/Sound.hpp"
-#include "../lib/Game.hpp"
+#include "../lib/Engine.hpp"
 #include "../lib/Resources.hpp"
 #include "../lib/Tools.hpp"
 
@@ -27,7 +27,7 @@ Sound::~Sound()
 void Sound::Play(int Times = 0)
 {
     //Channel finding is handled by our class, since we need control over the chunk settings
-    for(int i = 0; i<LICHEN_SOUNDCHANNELS; i++)
+    for(int i = 0; i<Engine::Instance().GetSoundChannels(); i++)
     {
         if(Mix_Playing(i) == 0)//Found a free channel
         {
@@ -75,8 +75,9 @@ bool Sound::IsPlaying()
 void Sound::_SoundPosition()
 {
     //Set volume for each channel based on the gameobject center position
-    float SoundPos = GameObjAssoc.Box.Center().x - Game::Instance().GetState().Cam.Position.x;
-    int Location = (SoundPos/LICHEN_SCRWIDTH * 400.f);
+    float SoundPos = Parent.Box.Center().x - Engine::Instance().GetState().Cam.Position.x;
+    
+    int Location = (SoundPos/Engine::Instance().GetRenderSize().x * 400.f);
     (Location < 0 ? Location = 0 : (Location > 400 ? Location = 400 : Location));
     Location-=200;
 
@@ -118,7 +119,7 @@ void Sound::Update(float Dt)
     {
         if(SelfDestruct)
         {
-            GameObjAssoc.RequestDelete();  
+            Parent.RequestDelete();  
         }
     }    
 }

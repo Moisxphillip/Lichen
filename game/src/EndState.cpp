@@ -118,19 +118,16 @@ void EndState::Update(float Dt)
 		_QuitRequested = true;
         _EndMusic->Stop(500);
     }
-    _UpdateArray(Dt);
 }
 
 void EndState::Render()
 {
-    _RenderArray();
 }
 
 
 void EndState::Start()
 {
     LoadAssets();
-    _StartArray();
 }
 
 void EndState::Pause()

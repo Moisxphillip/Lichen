@@ -4,7 +4,7 @@
 #include "../lib/PenguinBody.hpp"
 #include "../lib/Path.hpp"
 
-#include "../../engine/lib/Game.hpp"
+#include "../../engine/lib/Engine.hpp"
 #include "../../engine/lib/Sprite.hpp"
 #include "../../engine/lib/Sound.hpp"
 #include "../../engine/lib/Collider.hpp"
@@ -18,12 +18,12 @@ Alien::Alien(GameObject& GameObj, int NumMinions)
     _NumMinions = NumMinions;
     _Speed = Vector2(LICHEN_ALIENSPD,LICHEN_ALIENSPD);
     Sprite *SpriteAlien = new Sprite(GameObj, FIMG_ALIEN);
-    GameObjAssoc.Box.h = SpriteAlien->GetHeight();
-    GameObjAssoc.Box.w = SpriteAlien->GetWidth();
+    Parent.Box.h = SpriteAlien->GetHeight();
+    Parent.Box.w = SpriteAlien->GetWidth();
     Collider* CollideAlien = new Collider(GameObj);
-	CollideAlien->Box = GameObjAssoc.Box;
-    GameObjAssoc.AddComponent(SpriteAlien);
-    GameObjAssoc.AddComponent(CollideAlien);
+	CollideAlien->Box = Parent.Box;
+    Parent.AddComponent(SpriteAlien);
+    Parent.AddComponent(CollideAlien);
     _CurrState = AlienState::REST;
     _Rest.Restart();
     AlienCount++;
@@ -55,27 +55,27 @@ void Alien::Start()
     for(int i = 0; i< _NumMinions; i++)
     {
         GameObject* MinionObj = new GameObject;
-        Minion* NewMinion = new Minion(*MinionObj, Game::Instance().GetState().GetGameObjPtr(&GameObjAssoc),(2.0f* M_PI * i)/_NumMinions);
+        Minion* NewMinion = new Minion(*MinionObj, Engine::Instance().GetState().GetGameObjPtr(&Parent),(2.0f* M_PI * i)/_NumMinions);
         MinionObj->AddComponent(NewMinion);
-        _MinionVec.push_back(Game::Instance().GetState().AddGameObj(MinionObj));
+        _MinionVec.push_back(Engine::Instance().GetState().AddGameObj(MinionObj));
     }
 }
 
 void Alien::Update(float Dt)
 {
     //Alien Rotation
-    GameObjAssoc.Angle -= (ROTFRAC/2)*Dt;
+    Parent.Angle -= (ROTFRAC/2)*Dt;
 
     if(_CurrState == AlienState::MOVING && PenguinBody::Player!=nullptr)
     {
-        Vector2 Distance = GameObjAssoc.Box.Center() - Destination;
+        Vector2 Distance = Parent.Box.Center() - Destination;
     
         Vector2 Direction = Distance.Normalized();
         Direction *= _Speed * Dt;
-        GameObjAssoc.Box -= Direction;
+        Parent.Box -= Direction;
         if(Direction.Magnitude() >= Distance.Magnitude())
         {
-            GameObjAssoc.Box += Distance;
+            Parent.Box += Distance;
             _CurrState = AlienState::REST;
             _Rest.Restart();
 
@@ -120,7 +120,7 @@ void Alien::Update(float Dt)
             Death->Box.w = AlienDeath->GetWidth();
             Death->Box.SetCenter(_MinionVec[i].lock()->Box.Center());
             Death->AddComponent(AlienDeath);
-            Game::Instance().GetState().AddGameObj(Death);
+            Engine::Instance().GetState().AddGameObj(Death);
             _MinionVec[i].lock()->RequestDelete(); //Request delete for minions
         }
 
@@ -130,10 +130,10 @@ void Alien::Update(float Dt)
         AlienDeath->Loop = false;
         Death->Box.h = AlienDeath->GetHeight();
         Death->Box.w = AlienDeath->GetWidth();
-        Death->Box.SetCenter(GameObjAssoc.Box.Center());
+        Death->Box.SetCenter(Parent.Box.Center());
         Death->AddComponent(AlienDeath);
-        Game::Instance().GetState().AddGameObj(Death);
-        //Audio track is longer than animation, so plays as an external game object
+        Engine::Instance().GetState().AddGameObj(Death);
+        //Audio track is longer than animation, so plays as an external Engine object
         GameObject* DeathSound = new GameObject();
         DeathSound->Box = Death->Box;
         Sound* Boom = new Sound(*DeathSound, FAUD_BOOM);
@@ -141,9 +141,9 @@ void Alien::Update(float Dt)
         Boom->SelfDestruct = true; 
         Boom->Play(0);
         DeathSound->AddComponent(Boom);
-        Game::Instance().GetState().AddGameObj(DeathSound);
+        Engine::Instance().GetState().AddGameObj(DeathSound);
 
-        GameObjAssoc.RequestDelete(); //Request delete for alien
+        Parent.RequestDelete(); //Request delete for alien
     }
 }
 

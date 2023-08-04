@@ -1,5 +1,6 @@
 #include "../lib/Camera.hpp"
 #include "../lib/Settings.hpp"
+#include "../lib/Engine.hpp"
 
 #define SPDMAX 300
         
@@ -13,12 +14,12 @@ Camera::Camera()
 void Camera::Follow(GameObject* Focus)
 {
     _Focus = Focus;
-    Position = _Focus->Box.Center() - Vector2(LICHEN_SCRWIDTH>>1, LICHEN_SCRHEIGHT>>1);
+    Position = _Focus->Box.Center() - Engine::Instance().GetRenderSize()*0.5;
 }
 
 Vector2 Camera::Center()
 {
-    return Position + Vector2(LICHEN_SCRWIDTH>>1, LICHEN_SCRHEIGHT>>1);
+    return Position + Engine::Instance().GetRenderSize()*0.5;
 }
 
 void Camera::Unfollow()
@@ -36,7 +37,7 @@ void Camera::Update(float Dt)
 {
     if(_Focus != nullptr)
     {
-        Position  = _Focus->Box.Center() - Vector2(LICHEN_SCRWIDTH>>1, LICHEN_SCRHEIGHT>>1);//focus on the given object
+        Position  = _Focus->Box.Center() - Engine::Instance().GetRenderSize()*0.5;//focus on the given object
     }
     // else //Camera moved freely
     // {

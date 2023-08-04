@@ -9,19 +9,19 @@ float MaxDistance, std::string Texture, int Frames, bool Loop, bool TargetsPlaye
 {
     Sprite* SpBullet = new Sprite(GameObj, Texture, Frames, 0.1);
     SpBullet->Loop = Loop;
-    GameObjAssoc.Box.h = SpBullet->GetHeight();
-    GameObjAssoc.Box.w = SpBullet->GetWidth();
+    Parent.Box.h = SpBullet->GetHeight();
+    Parent.Box.w = SpBullet->GetWidth();
     Collider* CollideBullet = new Collider(GameObj);
-	CollideBullet->Box = GameObjAssoc.Box;
+	CollideBullet->Box = Parent.Box;
     
-    GameObjAssoc.AddComponent(SpBullet);
-    GameObjAssoc.AddComponent(CollideBullet);
+    Parent.AddComponent(SpBullet);
+    Parent.AddComponent(CollideBullet);
 
     this->TargetsPlayer = TargetsPlayer;
     
     _Speed = Vector2(1,0)*Speed;
     _Speed.Rotate(Angle);
-    GameObjAssoc.Angle = Angle;
+    Parent.Angle = Angle;
     _DistanceLeft = MaxDistance;
     
     _Damage = Damage;
@@ -36,14 +36,14 @@ void Bullet::Collided(GameObject& Other)
     //     Component* Entity = Other.GetComponent("Alien");
     //     if(Entity != nullptr && !TargetsPlayer)
     //     {
-    //         GameObjAssoc.RequestDelete();
+    //         Parent.RequestDelete();
     //         return;
     //     }
 
     //     Entity = Other.GetComponent("PenguinBody");
     //     if(Entity != nullptr && TargetsPlayer)
     //     {
-    //         GameObjAssoc.RequestDelete();
+    //         Parent.RequestDelete();
     //         return;
     //     }
     // }
@@ -64,11 +64,11 @@ void Bullet::Start()
 
 void Bullet::Update(float Dt)
 {
-    GameObjAssoc.Box+= _Speed*Dt;
+    Parent.Box+= _Speed*Dt;
     _DistanceLeft -= _Speed.Magnitude()*Dt;
     if(_DistanceLeft <= 0)
     {
-        GameObjAssoc.RequestDelete();
+        Parent.RequestDelete();
     }
 
 }

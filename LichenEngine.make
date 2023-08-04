@@ -36,7 +36,7 @@ endef
 ifeq ($(config),debug)
 TARGETDIR = bin
 TARGET = $(TARGETDIR)/LichenEngine_debug-windows-x86.exe
-OBJDIR = obj/debug
+OBJDIR = bin/obj/debug
 DEFINES += -DDEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -g
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -g -std=c++17
@@ -45,7 +45,7 @@ ALL_LDFLAGS += $(LDFLAGS) -Lextlib/lib -L/usr/lib32 -m32
 else ifeq ($(config),release)
 TARGETDIR = bin
 TARGET = $(TARGETDIR)/LichenEngine_release-windows-x86.exe
-OBJDIR = obj/release
+OBJDIR = bin/obj/release
 DEFINES += -DNDEBUG
 ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -O2
 ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -O2 -std=c++17
@@ -71,7 +71,7 @@ GENERATED += $(OBJDIR)/Collider.o
 GENERATED += $(OBJDIR)/Color.o
 GENERATED += $(OBJDIR)/Component.o
 GENERATED += $(OBJDIR)/EndState.o
-GENERATED += $(OBJDIR)/Game.o
+GENERATED += $(OBJDIR)/Engine.o
 GENERATED += $(OBJDIR)/GameObject.o
 GENERATED += $(OBJDIR)/GameStats.o
 GENERATED += $(OBJDIR)/Generic.o
@@ -97,7 +97,6 @@ GENERATED += $(OBJDIR)/Tools.o
 GENERATED += $(OBJDIR)/Vector2.o
 GENERATED += $(OBJDIR)/Xrand.o
 GENERATED += $(OBJDIR)/main.o
-GENERATED += $(OBJDIR)/main1.o
 OBJECTS += $(OBJDIR)/Alien.o
 OBJECTS += $(OBJDIR)/Bullet.o
 OBJECTS += $(OBJDIR)/Camera.o
@@ -106,7 +105,7 @@ OBJECTS += $(OBJDIR)/Collider.o
 OBJECTS += $(OBJDIR)/Color.o
 OBJECTS += $(OBJDIR)/Component.o
 OBJECTS += $(OBJDIR)/EndState.o
-OBJECTS += $(OBJDIR)/Game.o
+OBJECTS += $(OBJDIR)/Engine.o
 OBJECTS += $(OBJDIR)/GameObject.o
 OBJECTS += $(OBJDIR)/GameStats.o
 OBJECTS += $(OBJDIR)/Generic.o
@@ -132,7 +131,6 @@ OBJECTS += $(OBJDIR)/Tools.o
 OBJECTS += $(OBJDIR)/Vector2.o
 OBJECTS += $(OBJDIR)/Xrand.o
 OBJECTS += $(OBJDIR)/main.o
-OBJECTS += $(OBJDIR)/main1.o
 
 # Rules
 # #############################################
@@ -211,7 +209,7 @@ $(OBJDIR)/Color.o: engine/src/Color.cpp
 $(OBJDIR)/Component.o: engine/src/Component.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Game.o: engine/src/Game.cpp
+$(OBJDIR)/Engine.o: engine/src/Engine.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/GameObject.o: engine/src/GameObject.cpp
@@ -268,9 +266,6 @@ $(OBJDIR)/Vector2.o: engine/src/Vector2.cpp
 $(OBJDIR)/Xrand.o: engine/src/Xrand.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/main.o: engine/src/main.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Alien.o: game/src/Alien.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -298,7 +293,7 @@ $(OBJDIR)/StageState.o: game/src/StageState.cpp
 $(OBJDIR)/TitleState.o: game/src/TitleState.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/main1.o: game/src/main.cpp
+$(OBJDIR)/main.o: game/src/main.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 

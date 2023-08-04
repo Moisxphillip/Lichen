@@ -23,10 +23,13 @@ class GameObject
 
         GameObject();
         ~GameObject();
+
         void Start();
         void Update(float);
+        void PhysicsUpdate(float);
         void Collided(GameObject&);
         void Render();
+        
         bool IsDead();
         void RequestDelete();
         void AddComponent(Component*);

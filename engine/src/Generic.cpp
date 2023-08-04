@@ -1,10 +1,9 @@
 #include "../lib/Generic.hpp"
 
 Generic::Generic(GameObject& GameObj, std::string Type)
-: Component(GameObj), Angle(GameObjAssoc.Angle), Box(GameObjAssoc.Box)
+: Component(GameObj), Angle(Parent.Angle), Box(Parent.Box)
 {
     _Type = Type;
-    ComponentFlags = Uses::All;
     this->Started = false;
     _Render = nullptr;
     _Start = nullptr;
@@ -28,7 +27,7 @@ void Generic::SetUpdate(void(*Update)(float, Generic*))
 
 void Generic::RequestDelete()
 {
-    this->GameObjAssoc.RequestDelete();
+    this->Parent.RequestDelete();
 }
 
 

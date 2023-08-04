@@ -1,8 +1,9 @@
 #include <fstream>
 
 #include "../lib/TileMap.hpp"
-#include "../lib/Game.hpp"
+#include "../lib/Engine.hpp"
 #include "../lib/Tools.hpp"
+#include "../lib/Settings.hpp"
 
 TileMap::TileMap(GameObject& GameObj, std::string File, TileSet* CurrTileSet)
 : Component(GameObj)
@@ -103,8 +104,9 @@ void TileMap::RenderLayer(int Layer, int CamX, int CamY)
     int EndX = _MapWidth,
     EndY = _MapHeight;
 
-    Rect CamArea(0,0,LICHEN_SCRWIDTH, LICHEN_SCRHEIGHT); 
-    CamArea+= Game::Instance().GetState().Cam.Position;
+    Vector2 Dimensions = Engine::Instance().GetRenderSize();
+    Rect CamArea(0,0,(int)Dimensions.x, (int)Dimensions.y); 
+    CamArea+= Engine::Instance().GetState().Cam.Position;
 
     for(int y = StartY; y < EndY; y++)//iterates through rows
     {
@@ -148,14 +150,14 @@ void TileMap::Render()
     {
         for(int l = 0; l <= _RefLayer; l++)//Renders each layer separately
         {
-            RenderLayer(l, -Game::Instance().GetState().Cam.Position.x, -Game::Instance().GetState().Cam.Position.y);//Following specification hint
+            RenderLayer(l, -Engine::Instance().GetState().Cam.Position.x, -Engine::Instance().GetState().Cam.Position.y);//Following specification hint
         }
     }
     else if(_RefLayer+1 != _MapDepth)
     {
         for(int l = _RefLayer+1; l < _MapDepth; l++)//Renders each layer separately
         {
-            RenderLayer(l, -Game::Instance().GetState().Cam.Position.x, -Game::Instance().GetState().Cam.Position.y);//Following specification hint
+            RenderLayer(l, -Engine::Instance().GetState().Cam.Position.x, -Engine::Instance().GetState().Cam.Position.y);//Following specification hint
         }
     }
     _RefLayerTurn = !_RefLayerTurn;//Changes next render turn
