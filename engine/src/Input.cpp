@@ -142,12 +142,12 @@ bool Input::IsMouseDown(int Switch)
 
 int Input::GetMouseX()
 {
-    return _MouseX + Engine::Instance().GetState().Cam.Position.x;
+    return _MouseX + Engine::Instance().CurrentState().Cam.Position.x;
 }
 
 int Input::GetMouseY()
 {
-    return _MouseY + Engine::Instance().GetState().Cam.Position.y;
+    return _MouseY + Engine::Instance().CurrentState().Cam.Position.y;
 }
 
 Vector2 Input::GetMouseVector2()

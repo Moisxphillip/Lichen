@@ -27,7 +27,7 @@ EndState::~EndState()
 void EndState::LoadAssets()
 {
     //Main Image
-    GameObject* Title = new GameObject();
+    GameObject* Title = new GameObject(1);
     Sprite* TitleImage;
     if(GameStats::PlayerVictory)
     {
@@ -46,7 +46,7 @@ void EndState::LoadAssets()
     Cam.Follow(Title);
 
     //Victory status
-    GameObject* TitleDesc = new GameObject();
+    GameObject* TitleDesc = new GameObject(5);
     Text* TitleText;
     
     // TitleDesc->Box.y += 200; 
@@ -74,7 +74,7 @@ void EndState::LoadAssets()
     AddGameObj(TitleDesc);
 
     //Return Text
-    GameObject* ReturnObj = new GameObject();
+    GameObject* ReturnObj = new GameObject(5);
     Text* ReturnText = TitleText = new Text(*ReturnObj, FTTF_CALL, 20, Text::SOLID, "Press SPACE to return to main screen.", TextColor.ColorSDL());
     ReturnObj->Box.SetCenter(Title->Box.Center());
     ReturnObj->Box.y += 270;    

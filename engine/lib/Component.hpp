@@ -12,8 +12,9 @@ class Component
     public:
         Component(GameObject&);
         virtual ~Component();
-        virtual void Update(float);
         virtual void PhysicsUpdate(float);
+        virtual void Update(float);
+        virtual void LateUpdate(float);
         virtual void Collided(GameObject&);
         virtual void Render();
         virtual void Start();

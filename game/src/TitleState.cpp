@@ -23,14 +23,14 @@ TitleState::~TitleState()
 
 void TitleState::LoadAssets()
 {
-    GameObject* Title = new GameObject();
+    GameObject* Title = new GameObject(0);
     Sprite* TitleImage = new Sprite(*Title, FIMG_MAINSCR);
     Title->Box.Redimension(Vector2(TitleImage->GetWidth(),TitleImage->GetHeight()));
     Title->AddComponent(TitleImage);
     AddGameObj(Title);
     Cam.Follow(Title);
 
-    GameObject* TitleDesc = new GameObject();
+    GameObject* TitleDesc = new GameObject(1);
     Text* TitleText = new Text(*TitleDesc, FTTF_CALL, 30, Text::SOLID, "Press SPACE to start!", TextColor.ColorSDL());
     TitleDesc->Box.SetCenter(Title->Box.Center());
     TitleDesc->Box.y += 200;    

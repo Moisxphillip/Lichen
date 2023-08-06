@@ -9,7 +9,6 @@ std::unordered_map<std::string, Mix_Music*> Resources::_MusicTable;
 std::unordered_map<std::string, Mix_Chunk*> Resources::_SoundTable;
 std::unordered_map<std::string, TTF_Font*> Resources::_FontTable;
 
-//TODO optim.: turn .count() and [File] into a single operation
 SDL_Texture* Resources::GetImage(std::string& File)
 {
     if(!_ImageTable.count(File))

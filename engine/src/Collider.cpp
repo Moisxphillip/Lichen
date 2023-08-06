@@ -31,25 +31,24 @@ bool Collider::Is(std::string Type)
 void Collider::Render() 
 {
 #ifdef DEBUG
-	Update(0);
 	Vector2 Center = Box.Center();
 	SDL_Point SDLPoints[5];
 
 	Vector2 Point = (Vector2(Box.x, Box.y) - Center).Rotate(Parent.Angle)
-					+ Center - Engine::Instance().GetState().Cam.Position;
+					+ Center - Engine::Instance().CurrentState().Cam.Position;
 	SDLPoints[0] = {(int)Point.x, (int)Point.y};
 	SDLPoints[4] = {(int)Point.x, (int)Point.y};
 	
 	Point = (Vector2(Box.x + Box.w, Box.y) - Center).Rotate(Parent.Angle)
-					+ Center - Engine::Instance().GetState().Cam.Position;
+					+ Center - Engine::Instance().CurrentState().Cam.Position;
 	SDLPoints[1] = {(int)Point.x, (int)Point.y};
 	
 	Point = (Vector2(Box.x + Box.w, Box.y + Box.h) - Center).Rotate(Parent.Angle)
-					+ Center - Engine::Instance().GetState().Cam.Position;
+					+ Center - Engine::Instance().CurrentState().Cam.Position;
 	SDLPoints[2] = {(int)Point.x, (int)Point.y};
 	
 	Point = (Vector2(Box.x, Box.y + Box.h) - Center).Rotate(Parent.Angle)
-					+ Center - Engine::Instance().GetState().Cam.Position;
+					+ Center - Engine::Instance().CurrentState().Cam.Position;
 	SDLPoints[3] = {(int)Point.x, (int)Point.y};
 
 	SDL_SetRenderDrawColor(Engine::Instance().GetRenderer(), 255, 0, 0, SDL_ALPHA_OPAQUE);
@@ -57,12 +56,7 @@ void Collider::Render()
 #endif //_DEBUG
 }
 
-void Collider::Start()
-{
-    
-}
-
-void Collider::Update(float Dt)
+void Collider::LateUpdate(float Dt)
 {
     Box = Parent.Box*_Scale;
 	Vector2 Rot = _Offset;

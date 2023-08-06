@@ -27,13 +27,13 @@ void PenguinCannon::Shoot()
     float Angle = Parent.Box.Center().DistAngle(Input::Instance().GetMouseVector2());
     Vector2 ExtraDistance(50,0);
     ExtraDistance.Rotate(Angle);
-    GameObject* GoBullet= new GameObject;
+    GameObject* GoBullet= new GameObject(5);
     Bullet* Projectile = new Bullet(*GoBullet, Angle, LICHEN_BULLETSPD,
              LICHEN_BULLETDMG, LICHEN_BULLETDIST, FIMG_PENGBULLET, 4, false, false);
     GoBullet->Box.SetCenter(Parent.Box.Center());
     GoBullet->Box+=ExtraDistance;
     GoBullet->AddComponent(Projectile);
-    Engine::Instance().GetState().AddGameObj(GoBullet);
+    Engine::Instance().CurrentState().AddGameObj(GoBullet);
 }
 
 bool PenguinCannon::Is(std::string Type)
@@ -58,7 +58,7 @@ void PenguinCannon::Update(float Dt)
     {
         Parent.Box.SetCenter(_Body.lock()->Box.Center());
         Parent.Angle = Parent.Box.Center().DistAngle(Input::Instance().GetMouseVector2());
-        if(Input::Instance().MousePress(M_LEFT) && _Cooldown.Get() > 1.8)
+        if(Input::Instance().MousePress(M_LEFT) && _Cooldown.Get() > 0.3)
         {
             Shoot();
             _Cooldown.Restart();

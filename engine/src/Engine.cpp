@@ -152,9 +152,10 @@ void Engine::Run()
             _CalculateDt();
             Input::Instance().Update();
             
-            StateStack.top()->StatePhysicsUpdate(1/60);//Calls physics update for all GameObject inside a scene
-            StateStack.top()->StateUpdate(GetDt());//Calls update for all GameObject inside a scene
-            StateStack.top()->StateRender(); //Calls render for all GameObject...
+            StateStack.top()->StatePhysicsUpdate(1/60);
+            StateStack.top()->StateUpdate(GetDt());
+            StateStack.top()->StateLateUpdate(GetDt());
+            StateStack.top()->StateRender();
 
             SDL_RenderPresent(_GameRenderer);//Presents the new rendered stuff on screen
             if (_NoVSync)
@@ -174,7 +175,7 @@ void Engine::Run()
             {
                 StateStack.top()->RequestQuit();
             }
-            else if(!StateStack.empty())
+            else if(!StateStack.empty() && StateStack.top()->HasStarted())
             {
                 StateStack.top()->StateResume();
             }
@@ -188,7 +189,7 @@ SDL_Renderer* Engine::GetRenderer()
     return _GameRenderer;
 }
 
-State& Engine::GetState()
+State& Engine::CurrentState()
 {
     return *StateStack.top().get();
 }

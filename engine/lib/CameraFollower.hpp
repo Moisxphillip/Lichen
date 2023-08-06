@@ -10,11 +10,8 @@ class CameraFollower: public Component
     public:
         Vector2 Offset;
         CameraFollower(GameObject&);
-        void Update(float);
-        void Render();
+        void LateUpdate(float);
         bool Is(std::string);
-        void Start();
-
 };
 
 

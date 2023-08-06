@@ -10,11 +10,11 @@ class Camera
         GameObject* _Focus;
         
     public:
-        Vector2 Position;
+        static Vector2 Position;
         Vector2 Speed;
         
         Camera();
-        Vector2 Center();
+        static Vector2 Center();
         void Follow(GameObject*);
         bool IsFollowing();
         void Unfollow();

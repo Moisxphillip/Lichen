@@ -48,7 +48,7 @@ void PenguinBody::Collided(GameObject& Other)
             Other.RequestDelete();
             if(_HP<=0)
             {
-                Engine::Instance().GetState().Cam.Unfollow();
+                Engine::Instance().CurrentState().Cam.Unfollow();
             }
         }
     }
@@ -66,10 +66,10 @@ void PenguinBody::Render()
 
 void PenguinBody::Start()
 {
-    GameObject* Cannon = new GameObject();
-    PenguinCannon* CannonCub = new PenguinCannon(*Cannon, Engine::Instance().GetState().GetGameObjPtr(&Parent));
+    GameObject* Cannon = new GameObject(3);
+    PenguinCannon* CannonCub = new PenguinCannon(*Cannon, Engine::Instance().CurrentState().GetGameObjPtr(&Parent));
     Cannon->AddComponent(CannonCub);
-    Engine::Instance().GetState().AddGameObj(Cannon);
+    Engine::Instance().CurrentState().AddGameObj(Cannon);
 }
 
 void PenguinBody::Update(float Dt)
@@ -100,16 +100,16 @@ void PenguinBody::Update(float Dt)
     Move.Rotate(Parent.Angle);
     Parent.Box-=Move;
 
-    if(_HP<=0)
+    if(_HP<=0 && !Parent.IsDead())
     {
-        GameObject* Death = new GameObject();
+        GameObject* Death = new GameObject(2);
         Sprite* PengDeath = new Sprite(*Death, FIMG_PENGDEATH, 5, LICHEN_DEATHFRAMETIME, 1);
         PengDeath->Loop = false;
         Death->Box.h = PengDeath->GetHeight();
         Death->Box.w = PengDeath->GetWidth();
         Death->Box.SetCenter(Parent.Box.Center());
         Death->AddComponent(PengDeath);
-        Engine::Instance().GetState().AddGameObj(Death);
+        Engine::Instance().CurrentState().AddGameObj(Death);
 
         GameObject* DeathSound = new GameObject();
         DeathSound->Box = Death->Box;
@@ -118,7 +118,7 @@ void PenguinBody::Update(float Dt)
         Boom->SelfDestruct = true; 
         Boom->Play(0);
         DeathSound->AddComponent(Boom);
-        Engine::Instance().GetState().AddGameObj(DeathSound);
+        Engine::Instance().CurrentState().AddGameObj(DeathSound);
 
         Parent.RequestDelete();
     }

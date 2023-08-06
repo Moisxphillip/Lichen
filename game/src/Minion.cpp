@@ -29,12 +29,12 @@ void Minion::Shoot(Vector2 Target)
 {
     //Create gameobject for a projectile
     float Angle = Parent.Box.Center().DistAngle(Target);
-    GameObject* GoBullet= new GameObject;
+    GameObject* GoBullet= new GameObject(4);
     Bullet* Projectile = new Bullet(*GoBullet, Angle, LICHEN_BULLETSPD,
              LICHEN_BULLETDMG, LICHEN_BULLETDIST, FIMG_BULLET, 3, true, true);
     GoBullet->Box.SetCenter(Parent.Box.Center());
     GoBullet->AddComponent(Projectile);
-    Engine::Instance().GetState().AddGameObj(GoBullet);
+    Engine::Instance().CurrentState().AddGameObj(GoBullet);
 }
 
 bool Minion::Is(std::string Type)

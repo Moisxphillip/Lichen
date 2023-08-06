@@ -16,6 +16,7 @@ class State
         bool _QuitRequested;
         bool _PopRequested;
         bool _Started;
+        bool _LayerChanged;
 
         std::vector<std::shared_ptr<GameObject>> GameObjVec;
         std::vector<std::shared_ptr<GameObject>> LateRenderVec;
@@ -26,6 +27,7 @@ class State
         virtual void LoadAssets();
         virtual void PhysicsUpdate(float);
         virtual void Update(float);
+        virtual void LateUpdate(float);
         virtual void Render();
 
         Music * _StateMusic;
@@ -36,8 +38,9 @@ class State
         void StateStart();
         void StatePause();
         void StateResume();
-        void StateUpdate(float);
         void StatePhysicsUpdate(float);
+        void StateUpdate(float);
+        void StateLateUpdate(float);
         void StateRender();
 
         bool HasStarted();
@@ -47,7 +50,6 @@ class State
 
         State();
         virtual ~State();
-
 
         std::weak_ptr<GameObject> AddGameObj(GameObject*);
         std::weak_ptr<GameObject> AddLateRenderObj(GameObject*);

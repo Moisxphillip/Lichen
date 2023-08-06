@@ -75,7 +75,7 @@ bool Sound::IsPlaying()
 void Sound::_SoundPosition()
 {
     //Set volume for each channel based on the gameobject center position
-    float SoundPos = Parent.Box.Center().x - Engine::Instance().GetState().Cam.Position.x;
+    float SoundPos = Parent.Box.Center().x - Engine::Instance().CurrentState().Cam.Position.x;
     
     int Location = (SoundPos/Engine::Instance().GetRenderSize().x * 400.f);
     (Location < 0 ? Location = 0 : (Location > 400 ? Location = 400 : Location));

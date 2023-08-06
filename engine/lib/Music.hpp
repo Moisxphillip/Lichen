@@ -2,7 +2,6 @@
 #define LICHEN_MUSIC
 
 #include <string>
-
 #include "SDL2/SDL_mixer.h"
 
 class Music

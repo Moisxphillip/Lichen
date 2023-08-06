@@ -22,10 +22,15 @@ void Component::Collided(GameObject& Other)
 {
 }
 
+void Component::PhysicsUpdate(float Dt)
+{
+}
+
 void Component::Update(float Dt)
 {
 }
-void Component::PhysicsUpdate(float Dt)
+
+void Component::LateUpdate(float Dt)
 {
 }
 

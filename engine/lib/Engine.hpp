@@ -60,7 +60,7 @@ class Engine
         Vector2 GetRenderSize();
         int GetSoundChannels();
 
-        State& GetState();
+        State& CurrentState();
         static Engine& Instance();
         float GetDt();
 

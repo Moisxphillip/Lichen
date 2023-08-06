@@ -1,4 +1,6 @@
 #include <memory>
+#include <algorithm>
+#include <iostream>
 
 #include "../lib/State.hpp"
 
@@ -36,17 +38,17 @@ void State::RequestQuit()
 	_QuitRequested = true;
 }
 
-
 std::weak_ptr<GameObject> State::AddGameObj(GameObject* NewGameObject)
 {
-    std::shared_ptr<GameObject> NewSharedObj(NewGameObject);
+	std::shared_ptr<GameObject> NewSharedObj(NewGameObject);
+	GameObjVec.insert(std::upper_bound(GameObjVec.begin(), GameObjVec.end(), NewGameObject->GetLayer(),
+		[](int a, std::shared_ptr<GameObject> b){return a < b.get()->GetLayer();}), NewSharedObj); 
 
-	GameObjVec.push_back(NewSharedObj);//Stores GameObject on scene GameObj vector
+	std::weak_ptr<GameObject> NewWeakObj(NewSharedObj);
 	if(_Started)
 	{
-        GameObjVec[GameObjVec.size()-1]->Start(); //Make it start if it's added during state run
+        NewWeakObj.lock()->Start(); //Make it start if it's added during state run
     }
-	std::weak_ptr<GameObject> NewWeakObj(NewSharedObj) ;
 	return NewWeakObj;
 }
 
@@ -105,29 +107,11 @@ void State::StatePhysicsUpdate(float Dt)
 	{
 		GameObjVec[i]->PhysicsUpdate(Dt);//Updates based on input and Dt
 	}
-	
-	for(int i = 0; i< (int)(GameObjVec.size()); i++)
-	{
-		if(GameObjVec[i]->IsDead())
-		{
-			GameObjVec.erase(GameObjVec.begin()+i); //Removes stuff discarded by RequestDelete()
-			i--;
-		}
-	}
 
 	//Late Render Updates
 	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
 	{
 		LateRenderVec[i]->PhysicsUpdate(Dt); //Calls render procedure for the late stuff
-	}
-
-	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
-	{
-		if(LateRenderVec[i]->IsDead())
-		{
-			LateRenderVec.erase(LateRenderVec.begin()+i); //Removes stuff discarded by RequestDelete()
-			i--;
-		}
 	}
 }
 
@@ -139,6 +123,23 @@ void State::StateUpdate(float Dt)
 	{
 		GameObjVec[i]->Update(Dt);//Updates based on input and Dt
 	}
+
+	//Late Render Updates
+	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
+	{
+		LateRenderVec[i]->Update(Dt); //Calls render procedure for the late stuff
+	}
+}
+
+void State::StateLateUpdate(float Dt)
+{
+	Cam.Update(0);
+	LateUpdate(Dt);
+	//Engine Object Updates
+	for(int i = 0; i< (int)(GameObjVec.size()); i++)
+	{
+		GameObjVec[i]->LateUpdate(Dt);//Updates based on input and Dt
+	}
 	
 	for(int i = 0; i< (int)(GameObjVec.size()); i++)
 	{
@@ -152,7 +153,7 @@ void State::StateUpdate(float Dt)
 	//Late Render Updates
 	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
 	{
-		LateRenderVec[i]->Update(Dt); //Calls render procedure for the late stuff
+		LateRenderVec[i]->LateUpdate(Dt); //Calls render procedure for the late stuff
 	}
 
 	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
@@ -165,10 +166,8 @@ void State::StateUpdate(float Dt)
 	}
 }
 
-
 void State::StateRender()
 {
-	Cam.Update(0);
     for(int i = 0; i< (int)(GameObjVec.size()); i++)
 	{
 		GameObjVec[i]->Render(); //Calls render procedure for each existing GameObject
@@ -212,6 +211,10 @@ void State::PhysicsUpdate(float Dt)
 }
 
 void State::Update(float Dt)
+{
+}
+
+void State::LateUpdate(float Dt)
 {
 }
 

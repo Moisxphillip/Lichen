@@ -22,8 +22,7 @@ class Collider : public Component
 
         bool Is(std::string);
         void Render();
-        void Start();
-        void Update(float);
+        void LateUpdate(float);
 
 };
 

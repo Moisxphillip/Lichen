@@ -7,18 +7,10 @@ CameraFollower::CameraFollower(GameObject& GameObj)
     Offset = Vector2(0,0);
 }
 
-void CameraFollower::Update(float Dt)
+void CameraFollower::LateUpdate(float Dt)
 {
-    Parent.Box.x = Engine::Instance().GetState().Cam.Position.x + Offset.x;
-    Parent.Box.y = Engine::Instance().GetState().Cam.Position.y + Offset.y;
-}
-
-void CameraFollower::Render()
-{
-}
-
-void CameraFollower::Start()
-{
+    Parent.Box.x = Engine::Instance().CurrentState().Cam.Position.x + Offset.x;
+    Parent.Box.y = Engine::Instance().CurrentState().Cam.Position.y + Offset.y;
 }
 
 bool CameraFollower::Is(std::string Type)

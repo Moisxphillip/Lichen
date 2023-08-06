@@ -23,6 +23,7 @@ class Sprite : public Component
         float _TimeElapsed;
         float _FrameTime;
         Flip _Orientation;
+        Vector2 _Parallax;
 
     public:
         bool Loop;
@@ -40,7 +41,10 @@ class Sprite : public Component
         int GetWidth();
         int GetHeight();
         void SetScale(float, float);
+        void SetScale(Vector2);
         Vector2 GetScale();
+        void SetParallax(Vector2);
+        Vector2 GetParallax();
         bool IsOpen();
 
         void SetFrame(int);

@@ -43,7 +43,6 @@ StageState::~StageState()
 void StageState::Start()
 {
 	LoadAssets();
-	// StateStart();
 }
 
 void StageState::Pause()
@@ -57,7 +56,7 @@ void StageState::Resume()
 void StageState::LoadAssets()
 {
 	//Basic state elements
-    GameObject *BgElement = new GameObject;//Create a gameobject to be associated with the background sprite 
+    GameObject *BgElement = new GameObject(0);//Create a gameobject to be associated with the background sprite 
     Sprite* StateBg = new Sprite(*BgElement, FIMG_OCEAN);//Load image background
 	CameraFollower *FixedBg = new CameraFollower(*BgElement);
 	BgElement->AddComponent(StateBg); //registers component on the gameObject
@@ -66,15 +65,22 @@ void StageState::LoadAssets()
 	AddGameObj(BgElement);//Stores GameObject on scene GameObj vector
 
 	//Init TileMap
-	GameObject* StateMap = new GameObject();
+	GameObject* StateMap = new GameObject(1);
 	TileSet* StateTileSet = new TileSet(LICHEN_TILEWIDTH, LICHEN_TILEHEIGHT, FIMG_TILESET);
-	TileMap* StateTileMap = new TileMap(*StateMap, FMAP_TILEMAP, StateTileSet);
+	TileMap* StateTileMap = new TileMap(*StateMap, FMAP_TILEMAP0, StateTileSet, false, true);
 	StateMap->AddComponent(StateTileMap);
 	AddGameObj(StateMap);
-	AddLateRenderObj(StateMap);
+	
+	//Init layer over map
+	StateMap = new GameObject(10);
+	StateTileSet = new TileSet(LICHEN_TILEWIDTH, LICHEN_TILEHEIGHT, FIMG_TILESET);
+	StateTileMap = new TileMap(*StateMap, FMAP_TILEMAP1, StateTileSet, false, true);
+	StateTileMap->SetParallax(1.5);
+	StateMap->AddComponent(StateTileMap);
+	AddGameObj(StateMap);
 
 	//Penguin
-	GameObject* PenguinObj = new GameObject();
+	GameObject* PenguinObj = new GameObject(2);
 	PenguinBody* Penguin = new PenguinBody(*PenguinObj);
 	PenguinObj->Box.SetCenter(Vector2(100,100));
 	PenguinObj->AddComponent(Penguin);
@@ -91,7 +97,7 @@ void StageState::LoadAssets()
 
 	for(int i = 0; i<5; i++)
 	{
-		GameObject* AlienObj = new GameObject();
+		GameObject* AlienObj = new GameObject(3);
 		Alien* Et = new Alien(*AlienObj, 4+(N.gen()%4));
 		AlienObj->Box.SetCenter(Vector2(X.gen(),Y.gen()));
 		AlienObj->AddComponent(Et);
@@ -152,10 +158,10 @@ void StageState::Update(float Dt)
 	{
 		if(Screener == nullptr)
 		{
-			GameObject* ScreenObj = new GameObject();
+			GameObject* ScreenObj = new GameObject(10);
 			ScreenFade* Scr = new ScreenFade(*ScreenObj, Color("#000000"),0.0, 0.9, 2);
 			ScreenObj->AddComponent(Scr);
-			AddLateRenderObj(ScreenObj);
+			AddGameObj(ScreenObj);
 			Screener = Scr;
 		}
 	}
@@ -173,9 +179,6 @@ void StageState::Update(float Dt)
 			Screener->RedirectFade(0.9);
 		}
 	}
-
-
-	// Cam.Update(Dt);
 		
 	for(int i = 0; i< (int)GameObjVec.size()-1; i++)
 	{
@@ -196,13 +199,9 @@ void StageState::Update(float Dt)
 			}
 		}
 	}
-	//Calls updates for contained objects and remove dead objects
-	// StateUpdate(Dt);
-
 }
 
 
 void StageState::Render()
 {
-	// StateRender();
 }

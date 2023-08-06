@@ -102,8 +102,8 @@ void Text::Render()
     if(_Texture != nullptr)
     {
         SDL_Rect Clip = {0,0, (int)Parent.Box.w, (int)Parent.Box.h};
-        SDL_Rect Destiny = {(int)(Parent.Box.x - Engine::Instance().GetState().Cam.Position.x),
-            (int)(Parent.Box.y - Engine::Instance().GetState().Cam.Position.y),
+        SDL_Rect Destiny = {(int)(Parent.Box.x - Engine::Instance().CurrentState().Cam.Position.x),
+            (int)(Parent.Box.y - Engine::Instance().CurrentState().Cam.Position.y),
             (int)Parent.Box.w, (int)Parent.Box.h};
         if(SDL_RenderCopyEx(Engine::Instance().GetRenderer(), _Texture, &Clip, &Destiny, 
             Vector2::RadToDeg(Parent.Angle),nullptr, (SDL_RendererFlip) Flip::N))

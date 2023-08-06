@@ -3,7 +3,9 @@
 #include "../lib/Engine.hpp"
 
 #define SPDMAX 300
-        
+
+Vector2 Camera::Position = Vector2(0,0);
+
 Camera::Camera()
 {
     _Focus = nullptr;

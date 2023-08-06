@@ -7,12 +7,18 @@
 #include "../lib/Tools.hpp"
 //TODO future improvement: sort component vector on new addition, implement binary search for Get/Remove;
 
-GameObject::GameObject()
+GameObject::GameObject(int Layer)
 {
     Box = Rect(0,0,0,0); //Inits Object Rectangle
     _GameObjDead = false;//Sets as alive for future checks in the gameObject lifetime
     Started = false;
     Angle = 0;
+    _Layer = Layer;
+}
+
+GameObject::GameObject()
+: GameObject(0)
+{
 }
 
 GameObject::~GameObject()
@@ -29,24 +35,32 @@ void GameObject::Start()
     Started = true;
 }
 
+void GameObject::PhysicsUpdate(float Dt)
+{
+    for (int i = 0; i < (int)(_GameObjComponents.size()); i++)
+    {
+        _GameObjComponents[i]->PhysicsUpdate(Dt);//Calls update from each component belonging to this GameObject
+    }
+}
+
 void GameObject::Update(float Dt)
 {
     for (int i = 0; i < (int)(_GameObjComponents.size()); i++)
     {
         _GameObjComponents[i]->Update(Dt);//Calls update from each component belonging to this GameObject
     }
+}
+
+void GameObject::LateUpdate(float Dt)
+{
+    for (int i = 0; i < (int)(_GameObjComponents.size()); i++)
+    {
+        _GameObjComponents[i]->LateUpdate(Dt);//Calls update from each component belonging to this GameObject
+    }
 
     if(Angle< -M_PI || Angle >M_PI)//Wrapper for avoiding unlimited growth
     {
         Angle = WrapMinMax(Angle, -M_PI, M_PI);
-    }
-}
-
-void GameObject::PhysicsUpdate(float Dt)
-{
-    for (int i = 0; i < (int)(_GameObjComponents.size()); i++)
-    {
-        _GameObjComponents[i]->PhysicsUpdate(Dt);//Calls update from each component belonging to this GameObject
     }
 }
 
@@ -105,3 +119,23 @@ Component* GameObject::GetComponent(std::string ComponentName)
     }
     return nullptr; //Nothing has been found
 }
+
+int GameObject::GetLayer()
+{
+    return _Layer;
+}
+
+void GameObject::SetLayer(int Layer)
+{
+    _Layer = Layer;
+}
+
+// bool GameObject::operator<(std::shared_ptr<GameObject> &Other)  
+// {
+//     return (_Layer < Other.get()->GetLayer());
+// }
+
+// bool GameObject::operator<(GameObject &Other)  
+// {
+//     return (_Layer < Other.GetLayer());
+// }

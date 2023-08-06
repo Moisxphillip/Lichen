@@ -8,6 +8,7 @@ Sprite::Sprite(GameObject& GameObj)
 {
     _SpriteTexture = nullptr;
     _Scale = Vector2(1,1);
+    _Parallax = Vector2(1,1);
     _FrameCount = 0;
     _CurrFrame = 0;
     _TimeElapsed = 0;
@@ -88,9 +89,24 @@ void Sprite::SetScale(float ScaleX, float ScaleY)
     _Scale = Vector2(ScaleX, ScaleY);
 }
 
+void Sprite::SetScale(Vector2 Scale)
+{
+    _Scale = Scale;
+}
+
 Vector2 Sprite::GetScale()
 {
     return _Scale;
+}
+
+void Sprite::SetParallax(Vector2 Parallax)
+{
+    _Parallax = Parallax;
+}
+
+Vector2 Sprite::GetParallax()
+{
+    return _Parallax;
 }
 
 bool Sprite::IsOpen()
@@ -144,12 +160,13 @@ void Sprite::Render(float x, float y)
 void Sprite::Render(float x, float y, float Angle)
 {
     SDL_Rect DestinyRect;
-    DestinyRect.x = x - Engine::Instance().GetState().Cam.Position.x;
-    DestinyRect.y = y - Engine::Instance().GetState().Cam.Position.y;
+    DestinyRect.x = x*_Parallax.x - Engine::Instance().CurrentState().Cam.Position.x;
+    DestinyRect.y = y*_Parallax.y - Engine::Instance().CurrentState().Cam.Position.y;
     DestinyRect.w = _ClipRect.w  * _Scale.x;
     DestinyRect.h = _ClipRect.h * _Scale.y;
 
-    if(SDL_RenderCopyEx(Engine::Instance().GetRenderer(), _SpriteTexture, &_ClipRect, &DestinyRect, Vector2::RadToDeg(Angle), nullptr, (SDL_RendererFlip) _Orientation))
+    if(SDL_RenderCopyEx(Engine::Instance().GetRenderer(), _SpriteTexture, &_ClipRect,
+        &DestinyRect, Vector2::RadToDeg(Angle), nullptr, (SDL_RendererFlip) _Orientation))
     {
         Error("Sprite::Render: Sprite copy to render device has failed");
     }
