@@ -35,9 +35,6 @@ StageState::~StageState()
 {
     delete _StateMusic;
     _StateMusic = nullptr;
-
-    GameObjVec.clear(); //Gets rid of objects made
-    LateRenderVec.clear(); //Gets rid of objects made
 }
 
 void StageState::Start()
@@ -180,20 +177,20 @@ void StageState::Update(float Dt)
 		}
 	}
 		
-	for(int i = 0; i< (int)GameObjVec.size()-1; i++)
+	for(int i = 0; i< (int)StateGameObjects.size()-1; i++)
 	{
-		Component* ColA = GameObjVec[i]->GetComponent("Collider");
+		Component* ColA = StateGameObjects[i]->GetComponent("Collider");
 		if(ColA != nullptr)
 		{
-			for(int j = i+1; j < (int)GameObjVec.size(); j++)
+			for(int j = i+1; j < (int)StateGameObjects.size(); j++)
 			{
-				Component* ColB = GameObjVec[j]->GetComponent("Collider");
+				Component* ColB = StateGameObjects[j]->GetComponent("Collider");
 				if(ColB != nullptr)
 				{
-					if(Collision::IsColliding(GameObjVec[i]->Box, GameObjVec[j]->Box, GameObjVec[i]->Angle, GameObjVec[j]->Angle))
+					if(Collision::IsColliding(StateGameObjects[i]->Box, StateGameObjects[j]->Box, StateGameObjects[i]->Angle, StateGameObjects[j]->Angle))
 					{
-						GameObjVec[i]->Collided(*GameObjVec[j]);
-						GameObjVec[j]->Collided(*GameObjVec[i]);
+						StateGameObjects[i]->Collided(*StateGameObjects[j]);
+						StateGameObjects[j]->Collided(*StateGameObjects[i]);
 					}
 				}
 			}

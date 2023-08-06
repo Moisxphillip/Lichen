@@ -49,9 +49,9 @@ void TitleState::Update(float Dt)
     //Rainbow effect
     float ColorMod = TextColorChange.Get()*90;
     TextColor.SetHSV(ColorMod, 100, 80);
-    for(int i = 0; i< (int) (GameObjVec.size()); i++)
+    for(int i = 0; i< (int) (StateGameObjects.size()); i++)
     {
-        Text *ScrTxt = (Text*)GameObjVec[i]->GetComponent("Text");
+        Text *ScrTxt = (Text*)StateGameObjects[i]->GetComponent("Text");
         if(ScrTxt != nullptr)
         {
             ScrTxt->SetColor(TextColor.ColorSDL());

@@ -14,8 +14,7 @@ State::State()
 
 State::~State()
 {
-    GameObjVec.clear(); //Gets rid of objects made
-    LateRenderVec.clear(); //Gets rid of objects made
+    StateGameObjects.clear(); //Gets rid of objects made
 }
 
 bool State::HasStarted()
@@ -41,7 +40,7 @@ void State::RequestQuit()
 std::weak_ptr<GameObject> State::AddGameObj(GameObject* NewGameObject)
 {
 	std::shared_ptr<GameObject> NewSharedObj(NewGameObject);
-	GameObjVec.insert(std::upper_bound(GameObjVec.begin(), GameObjVec.end(), NewGameObject->GetLayer(),
+	StateGameObjects.insert(std::upper_bound(StateGameObjects.begin(), StateGameObjects.end(), NewGameObject->GetLayer(),
 		[](int a, std::shared_ptr<GameObject> b){return a < b.get()->GetLayer();}), NewSharedObj); 
 
 	std::weak_ptr<GameObject> NewWeakObj(NewSharedObj);
@@ -52,38 +51,13 @@ std::weak_ptr<GameObject> State::AddGameObj(GameObject* NewGameObject)
 	return NewWeakObj;
 }
 
-std::weak_ptr<GameObject> State::AddLateRenderObj(GameObject* NewGameObject)
-{
-    std::shared_ptr<GameObject> NewSharedObj(NewGameObject);
-
-	LateRenderVec.push_back(NewSharedObj);//Stores new pointer on Late Render vector
-	if(_Started)
-	{
-        LateRenderVec[LateRenderVec.size()-1]->Start(); //Make it start if it's added during state run
-    }
-	std::weak_ptr<GameObject> NewWeakObj(NewSharedObj) ;
-	return NewWeakObj;
-}
-
 std::weak_ptr<GameObject> State::GetGameObjPtr(GameObject* ComparePtr)
 {
-    for(int i = 0; i< (int)(GameObjVec.size()); i++)
+    for(int i = 0; i< (int)(StateGameObjects.size()); i++)
 	{
-		if(GameObjVec[i].get() == ComparePtr)
+		if(StateGameObjects[i].get() == ComparePtr)
 		{
-			return GameObjVec[i];
-		}
-	}
-	return {};
-}
-
-std::weak_ptr<GameObject> State::GetLateRenderObjPtr(GameObject* ComparePtr)
-{
-    for(int i = 0; i< (int)(LateRenderVec.size()); i++)
-	{
-		if(LateRenderVec[i].get() == ComparePtr)
-		{
-			return LateRenderVec[i];
+			return StateGameObjects[i];
 		}
 	}
 	return {};
@@ -92,9 +66,9 @@ std::weak_ptr<GameObject> State::GetLateRenderObjPtr(GameObject* ComparePtr)
 void State::StateStart()
 {
 	Start();
-    for(int i = 0; i< (int)(GameObjVec.size()); i++)
+    for(int i = 0; i< (int)(StateGameObjects.size()); i++)
     {
-        GameObjVec[i]->Start();
+        StateGameObjects[i]->Start();
     }
     _Started = true;
 }
@@ -103,15 +77,9 @@ void State::StatePhysicsUpdate(float Dt)
 {
 	PhysicsUpdate(Dt);
 	//Engine Object Updates
-	for(int i = 0; i< (int)(GameObjVec.size()); i++)
+	for(int i = 0; i< (int)(StateGameObjects.size()); i++)
 	{
-		GameObjVec[i]->PhysicsUpdate(Dt);//Updates based on input and Dt
-	}
-
-	//Late Render Updates
-	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
-	{
-		LateRenderVec[i]->PhysicsUpdate(Dt); //Calls render procedure for the late stuff
+		StateGameObjects[i]->PhysicsUpdate(Dt);//Updates based on input and Dt
 	}
 }
 
@@ -119,15 +87,9 @@ void State::StateUpdate(float Dt)
 {
 	Update(Dt);
 	//Engine Object Updates
-	for(int i = 0; i< (int)(GameObjVec.size()); i++)
+	for(int i = 0; i< (int)(StateGameObjects.size()); i++)
 	{
-		GameObjVec[i]->Update(Dt);//Updates based on input and Dt
-	}
-
-	//Late Render Updates
-	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
-	{
-		LateRenderVec[i]->Update(Dt); //Calls render procedure for the late stuff
+		StateGameObjects[i]->Update(Dt);//Updates based on input and Dt
 	}
 }
 
@@ -136,31 +98,16 @@ void State::StateLateUpdate(float Dt)
 	Cam.Update(0);
 	LateUpdate(Dt);
 	//Engine Object Updates
-	for(int i = 0; i< (int)(GameObjVec.size()); i++)
+	for(int i = 0; i< (int)(StateGameObjects.size()); i++)
 	{
-		GameObjVec[i]->LateUpdate(Dt);//Updates based on input and Dt
+		StateGameObjects[i]->LateUpdate(Dt);//Updates based on input and Dt
 	}
 	
-	for(int i = 0; i< (int)(GameObjVec.size()); i++)
+	for(int i = 0; i< (int)(StateGameObjects.size()); i++)
 	{
-		if(GameObjVec[i]->IsDead())
+		if(StateGameObjects[i]->IsDead())
 		{
-			GameObjVec.erase(GameObjVec.begin()+i); //Removes stuff discarded by RequestDelete()
-			i--;
-		}
-	}
-
-	//Late Render Updates
-	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
-	{
-		LateRenderVec[i]->LateUpdate(Dt); //Calls render procedure for the late stuff
-	}
-
-	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
-	{
-		if(LateRenderVec[i]->IsDead())
-		{
-			LateRenderVec.erase(LateRenderVec.begin()+i); //Removes stuff discarded by RequestDelete()
+			StateGameObjects.erase(StateGameObjects.begin()+i); //Removes stuff discarded by RequestDelete()
 			i--;
 		}
 	}
@@ -168,16 +115,10 @@ void State::StateLateUpdate(float Dt)
 
 void State::StateRender()
 {
-    for(int i = 0; i< (int)(GameObjVec.size()); i++)
+    for(int i = 0; i< (int)(StateGameObjects.size()); i++)
 	{
-		GameObjVec[i]->Render(); //Calls render procedure for each existing GameObject
+		StateGameObjects[i]->Render(); //Calls render procedure for each existing GameObject
 	}
-	
-	for(int i = 0; i< (int)(LateRenderVec.size()); i++)
-	{
-		LateRenderVec[i]->Render(); //Calls render procedure for the late stuff
-	}
-	Render();
 }
 
 void State::StatePause()

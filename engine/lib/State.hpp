@@ -18,8 +18,7 @@ class State
         bool _Started;
         bool _LayerChanged;
 
-        std::vector<std::shared_ptr<GameObject>> GameObjVec;
-        std::vector<std::shared_ptr<GameObject>> LateRenderVec;
+        std::vector<std::shared_ptr<GameObject>> StateGameObjects;
         
         virtual void Start();
         virtual void Pause();
@@ -52,11 +51,7 @@ class State
         virtual ~State();
 
         std::weak_ptr<GameObject> AddGameObj(GameObject*);
-        std::weak_ptr<GameObject> AddLateRenderObj(GameObject*);
         std::weak_ptr<GameObject> GetGameObjPtr(GameObject*);
-        std::weak_ptr<GameObject> GetLateRenderObjPtr(GameObject*);
-        
-
 };
 
 #endif//LICHEN_STATE
