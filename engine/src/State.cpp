@@ -9,7 +9,6 @@ State::State()
     _QuitRequested = false;
     _PopRequested = false;
     _Started = false;
-	// Cam.Position = Vector2(0,0);
 }
 
 State::~State()
