@@ -6,8 +6,6 @@ Rect::Rect(float x, float y, float w, float h)
     this->y = y;
     this->w = w;
     this->h = h;
-    CenterV = Vector2(0, 0);
-    this->CenterV = this->Center();
 }
 
 Rect::Rect()
@@ -38,9 +36,9 @@ void Rect::SetCenter(Vector2 Coord)
     this->y = Coord.y - h/2;
 }
 
-float Rect::DistCenters(const Rect& Rectangle)
+float Rect::DistCenters(Rect& Rectangle)
 {
-    return (this->CenterV - Rectangle.CenterV).Magnitude();
+    return (this->Center() - Rectangle.Center()).Magnitude();
 }
 
 bool Rect::Contains(const Vector2& Vector)
@@ -79,13 +77,11 @@ std::ostream& operator<<(std::ostream& Out, const Rect& Rectangle)
 Rect& Rect::operator+=(const Vector2& Vector)
 {
     *this = *this+Vector;
-    this->CenterV = this->Center();
     return *this;
 }
 
 Rect& Rect::operator-=(const Vector2& Vector)
 {
     *this = *this-Vector;
-    this->CenterV = this->Center();
     return *this;
 }

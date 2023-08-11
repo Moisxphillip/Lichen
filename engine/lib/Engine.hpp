@@ -12,6 +12,9 @@
 #include "SDL2/SDL_mixer.h"
 #include "SDL2/SDL_ttf.h"
 
+#include "GLFW/glfw3.h"
+
+
 //Engine includes
 #include "State.hpp"
 #include "Vector2.hpp"
@@ -29,7 +32,7 @@ class Engine
         bool _NoVSync;
 
         //internal procedures
-        void _GameInitSDL();
+        void _InitEngineSystems();
         bool _ChangeState();
         
         //Mandatory
@@ -37,6 +40,9 @@ class Engine
         static Engine* _GameInstance;
         SDL_Window* _GameWindow = nullptr;
         SDL_Renderer* _GameRenderer = nullptr;
+
+        GLFWwindow* _GLWindow;
+        
         State* _GameState = nullptr;
         std::stack<std::unique_ptr<State>> StateStack;
 
