@@ -5,7 +5,6 @@ void GLClearError()
     while (glGetError() != GL_NO_ERROR); //Clear errors sequentially
 }
 
-
 bool GLCheckError()
 {
     while (unsigned int ErrorCode = glGetError())
@@ -39,4 +38,17 @@ bool GLCheckError()
         return false;
     }
     return true;
+}
+
+void Renderer::Clear()
+{
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void Renderer::Draw(VertexArray& Va, IndexBuffer& Ib, Shader& Sh)
+{
+    Sh.Bind(); 
+    Va.Bind();
+    Ib.Bind();
+    glDrawElements(GL_TRIANGLES, Ib.GetCount(), GL_UNSIGNED_INT, nullptr);// to use with index buffers. If converting to short int, change the 3rd definition
 }

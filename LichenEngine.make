@@ -69,7 +69,6 @@ GENERATED += $(OBJDIR)/Collider.o
 GENERATED += $(OBJDIR)/Color.o
 GENERATED += $(OBJDIR)/Component.o
 GENERATED += $(OBJDIR)/Engine.o
-GENERATED += $(OBJDIR)/GLSL.o
 GENERATED += $(OBJDIR)/GameObject.o
 GENERATED += $(OBJDIR)/Generic.o
 GENERATED += $(OBJDIR)/IndexBuffer.o
@@ -80,10 +79,12 @@ GENERATED += $(OBJDIR)/Renderer.o
 GENERATED += $(OBJDIR)/Resources.o
 GENERATED += $(OBJDIR)/ScreenFade.o
 GENERATED += $(OBJDIR)/ScreenFilter.o
+GENERATED += $(OBJDIR)/Shader.o
 GENERATED += $(OBJDIR)/Sound.o
 GENERATED += $(OBJDIR)/Sprite.o
 GENERATED += $(OBJDIR)/State.o
 GENERATED += $(OBJDIR)/Text.o
+GENERATED += $(OBJDIR)/Texture.o
 GENERATED += $(OBJDIR)/TileMap.o
 GENERATED += $(OBJDIR)/TileSet.o
 GENERATED += $(OBJDIR)/Timer.o
@@ -91,7 +92,9 @@ GENERATED += $(OBJDIR)/Tools.o
 GENERATED += $(OBJDIR)/Vector2.o
 GENERATED += $(OBJDIR)/VertexArray.o
 GENERATED += $(OBJDIR)/VertexBuffer.o
+GENERATED += $(OBJDIR)/VertexBufferLayout.o
 GENERATED += $(OBJDIR)/Xrand.o
+GENERATED += $(OBJDIR)/glm.o
 GENERATED += $(OBJDIR)/main.o
 OBJECTS += $(OBJDIR)/Camera.o
 OBJECTS += $(OBJDIR)/CameraFollower.o
@@ -99,7 +102,6 @@ OBJECTS += $(OBJDIR)/Collider.o
 OBJECTS += $(OBJDIR)/Color.o
 OBJECTS += $(OBJDIR)/Component.o
 OBJECTS += $(OBJDIR)/Engine.o
-OBJECTS += $(OBJDIR)/GLSL.o
 OBJECTS += $(OBJDIR)/GameObject.o
 OBJECTS += $(OBJDIR)/Generic.o
 OBJECTS += $(OBJDIR)/IndexBuffer.o
@@ -110,10 +112,12 @@ OBJECTS += $(OBJDIR)/Renderer.o
 OBJECTS += $(OBJDIR)/Resources.o
 OBJECTS += $(OBJDIR)/ScreenFade.o
 OBJECTS += $(OBJDIR)/ScreenFilter.o
+OBJECTS += $(OBJDIR)/Shader.o
 OBJECTS += $(OBJDIR)/Sound.o
 OBJECTS += $(OBJDIR)/Sprite.o
 OBJECTS += $(OBJDIR)/State.o
 OBJECTS += $(OBJDIR)/Text.o
+OBJECTS += $(OBJDIR)/Texture.o
 OBJECTS += $(OBJDIR)/TileMap.o
 OBJECTS += $(OBJDIR)/TileSet.o
 OBJECTS += $(OBJDIR)/Timer.o
@@ -121,7 +125,9 @@ OBJECTS += $(OBJDIR)/Tools.o
 OBJECTS += $(OBJDIR)/Vector2.o
 OBJECTS += $(OBJDIR)/VertexArray.o
 OBJECTS += $(OBJDIR)/VertexBuffer.o
+OBJECTS += $(OBJDIR)/VertexBufferLayout.o
 OBJECTS += $(OBJDIR)/Xrand.o
+OBJECTS += $(OBJDIR)/glm.o
 OBJECTS += $(OBJDIR)/main.o
 
 # Rules
@@ -258,7 +264,7 @@ $(OBJDIR)/Vector2.o: engine/src/Vector2.cpp
 $(OBJDIR)/Xrand.o: engine/src/Xrand.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/GLSL.o: game/src/GLSL.cpp
+$(OBJDIR)/glm.o: extlib/include/GLM/detail/glm.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/IndexBuffer.o: game/src/IndexBuffer.cpp
@@ -267,10 +273,19 @@ $(OBJDIR)/IndexBuffer.o: game/src/IndexBuffer.cpp
 $(OBJDIR)/Renderer.o: game/src/Renderer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Shader.o: game/src/Shader.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Texture.o: game/src/Texture.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VertexArray.o: game/src/VertexArray.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/VertexBuffer.o: game/src/VertexBuffer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VertexBufferLayout.o: game/src/VertexBufferLayout.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/main.o: game/src/main.cpp
