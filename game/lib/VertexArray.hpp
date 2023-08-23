@@ -8,7 +8,8 @@ class VertexArray
 {
     private:
         unsigned int _RendererID;
-
+        static unsigned int _CurrentlyBound;
+        
     public:
         VertexArray();
         ~VertexArray();

@@ -13,13 +13,13 @@
 class Shader
 {
     private:
-        int _Attributes;
         unsigned int _ProgramID;
         unsigned int _VertexID;
         unsigned int _FragmentID;
         unsigned int _CompileShader(unsigned int, const std::string&);
         std::unordered_map<std::string, int> _UniformCache;
-
+        static unsigned int _CurrentlyBound;
+        
     public:
         Shader();
         ~Shader();
@@ -31,7 +31,6 @@ class Shader
         
         void Bind();
         void Unbind();
-        void AddAttribute(const std::string&);
         int GetUniformLocation(const std::string&);
 
         //Uniform modification

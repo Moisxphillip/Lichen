@@ -33,7 +33,6 @@ Texture::Texture(const std::string& Path)
     {
         stbi_image_free(_LocalBuffer);
     }
-
 }
 
 Texture::~Texture()
@@ -60,4 +59,9 @@ int Texture::GetWidth()
 int Texture::GetHeight()
 {
     return _Height;
+}
+
+void Texture::Render()
+{
+    
 }

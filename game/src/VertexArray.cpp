@@ -2,6 +2,9 @@
 
 //controversy: structure is recommended by opengl, but using a global VAO and binding 
 //new forms is faster in performance. If slow, benchmark and substitute for globals.
+
+unsigned int VertexArray::_CurrentlyBound = 0;
+
 VertexArray::VertexArray()
 {
     glGenVertexArrays(1, &_RendererID);
@@ -9,17 +12,23 @@ VertexArray::VertexArray()
 
 VertexArray::~VertexArray()
 {
+    Unbind();
     glDeleteVertexArrays(1, &_RendererID);
 }
 
 void VertexArray::Bind()
 {
-    glBindVertexArray(_RendererID);
+    if(_CurrentlyBound != _RendererID)
+    {
+        _CurrentlyBound = _RendererID;
+        glBindVertexArray(_RendererID);
+    }
 }
 
 void VertexArray::Unbind()
 {
     glBindVertexArray(0);
+    _CurrentlyBound = 0;
 }
 
 void VertexArray::AddBuffer(VertexBuffer& Vb, VertexBufferLayout& Vbl)
@@ -32,7 +41,7 @@ void VertexArray::AddBuffer(VertexBuffer& Vb, VertexBufferLayout& Vbl)
     {
         glEnableVertexAttribArray(i);
         glVertexAttribPointer(i, Elements[i].Count, Elements[i].Type,
-            Elements[i].Normalized, Vbl.GetStride(), (const void*) Offset); //Links buffer above with vertex array
+            Elements[i].Normalized, Vbl.GetStride(), (const void*) Offset);
         Offset+= Elements[i].Count * VBElement::SizeOfType(Elements[i].Type);
     }
 }

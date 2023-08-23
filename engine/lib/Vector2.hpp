@@ -9,26 +9,42 @@ class Vector2
 {
     public:
         //Variables
-        float x, y;
+        // float x, y;
+        // float& a, b, w, h; //For other representations
         //Constructors
-        Vector2();
         Vector2(float, float);
+        Vector2();
+        union
+        {
+            float x, a, w;
+        };
+        union
+        {
+            float y, b, h;
+        };
+        
+
         //Vector special operations
+        float MagnitudeSquared();
         float Magnitude();
         float Angle();
         Vector2 Normalized();
         float Dot(const Vector2&);
+        float DistanceSquared(const Vector2&);
         float Distance(const Vector2&);
         Vector2 DistVector2(const Vector2&);
         float DistAngle(const Vector2&);
         Vector2 Rotate(const float&);
+
         //Useful functions for external use
         static float Dot(const Vector2&, const Vector2&);
+        static float DistanceSquared(const Vector2&, const Vector2&);
         static float Distance(const Vector2&, const Vector2&);
         static Vector2 DistVector2(const Vector2&, const Vector2&);
         static float DistAngle(const Vector2&, const Vector2&);
         static float DegToRad(const float&);
         static float RadToDeg(const float&);
+        
         //Operation overloads
         friend Vector2 operator+(const Vector2&, const Vector2&);
         friend Vector2 operator-(const Vector2&, const Vector2&);
@@ -38,6 +54,7 @@ class Vector2
         friend bool operator!=(const Vector2&, const Vector2&);
         friend std::ostream& operator<<(std::ostream&, const Vector2&);
         //=
+        Vector2& operator=(const Vector2&);
         Vector2& operator=(const std::list<float>&);
         Vector2& operator=(const std::list<int>&);
         //+=, -=, *=

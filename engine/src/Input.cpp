@@ -1,13 +1,14 @@
 #include "../lib/Input.hpp"
 #include "../lib/Engine.hpp"
 #include "../lib/Vector2.hpp"
+#include "../lib/Tools.hpp"
 
 //Set value for singleton class
 Input* Input::_InputM = nullptr;
 
 Input& Input::Instance()
 {
-    if(_InputM == nullptr) //Only creates a new Engine if there's no other instance of the class currently running
+    if(_InputM == nullptr) //Only creates a new Input if there's no other instance of the class currently running
     {
         _InputM = new Input();
     }
@@ -18,7 +19,7 @@ Input::Input()
 {
     if(_InputM != nullptr)//Report error if there is another instance working already
     {
-        // Error("Input::Input: Instance already exists");
+        Error("Input::Input: Instance already exists");
         return;
     }
     else //Register pointer as current instance
@@ -41,7 +42,7 @@ Input::Input()
     _MouseY = 0;
     _UpdateCounter = 0;
 
-    //will only change based on Engine or SDL requests
+    //will only change based on game or window requests
     this->_QuitRequested = false;
 
 }

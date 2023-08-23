@@ -12,111 +12,43 @@
 
 #include "../../engine/lib/Engine.hpp"
 #include "../../engine/lib/Tools.hpp"
+#include "../../engine/lib/Vector2.hpp"
+#include "../../engine/lib/Rect.hpp"
+
 #include "../lib/Renderer.hpp"
-#include "../lib/Texture.hpp"
-#include "../lib/Shader.hpp"
-#include "../lib/IndexBuffer.hpp"
-#include "../lib/VertexBuffer.hpp"
-#include "../lib/VertexArray.hpp"
+#include "../lib/Image.hpp"
+#include "../lib/Window.hpp"
 
 
 
 int main (int argc, char** argv) 
-{
+{    
+    Window Win("Lichen", 800,800);
+    Vector2 Scale(1,1), Pos(400,400), Et(600,600);
+    Rect Crop(0,0, 50,50);
+    Rect Crop2(0,0, Pos.x,Pos.y);
 
-    //DIRECT OPENGL TESTING///////////////////////////
-    GLFWwindow* Window;
-    if(!glfwInit())
+    Renderer Rend;        
+    Rend.SetClearColor(Color("#b0071e"));
+    Rend.SetBlendMode(BlendMode::Add);
+    Image Penguin("./res/img/penguinface.png");
+    Image Alien("./res/img/minion.png");
+
+    float ang = 0;
+
+    while(!Rend.ExitRequested())
     {
-        std::cout << "Error on glfw init.\n";
-        return -1;
+        ang+=0.03;
+        Rend.Clear();
+        double x, y;
+        glfwGetCursorPos(Win.GetWindow(), &x, &y);
+        Vector2 Posi(-x, -y);
+        Rend.SetViewPosition(Posi);
+        Penguin.Render(Rend, Win.GetProjection(), Rend.GetView(), Pos, Scale,Crop, 0);
+        Alien.Render(Rend, Win.GetProjection(), Rend.GetView(), Et, Scale,Crop, 0);
+        Rend.Show(Win.GetWindow());
+
     }
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //hints for the window
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //must have a vertex array if using this
-    int WindowWidth = 800, WindowHeight = 800;
-    Window = glfwCreateWindow(WindowWidth, WindowHeight, "Lichen",0,0);
-    if(!Window)
-    {
-        std::cout << "Error on window creation.\n";
-        return -1;
-    }
-    glfwMakeContextCurrent(Window);
-    glfwSwapInterval(1); //VSync
-    if(glewInit()!=GLEW_OK)//glew comes after making the context
-    {
-        std::cout << "Error on glew init.\n";
-        return -1;
-    }
-
-    //Render part from here
-    {
-        float Pos[] = 
-        {
-            200,200,  0,0,
-            600,200,   1,0,
-            600,600,    1,1,
-            200,600,   0,1
-        };
-
-        unsigned int Index[] ={0,1,2,2,3,0};
-
-        VertexArray Va;
-        VertexBuffer Vb(Pos, 4*4*sizeof(float));
-        VertexBufferLayout Vbl;
-        Vbl.Push(GL_FLOAT, 2);
-        Vbl.Push(GL_FLOAT, 2);
-        Va.AddBuffer(Vb, Vbl);
-        IndexBuffer Ib(Index, 6);
-        
-        Shader Basic;
-        Basic.CreateShader("./game/shader/V.vert","./game/shader/F.frag");
-        Basic.Bind();
-        
-
-        Va.Unbind();
-        Vb.Unbind();
-        Ib.Unbind();
-        Basic.Unbind();
-
-        Renderer Rend;
-        float x = 0;
-
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        
-        Texture Penguin("./res/img/penguinface.png");
-        Penguin.Bind();
-        Basic.SetUniform1i("U_Texture", 0);
-
-        glm::mat4 Projection = glm::ortho(
-            (float)0.0, (float)WindowWidth, 
-            (float)0.0, (float)WindowHeight,
-            (float)-1.0, (float)1.0);//Defines new window boundaries
-
-        // glm::vec4 VertexPos(100.0, 100.0, 0.0, 1.0);
-        // glm::vec4 Result = Projection * VertexPos;
-
-        while(!glfwWindowShouldClose(Window))
-        {
-            x+=0.03;
-            Rend.Clear();
-            Basic.SetUniform4f("U_Color", (float)(cos(x)+1)/2, (float)(cos(x+M_PI*0.66667)+1)/2, (float)(cos(x+M_PI*1.21212)+1)/2, 1.0);
-            Basic.SetUniformMat4f("U_Mvp",Projection);
-
-            Rend.Draw(Va, Ib, Basic);
-
-            glfwSwapBuffers(Window);
-            glfwPollEvents();
-        }
-    }//Scope inserted to call ib and vb destructors before terminating, find a way to do it in a better way
-        
-    //End routines
-    glfwDestroyWindow(Window);
-    glfwTerminate();
-     
-
     return 0;
 }
 
@@ -125,6 +57,72 @@ int main (int argc, char** argv)
 
 
     ///////////////////////////////////////////////////////
+      
+      
+    // glEnable(GL_BLEND);
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        // glm::mat4 Projection = 
+        //     glm::ortho( //x = ➡, y = ⬇
+        //     (float)0.0, (float)Win->GetWidth(), 
+        //     (float)Win->GetHeight(), (float)0.0,
+        //     (float)1.0, (float)10.0)
+        // ;//Defines new window boundaries
+        //Attention: Internal resolution can be defined from the width and height.
+        //However, a formula must be created for keeping the wished aspect ratio,
+        //avoiding stretches and such.
+
+        // glm::mat4 View = glm::translate(glm::mat4(1.0), glm::vec3(0.0,0.0,0.0));//Camera
+    //Scope inserted to call ib and vb destructors before terminating, find a way to do it in a better way
+    //End routines
+        // ;//Defines new window boundaries
+        // glm::mat4 Projection = 
+        //     glm::perspective( //x = ➡, y = ⬇
+        //     (float)glm::radians(45.0), (float)Win->GetWidth()/(float)Win->GetHeight(),
+        //     (float)0.0, (float)100.0)
+        
+        
+        // Texture Penguin("./res/img/penguinface.png");
+        // Penguin.Bind();
+        // Basic.SetUniform1i("U_Texture", 0);
+
+        // glm::mat4 Model = glm::translate(glm::mat4(1.0), glm::vec3(400.0,200.0, 0));
+
+        // Model =  glm::rotate(Model, glm::radians(45.0f), glm::vec3(0,1, 0)); // where x, y, z is axis of rotation (e.g. 0 1 0)
+
+        // glm::mat4 MVP = Projection*View*Model;  
+        
+            // Basic.SetUniform4f("U_Color", (float)(cos(x)+1)/2, (float)(cos(x+M_PI*0.66667)+1)/2, (float)(cos(x+M_PI*1.21212)+1)/2, 1.0);
+            // Basic.SetUniformMat4f("U_Mvp",MVP);
+            // Rend.Draw(Va, Ib, Basic);
+        
+        
+        // float Pos[] = 
+        // { //vertex pos                                              | destiny rect
+        //     -1 * (Size.x/2) * Scale.x,-1 * (Size.y/2) *Scale.y,      Crop.x/Size.x,             (Crop.y+Crop.h)/Size.y,
+        //      1 * (Size.x/2) * Scale.x,-1 * (Size.y/2) *Scale.y,      (Crop.x+Crop.w)/Size.x,    (Crop.y+Crop.h)/Size.y,
+        //      1 * (Size.x/2) * Scale.x, 1 * (Size.y/2) *Scale.y,      (Crop.x+Crop.w)/Size.x,    Crop.y/Size.y,
+        //     -1 * (Size.x/2) * Scale.x, 1 * (Size.y/2) *Scale.y,      Crop.x/Size.x,             Crop.y/Size.y,
+        // };
+        
+        // unsigned int Index[] ={0,1,2,2,3,0};
+
+        // VertexArray Va;
+        // VertexBuffer Vb(Pos, 4*4*sizeof(float));
+        // VertexBufferLayout Vbl;
+        // Vbl.Push(GL_FLOAT, 2); //Position data
+        // Vbl.Push(GL_FLOAT, 2); //texture mapping data
+        // Va.AddBuffer(Vb, Vbl);
+        // IndexBuffer Ib(Index, 6);
+        
+        // Shader Basic;
+        // Basic.CreateShader("./game/shader/V.vert","./game/shader/F.frag");
+        // Basic.Bind();
+        
+
+        // Va.Unbind();
+        // Vb.Unbind();
+        // Ib.Unbind();
+        // Basic.Unbind();
             
             
             // while(!GLCheckError()){}
@@ -181,29 +179,6 @@ int main (int argc, char** argv)
     // TitleState* Begin = new TitleState();
     // Engine::Instance().Push(Begin);
     // Engine::Instance().Run(); //Create a Engine instance by calling Get.. then run it
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         // glDrawArrays(GL_TRIANGLES, 0, 6);

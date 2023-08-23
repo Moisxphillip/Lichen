@@ -1,25 +1,30 @@
 #include <cmath>
 
 #include "../lib/Vector2.hpp"
+#include "../lib/Tools.hpp"
 
 #define PI_DEG 0.0174532925199432957692f
 #define DEG_PI 57.295779513082320876798f
 
 Vector2::Vector2(float x, float y)
+: x(x), y(y)
 {
-    this->x = x;
-    this->y = y;
 }
 
 Vector2::Vector2()
+: Vector2(0.0, 0.0)
 {
-    Vector2(0.0, 0.0);
 }
 //_____________________________________
 
+float Vector2::MagnitudeSquared()
+{
+    return (this->x * this->x) + (this->y * this->y);
+}
+
 float Vector2::Magnitude()
 {
-    return sqrt((this->x * this->x) + (this->y * this->y));
+    return sqrt(MagnitudeSquared());
 }
 
 float Vector2::Angle()
@@ -32,7 +37,7 @@ Vector2 Vector2::Normalized()
     float Mag = this->Magnitude();
     if(Mag == 0)
     {
-        // Error("Vector2::Normalized: Division by zero must not occur");
+        Error("Vector2::Normalized: Division by zero must not occur");
         return Vector2(0,0);
     }
     return Vector2(this->x/Mag, this->y/Mag);
@@ -41,6 +46,11 @@ Vector2 Vector2::Normalized()
 float Vector2::Dot(const Vector2& Vector)
 {
     return (this->x* Vector.x + this->y*Vector.y);
+}
+
+float Vector2::DistanceSquared(const Vector2& Vector)
+{
+    return ((*this - Vector).MagnitudeSquared());
 }
 
 float Vector2::Distance(const Vector2& Vector)
@@ -73,6 +83,11 @@ Vector2 Vector2::Rotate(const float& Rad)
 float Vector2::Dot(const Vector2& V1, const Vector2& V2)
 {
     return (V1.x* V2.x + V1.y*V2.y);
+}
+
+float Vector2::DistanceSquared(const Vector2& V1, const Vector2& V2)
+{
+    return ((V1 - V2).MagnitudeSquared());
 }
 
 float Vector2::Distance(const Vector2& V1, const Vector2& V2)
@@ -124,7 +139,7 @@ Vector2 operator*(const Vector2& V1, const Vector2& V2)
 
 bool operator==(const Vector2& V1, const Vector2& V2)
 {
-    return (((abs(V1.x-V2.x) < 1e-9) && (abs(V1.y-V2.y) < 1e-9)) ? true : false);
+    return (((abs(V1.x-V2.x) < 1e-9) && (abs(V1.y-V2.y) < 1e-9)));
 }
 
 bool operator!=(const Vector2& V1, const Vector2& V2)
@@ -140,6 +155,12 @@ std::ostream& operator<<(std::ostream& Out, const Vector2& Vector)
 
 //___________________________________________
 
+Vector2& Vector2::operator=(const Vector2& Vec)
+{
+    this->x = Vec.x;
+    this->y = Vec.y;
+    return *this;
+}
 Vector2& Vector2::operator=(const std::list<float>& List)
 {
     this->x = List.front();
@@ -156,24 +177,28 @@ Vector2& Vector2::operator=(const std::list<int>& List)
 
 Vector2& Vector2::operator+=(const Vector2& Vector)
 {
-    *this = *this + Vector;
+    this->x+=Vector.x;
+    this->y+=Vector.y;
     return *this;
 }
 
 Vector2& Vector2::operator-=(const Vector2& Vector)
 {
-    *this = *this - Vector;
+    this->x-=this->x - Vector.x;
+    this->y-=Vector.y;
     return *this;
 }
 
 Vector2& Vector2::operator*=(const float& Scalar)
 {
-    *this = *this * Scalar;
+    this->x*=Scalar;
+    this->y*=Scalar;
     return *this;
 }
 
 Vector2& Vector2::operator*=(const Vector2& Vector)
 {
-    *this = *this * Vector;
+    this->x*=Vector.x;
+    this->y*=Vector.y;
     return *this;
 }

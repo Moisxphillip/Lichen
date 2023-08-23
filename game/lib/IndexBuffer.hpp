@@ -6,6 +6,7 @@ class IndexBuffer
     private:
         unsigned int _RendererID;
         unsigned int _Count;
+        static unsigned int _CurrentlyBound;
     
     public:
         IndexBuffer(const unsigned int*, unsigned int);

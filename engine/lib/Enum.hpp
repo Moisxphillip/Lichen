@@ -2,7 +2,8 @@
 #define LYCHEN_ENUM
 
 //Game components must be defined by the game as they're named.
-enum ComponentType {
+enum ComponentType 
+{
     _None =         0,
     _Type01 =  1 << 0,
     _Type02 =  1 << 1,

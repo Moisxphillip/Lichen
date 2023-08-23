@@ -2,6 +2,8 @@
 #define LICHEN_TEXTURE
 
 #include <string>
+#include "../../engine/lib/Vector2.hpp"
+
 
 class Texture
 {
@@ -16,6 +18,7 @@ class Texture
         ~Texture();
 
         void Bind(unsigned int = 0);
+        void Render();
         void Unbind();
         int GetWidth();
         int GetHeight();
