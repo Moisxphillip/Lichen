@@ -6,9 +6,9 @@
 #include "GLM/glm.hpp"
 #include "GLM/gtc/matrix_transform.hpp"
 
-#include "../../engine/lib/Tools.hpp"
-#include "../../engine/lib/Color.hpp"
-#include "../../engine/lib/Vector2.hpp"
+#include "../lib/Tools.hpp"
+#include "../lib/Color.hpp"
+#include "../lib/Vector2.hpp"
 #include "../lib/Shader.hpp"
 #include "../lib/VertexArray.hpp"
 #include "../lib/IndexBuffer.hpp"
@@ -26,14 +26,12 @@ enum BlendMode
 class Renderer
 {
     private:
-        bool _ExitRequested;
         glm::mat4* _View;
         BlendMode _CurrBlend;
         
     public:
         Renderer();
         ~Renderer();
-        bool ExitRequested();
         void Clear();
         void SetClearColor(Color=(std::string)"#000000");
         void SetBlendMode(BlendMode);

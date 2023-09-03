@@ -2,24 +2,30 @@
 #define LICHEN_TEXTURE
 
 #include <string>
-#include "../../engine/lib/Vector2.hpp"
 
+#include "SDL2/SDL_ttf.h"
+
+#include "Vector2.hpp"
+#include "Enum.hpp"
+#include "Color.hpp"
 
 class Texture
 {
     private:
         unsigned int _TextureID;
         std::string _Path;
-        unsigned char* _LocalBuffer;
         int _Width, _Height, _BytesPerPixel;
+        LoadTexture _LoadMode;
+        void _SurfaceToTexture(SDL_Surface*);
 
     public:
-        Texture(const std::string&);
+        Texture(const std::string&, LoadTexture);
         ~Texture();
 
         void Bind(unsigned int = 0);
-        void Render();
         void Unbind();
+        void UpdateTexture(SDL_Surface*);
+        int GetTextureID();
         int GetWidth();
         int GetHeight();
 

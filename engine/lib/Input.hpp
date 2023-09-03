@@ -42,8 +42,8 @@ class Input
         
         bool _MouseState[6];
         int _MouseUpdate[6];
-        int _MouseX;
-        int _MouseY;
+        double _MouseX;
+        double _MouseY;
         
     public:
         //Copy prevention
@@ -63,7 +63,7 @@ class Input
         bool IsMouseDown(int);
         int GetMouseX();
         int GetMouseY();
-        Vector2 GetMouseVector2();
+        Vector2 MousePosition();
 
 };
 

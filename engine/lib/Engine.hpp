@@ -12,12 +12,15 @@
 #include "SDL2/SDL_mixer.h"
 #include "SDL2/SDL_ttf.h"
 
+#include "GL/glew.h"
 #include "GLFW/glfw3.h"
 
 
 //Engine includes
 #include "State.hpp"
 #include "Vector2.hpp"
+#include "Window.hpp"
+#include "Renderer.hpp"
 
 class Engine
 {
@@ -38,10 +41,8 @@ class Engine
         //Mandatory
         Engine(std::string, int, int);
         static Engine* _GameInstance;
-        SDL_Window* _GameWindow = nullptr;
-        SDL_Renderer* _GameRenderer = nullptr;
-
-        GLFWwindow* _GLWindow;
+        Window* _GameWindow = nullptr;
+        Renderer* _GameRenderer = nullptr;
         
         State* _GameState = nullptr;
         std::stack<std::unique_ptr<State>> StateStack;
@@ -60,7 +61,8 @@ class Engine
         ~Engine();
         void Run();
         void Push(State*);
-        SDL_Renderer* GetRenderer();
+        Renderer& GetRenderer();
+        Window& GetWindow();
 
         Vector2 GetWindowSize();
         Vector2 GetRenderSize();

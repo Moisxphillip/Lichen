@@ -9,7 +9,7 @@ void Error(std::string);
 int Fps(int);
 double WrapMax(double, double);
 double WrapMinMax(double, double, double);
-float Clamp(float);
+double Clamp(double);
 float SmootherStep(float LowerBound, float HigherBound, float x);
 float SmoothStep (float LowerBound, float HigherBound, float x);
 

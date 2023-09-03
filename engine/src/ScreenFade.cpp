@@ -12,7 +12,7 @@ ScreenFade::ScreenFade(GameObject& GameObj, Color FilterColor, float Start, floa
     float Diff = _FinishPercent - _StartPercent;
     (Diff > 0 ? _FadeIn = true : _FadeIn = false);
     _Step = Diff/_Time;
-    _FadeFilter.FilterColor.A = 255 - 255*_StartPercent;
+    // _FadeFilter.FilterColor.A = 255 - 255*_StartPercent;
 }
 
 ScreenFade::~ScreenFade()
@@ -56,7 +56,7 @@ void ScreenFade::Update(float Dt)
             _CurrPercent = _FinishPercent;
             _Finished = true;
         }
-        _FadeFilter.FilterColor.A = 255 - 255*_CurrPercent;
+        // _FadeFilter.FilterColor.A = 255 - 255*_CurrPercent;
         _FadeFilter.Update(Dt);
     }
     

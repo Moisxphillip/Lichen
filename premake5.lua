@@ -40,6 +40,7 @@ project "LichenEngine"
         "SDL2_image",
         "SDL2_mixer",
         "SDL2_ttf",
+        "freetype",
         "m",
         "glfw3",
         "gdi32",

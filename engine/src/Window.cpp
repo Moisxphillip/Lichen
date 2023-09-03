@@ -1,6 +1,6 @@
 #include "../lib/Window.hpp"
 
-Window::Window(std::string Name, int Width, int Height, int ProjectionWidth, int ProjectionHeight)
+Window::Window(std::string Name, int Width, int Height, int ProjectionWidth, int ProjectionHeight, bool VSync)
 {
     _Width = Width;
     _Height = Height;
@@ -22,21 +22,22 @@ Window::Window(std::string Name, int Width, int Height, int ProjectionWidth, int
     }
 
     glfwMakeContextCurrent(_Window);
-    glfwSwapInterval(0); //VSync
+    glfwSwapInterval((int)VSync); //VSync
 
     if(glewInit()!=GLEW_OK)//glew comes after making the context
     {
         Error("Window::Window: GLEW init failed");
     }
 
-    (ProjectionWidth  != 0 ? _ProjectionWidth  = ProjectionWidth  : _ProjectionWidth  = Width );
+    (ProjectionWidth  != 0 ? _ProjectionWidth  = ProjectionWidth  : _ProjectionWidth  = Width ); //In case there's internal resolution...
     (ProjectionHeight != 0 ? _ProjectionHeight = ProjectionHeight : _ProjectionHeight = Height);
 
-    _Projection = new glm::mat4(glm::ortho( //x = ➡, y = ⬇
+    _Projection = new glm::mat4(glm::ortho( //X = ➡, Y = ⬇
         0.0f, (float)_ProjectionWidth,  //X
         (float)_ProjectionHeight, 0.0f, //Y
-        0.0f, 10.0f                     //Z
+        -1000.0f, 1000.0f               //Z
     ));
+        
 }
 
 Window::~Window()
@@ -46,7 +47,7 @@ Window::~Window()
     glfwTerminate();
 }
 
-GLFWwindow* Window::GetWindow()
+GLFWwindow* Window::GetGLWindow()
 {
     return _Window;
 }
@@ -59,6 +60,11 @@ int  Window::GetWidth()
 int  Window::GetHeight()
 {
     return _Height;
+}
+bool Window::QuitRequested()
+{
+    glfwPollEvents(); //Must be here when you're not using input, otherwise the polling never occurs
+    return glfwWindowShouldClose(_Window);
 }
 
 glm::mat4& Window::GetProjection()

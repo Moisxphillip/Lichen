@@ -14,16 +14,16 @@ class Window
     private:
         int _Width, _Height;
         int _ProjectionWidth, _ProjectionHeight;
-        Renderer _Rend;
         GLFWwindow* _Window;
         glm::mat4* _Projection;
 
     public:
-        Window(std::string, int=800, int=800, int=0, int=0);
+        Window(std::string, int=800, int=800, int=0, int=0, bool=false);
         ~Window();
-        GLFWwindow* GetWindow();
+        GLFWwindow* GetGLWindow();
         int GetWidth();
         int GetHeight();
+        bool QuitRequested();
         glm::mat4& GetProjection();
 };
 

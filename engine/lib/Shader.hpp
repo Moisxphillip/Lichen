@@ -23,8 +23,8 @@ class Shader
     public:
         Shader();
         ~Shader();
-
-        void CreateShader(const std::string&, const std::string&);
+        
+        void CreateShader(const std::string& = (std::string)"./engine/shader/V.vert", const std::string& = (std::string)"./engine/shader/F.frag");
         unsigned int GetProgramID();
         unsigned int GetVertexID();
         unsigned int GetFragmentID();

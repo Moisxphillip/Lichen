@@ -1,5 +1,6 @@
 #ifndef LYCHEN_ENUM
 #define LYCHEN_ENUM
+#include "SDL2/SDL_ttf.h" //
 
 //Game components must be defined by the game as they're named.
 enum ComponentType 
@@ -40,6 +41,42 @@ enum ComponentType
     //Extensible til' 64 if needed... I'm lazy to do that now.
     //TODO extend to 64 bits flags and add engine components with predefined values
 };
+
+
+typedef enum
+{
+    N = 0,
+    H = 1,
+    V = 2,
+    HV = 3
+} Flip;
+
+typedef enum
+{
+    Stream  = 0x88E0,//GL_STREAM_DRAW
+    Static  = 0x88E4,//GL_STATIC_DRAW
+    Dynamic = 0x88E8 //GL_DYNAMIC_DRAW
+} DrawMode;
+
+typedef enum
+{
+    AsImage,
+    AsText,
+} LoadTexture;
+
+typedef enum 
+{
+    SOLID,
+    SHADED,
+    BLENDED
+} TextStyle;
+
+typedef enum 
+{
+    RIGHT = TTF_WRAPPED_ALIGN_RIGHT,
+    CENTER = TTF_WRAPPED_ALIGN_CENTER,
+    LEFT = TTF_WRAPPED_ALIGN_LEFT,
+}TextAlignment;
 
 
 #endif//LYCHEN_ENUM

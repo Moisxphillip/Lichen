@@ -42,23 +42,18 @@ bool GLCheckError()
 
 Renderer::Renderer()
 {
-    _ExitRequested = false;
     _View = new glm::mat4(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f,0.0f,0.0f)));
     _CurrBlend = BlendMode::None;
+    SetBlendMode(BlendMode::Add);
 }
 Renderer::~Renderer()
 {
     delete _View;
 }
 
-bool Renderer::ExitRequested()
-{
-    return _ExitRequested;
-}
-
 void Renderer::SetClearColor(Color HexColor)
 {
-    glClearColor(HexColor.R/255.0,HexColor.G/255.0,HexColor.B/255.0,(255-HexColor.A)/255);
+    glClearColor(HexColor.r,HexColor.g,HexColor.b,HexColor.a);
 }
 
 void Renderer::Clear()
@@ -77,11 +72,6 @@ void Renderer::Draw(VertexArray& Va, IndexBuffer& Ib, Shader& Sh)
 void Renderer::Show(GLFWwindow* CurrWindow)
 {
     glfwSwapBuffers(CurrWindow);
-    glfwPollEvents();
-    if(glfwWindowShouldClose(CurrWindow))
-    {
-        _ExitRequested = true;
-    }
 }
 
 void Renderer::SetViewPosition(Vector2 Pos)

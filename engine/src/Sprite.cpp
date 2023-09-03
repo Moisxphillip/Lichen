@@ -6,7 +6,7 @@
 Sprite::Sprite(GameObject& GameObj)
 : Component(GameObj)
 {
-    _SpriteTexture = nullptr;
+    _SpriteImage = nullptr;
     _Scale = Vector2(1,1);
     _Parallax = Vector2(1,1);
     _FrameCount = 0;
@@ -52,16 +52,9 @@ Sprite::~Sprite()
 
 void Sprite::Open(std::string File)
 {
-    _SpriteTexture = Resources::GetImage(File);
-    if(_SpriteTexture == nullptr)
-    {
-        Error("Sprite::Open: Image could not be loaded");
-    }
-
-    if(SDL_QueryTexture(_SpriteTexture, nullptr, nullptr, &_SpriteWidth, &_SpriteHeight))
-    {
-        Error("Sprite::Open: QueryTexture failed");
-    }
+    _SpriteImage = new Image(File);
+    _SpriteWidth = _SpriteImage->GetWidth();
+    _SpriteHeight = _SpriteImage->GetHeight();
     SetClip(0,0, _SpriteWidth, _SpriteHeight);
 }
 
@@ -111,13 +104,22 @@ Vector2 Sprite::GetParallax()
 
 bool Sprite::IsOpen()
 {
-    return (_SpriteTexture != nullptr);
+    return (_SpriteImage != nullptr);
 }
 
 void Sprite::SetFrame(int Frame)
 {
-    _CurrFrame = Frame;
-    SetClip(_CurrFrame*_SpriteWidth, 0, _SpriteWidth, _SpriteHeight);
+    if (Frame >= _FrameCount ) //Just in case someone asks for sprites outside the boundaries
+    {
+        Error("Sprite::SetFrame: Frame requested exceeds the max number of frames on current texture");
+    }
+    
+    //Gets the position of needed sprite section
+    int ClipX = (Frame%_XFrames)* _SpriteWidth,
+        ClipY = (Frame/_YFrames)*_SpriteHeight;
+
+    //Sets the sprite area to be exhibited and renders it
+    SetClip(ClipX, ClipY, _SpriteWidth, _SpriteHeight);
 }
 
 void Sprite::SetFrameCount(int FrameCount)
@@ -159,17 +161,13 @@ void Sprite::Render(float x, float y)
 
 void Sprite::Render(float x, float y, float Angle)
 {
-    SDL_Rect DestinyRect;
-    DestinyRect.x = x*_Parallax.x - Engine::Instance().CurrentState().Cam.Position.x;
-    DestinyRect.y = y*_Parallax.y - Engine::Instance().CurrentState().Cam.Position.y;
-    DestinyRect.w = _ClipRect.w  * _Scale.x;
-    DestinyRect.h = _ClipRect.h * _Scale.y;
+    Vector2 Destiny;
+    Destiny.x = (x+GetWidth()/2)*_Parallax.x - Engine::Instance().CurrentState().Cam.Position.x;
+    Destiny.y = (y+GetHeight()/2)*_Parallax.y - Engine::Instance().CurrentState().Cam.Position.y;
 
-    if(SDL_RenderCopyEx(Engine::Instance().GetRenderer(), _SpriteTexture, &_ClipRect,
-        &DestinyRect, Vector2::RadToDeg(Angle), nullptr, (SDL_RendererFlip) _Orientation))
-    {
-        Error("Sprite::Render: Sprite copy to render device has failed");
-    }
+    _SpriteImage->Render(Engine::Instance().GetRenderer(),
+        Engine::Instance().GetWindow().GetProjection(),
+        Destiny, _Scale, _ClipRect, Angle, _Orientation);
 }
 
 void Sprite::Start()

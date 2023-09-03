@@ -32,25 +32,13 @@ TileSet::~TileSet()
 
 void TileSet::RenderTile(int Index, float x, float y)
 {
-    Index;
-    if(Index == 0)
+    if(Index == 0)//For use with TileD maps, -1
     {
         return;
     } 
-
-    if (int(Index) >= _MaxTiles) //Just in case someone asks for tiles outside the boundaries
-    {
-        Error("TileSet::RenderTile: Tile requested exceded the max number of tiles on current Set");
-    }
-    Index--;
-    //Gets the position of needed sprite section
-    int ClipX = (Index%_Columns)* _TileWidth,
-    ClipY = (Index/_Columns)*_TileHeight;
-
-    //Sets the sprite area to be exhibited and renders it
-    _Set->SetClip(ClipX, ClipY, _TileWidth, _TileHeight);
+    Index-=1;
+    _Set->SetFrame(Index);
     _Set->Render(x,y);
-    Index++;
 }
 
 int TileSet::GetTileWidth()

@@ -1,14 +1,16 @@
 #include "../lib/Color.hpp"
+#include "../lib/Tools.hpp"
 #include <iostream>
+#include <iomanip>
 // #define _USE_MATH_DEFINES
 
 
 Color::Color()
 {
-    R = 0;
-    G = 0;
-    B = 0;
-    A = 0;
+    r = 0.0f;
+    g = 0.0f;
+    b = 0.0f;
+    a = 1.0f;
 }
 
 Color::Color(std::string Hex)
@@ -17,43 +19,49 @@ Color::Color(std::string Hex)
     {
         uint32_t R, G, B;
         sscanf(Hex.substr(1,6).c_str(), "%02x%02x%02x", &R, &G, &B);
-        this->R = R;
-        this->G = G;
-        this->B = B;
-        this->A = 0; 
+        this->r = R/255.0f;
+        this->g = G/255.0f;
+        this->b = B/255.0f;
+        this->a = 1.0f; 
     }
     else if(Hex.length() == 9)
     {
         uint32_t R, G, B, A;
         sscanf(Hex.substr(1,8).c_str(), "%02x%02x%02x%02x", &R, &G, &B, &A);
-        this->R = R;
-        this->G = G;
-        this->B = B;
-        this->A = A; 
+        this->r = R/255.0f;
+        this->g = G/255.0f;
+        this->b = B/255.0f;
+        this->a = A/255.0f; 
     }
 }
 
-Color::Color(uint8_t R, uint8_t G, uint8_t B)
+Color::Color(float R, float G, float B, float A)
+: r(R), g(G), b(B), a(A)
 {
-    this->R = R;
-    this->G = G;
-    this->B = B;
-    this->A = 0;
 }
 
-Color::Color(uint8_t R, uint8_t G, uint8_t B, uint8_t A)
-: Color(R, G, B)
+Color::Color(float R, float G, float B)
+:Color(R,G,B,1.0f)
 {
-    this->A = A;
 }
+
+// Color::Color(uint8_t R, uint8_t G, uint8_t B, uint8_t A)
+// : Color(R/255.0f, G/255.0f, B/255.0f, A/255.0f)
+// {
+// }
+
+// Color::Color(uint8_t R, uint8_t G, uint8_t B)
+// : Color(R, G, B, 255)
+// {
+// }
 
 Color operator-(const Color& X, const Color& Y)
 {
     Color C;
-    C.R = X.R - Y.R;
-    C.G = X.G - Y.G;
-    C.B = X.B - Y.B;
-    C.A = X.A - Y.A;
+    C.r = Clamp(X.r - Y.r);
+    C.g = Clamp(X.g - Y.g);
+    C.b = Clamp(X.b - Y.b);
+    C.a = Clamp(X.a - Y.a);
     return C;
 }
 
@@ -66,10 +74,10 @@ Color& Color::operator-=(const Color& X)
 Color operator+(const Color& X, const Color& Y)
 {
     Color C;
-    C.R = X.R + Y.R;
-    C.G = X.G + Y.G;
-    C.B = X.B + Y.B;
-    C.A = X.A + Y.A;
+    C.r = Clamp(X.r + Y.r);
+    C.g = Clamp(X.g + Y.g);
+    C.b = Clamp(X.b + Y.b);
+    C.a = Clamp(X.a + Y.a);
     return C;
 }
 
@@ -79,19 +87,30 @@ Color& Color::operator+=(const Color& X)
     return *this;
 }
 
+bool operator==(const Color& C1, const Color& C2)
+{
+    return (C1.r == C2.r && C1.g == C2.g && C1.b == C2.b && C1.a == C2.a);
+}
+
+bool operator!=(const Color& C1, const Color& C2)
+{
+    return !(C1 == C2);
+}
+
 std::ostream& operator<<(std::ostream& Out, const Color& Colour)
 {
-    Out << "#" << std::hex << Colour.R << Colour.G << Colour.B << Colour.A;
+    int r = (int)(Colour.r*255), g = (int)(Colour.g*255), b = (int)(Colour.b*255), a = (int)(Colour.a*255);
+    Out << "#" << std::setw(2) << std::setfill('0') << std::hex << r << g << b << a; //Fix zero case later
     return Out;
 }
 
 SDL_Color Color::ColorSDL()
 {
-    SDL_Color Convert{R,G,B,A};
+    SDL_Color Convert{(uint8_t)(r*255),(uint8_t)(g*255),(uint8_t)(b*255),(uint8_t)(a*255)};
     return Convert;
 }
 
-void Color::SetHSV(float H, float S,float V)
+void Color::SetHSV(float H, float S, float V)
 {
     ((H > 360 || H < 0) ? H = fmod(H, 360) : H);
     ((S > 100 || S < 0) ? H = fmod(H, 100) : S);
@@ -129,10 +148,11 @@ void Color::SetHSV(float H, float S,float V)
         r = C,g = 0,b = X;
     }
     
-    *this = Color((r+m)*255, (g+m)*255, (b+m)*255);
+    *this = Color((r+m), (g+m), (b+m));
 }
 
 uint32_t Color::ColorUint32()
 {
-	return (uint32_t)((this->R << 16) + (this->G << 8) + (this->B << 0));
+    SDL_Color ThisOne = ColorSDL();
+	return (uint32_t)((uint8_t)((ThisOne.r*255) << 16) + (ThisOne.g << 8) + (ThisOne.b << 0));
 }

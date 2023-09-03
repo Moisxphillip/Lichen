@@ -9,15 +9,20 @@
 #include "Component.hpp"
 #include "Settings.hpp"
 #include "Timer.hpp"
+#include "Tools.hpp"
+#include "Image.hpp"
 
 class Sprite : public Component
 {
     private:
-        SDL_Texture* _SpriteTexture;
+        // SDL_Texture* _SpriteTexture;
+        Image* _SpriteImage;
         int _SpriteWidth;
         int _SpriteHeight;
-        SDL_Rect _ClipRect;
+        Rect _ClipRect;
         Vector2 _Scale;
+        int _XFrames;
+        int _YFrames;
         int _FrameCount;
         int _CurrFrame;
         float _TimeElapsed;

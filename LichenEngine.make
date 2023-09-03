@@ -23,7 +23,7 @@ INCLUDES += -Iextlib/include -I/engine/lib -I/game/lib
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-LIBS += -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lm -lglfw3 -lgdi32 -lopengl32 -lglew32 -lsoloud_static_x86 -lirrKlang
+LIBS += -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lfreetype -lm -lglfw3 -lgdi32 -lopengl32 -lglew32 -lsoloud_static_x86 -lirrKlang
 LDDEPS +=
 LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
 define PREBUILDCMDS
@@ -65,10 +65,13 @@ OBJECTS :=
 
 GENERATED += $(OBJDIR)/Camera.o
 GENERATED += $(OBJDIR)/CameraFollower.o
+GENERATED += $(OBJDIR)/Circle.o
 GENERATED += $(OBJDIR)/Collider.o
 GENERATED += $(OBJDIR)/Color.o
 GENERATED += $(OBJDIR)/Component.o
+GENERATED += $(OBJDIR)/Draw.o
 GENERATED += $(OBJDIR)/Engine.o
+GENERATED += $(OBJDIR)/FontHandler.o
 GENERATED += $(OBJDIR)/GameObject.o
 GENERATED += $(OBJDIR)/Generic.o
 GENERATED += $(OBJDIR)/Image.o
@@ -100,10 +103,13 @@ GENERATED += $(OBJDIR)/glm.o
 GENERATED += $(OBJDIR)/main.o
 OBJECTS += $(OBJDIR)/Camera.o
 OBJECTS += $(OBJDIR)/CameraFollower.o
+OBJECTS += $(OBJDIR)/Circle.o
 OBJECTS += $(OBJDIR)/Collider.o
 OBJECTS += $(OBJDIR)/Color.o
 OBJECTS += $(OBJDIR)/Component.o
+OBJECTS += $(OBJDIR)/Draw.o
 OBJECTS += $(OBJDIR)/Engine.o
+OBJECTS += $(OBJDIR)/FontHandler.o
 OBJECTS += $(OBJDIR)/GameObject.o
 OBJECTS += $(OBJDIR)/Generic.o
 OBJECTS += $(OBJDIR)/Image.o
@@ -202,6 +208,9 @@ $(OBJDIR)/Camera.o: engine/src/Camera.cpp
 $(OBJDIR)/CameraFollower.o: engine/src/CameraFollower.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Circle.o: engine/src/Circle.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Collider.o: engine/src/Collider.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -211,13 +220,25 @@ $(OBJDIR)/Color.o: engine/src/Color.cpp
 $(OBJDIR)/Component.o: engine/src/Component.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Draw.o: engine/src/Draw.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Engine.o: engine/src/Engine.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/FontHandler.o: engine/src/FontHandler.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/GameObject.o: engine/src/GameObject.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Generic.o: engine/src/Generic.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Image.o: engine/src/Image.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/IndexBuffer.o: engine/src/IndexBuffer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Input.o: engine/src/Input.cpp
@@ -229,6 +250,9 @@ $(OBJDIR)/Music.o: engine/src/Music.cpp
 $(OBJDIR)/Rect.o: engine/src/Rect.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Renderer.o: engine/src/Renderer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Resources.o: engine/src/Resources.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -236,6 +260,9 @@ $(OBJDIR)/ScreenFade.o: engine/src/ScreenFade.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/ScreenFilter.o: engine/src/ScreenFilter.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Shader.o: engine/src/Shader.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Sound.o: engine/src/Sound.cpp
@@ -248,6 +275,9 @@ $(OBJDIR)/State.o: engine/src/State.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Text.o: engine/src/Text.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Texture.o: engine/src/Texture.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/TileMap.o: engine/src/TileMap.cpp
@@ -265,37 +295,22 @@ $(OBJDIR)/Tools.o: engine/src/Tools.cpp
 $(OBJDIR)/Vector2.o: engine/src/Vector2.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VertexArray.o: engine/src/VertexArray.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VertexBuffer.o: engine/src/VertexBuffer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/VertexBufferLayout.o: engine/src/VertexBufferLayout.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Window.o: engine/src/Window.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Xrand.o: engine/src/Xrand.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/glm.o: extlib/include/GLM/detail/glm.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Image.o: game/src/Image.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/IndexBuffer.o: game/src/IndexBuffer.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Renderer.o: game/src/Renderer.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Shader.o: game/src/Shader.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Texture.o: game/src/Texture.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/VertexArray.o: game/src/VertexArray.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/VertexBuffer.o: game/src/VertexBuffer.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/VertexBufferLayout.o: game/src/VertexBufferLayout.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Window.o: game/src/Window.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/main.o: game/src/main.cpp

@@ -40,17 +40,4 @@
 // }
 
 
-typedef enum
-{
-    N = SDL_FLIP_NONE,
-    H = SDL_FLIP_HORIZONTAL,
-    V = SDL_FLIP_VERTICAL,
-    HV = SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL
-} Flip;
-
-inline Flip operator|(Flip a, Flip b)
-{
-    return static_cast<Flip>(static_cast<int>(a) | static_cast<int>(b));
-}
-
 #endif//LICHEN_SETTINGS

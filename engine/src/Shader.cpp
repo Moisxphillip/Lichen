@@ -2,7 +2,7 @@
 #include <iomanip>
 #include <fstream>
 #include <vector>
-#include "../../engine/lib/Tools.hpp"
+#include "../lib/Tools.hpp"
 
 unsigned int Shader::_CurrentlyBound = 0;
 
@@ -60,7 +60,7 @@ unsigned int Shader::_CompileShader(unsigned int Type, const std::string& Source
 void Shader::CreateShader(const std::string& VertexShader, const std::string& FragmentShader)
 {
     _ProgramID = glCreateProgram();
-    
+
     _VertexID = _CompileShader(GL_VERTEX_SHADER, VertexShader);
     if(_VertexID == 0)
     {

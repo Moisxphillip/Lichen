@@ -1,11 +1,11 @@
-#ifndef LICHEN_IMAGE
-#define LICHEN_IMAGE
+#ifndef LICHEN_FONTHANDLER
+#define LICHEN_FONTHANDLER
 
 #include "GLM/glm.hpp"
 #include "GLM/gtc/matrix_transform.hpp"
 
-#include "../../engine/lib/Vector2.hpp"
-#include "../../engine/lib/Rect.hpp"
+#include "Vector2.hpp"
+#include "Rect.hpp"
 #include "Renderer.hpp"
 #include "Texture.hpp"
 #include "VertexArray.hpp"
@@ -13,40 +13,43 @@
 #include "IndexBuffer.hpp"
 #include "Texture.hpp"
 #include "Shader.hpp"
+#include "Enum.hpp"
+#include "Image.hpp"
 
-struct VertexInfo
-{
-    float x, y, dstx, dsty;
-};
+#include "SDL2/SDL_ttf.h"
 
-class Image
+
+class FontHandler
 {
     private:
-        int _Width, _Height;
         VertexInfo _Square[4];
         unsigned int _Index[6];
-        Texture* _Texture;
         glm::mat4 _Model;
 
+        Texture* _Texture;
         VertexArray* _Va;
         VertexBuffer* _Vb;
         VertexBufferLayout* _Vbl;
         IndexBuffer* _Ib;
-
         Shader* _Shader;
-
+        
         //State registering
         Vector2 _LastPos;
         Vector2 _LastScale;
         Rect _LastDst;
         float _LastAngle;
+        Flip _LastFlip;
+        Color _LastColor;
 
     public:
-        Image(const std::string&);
-        ~Image();
-        void Render(Renderer&, glm::mat4&, glm::mat4&, Vector2, Vector2, Rect, float);
+        FontHandler(Color=Color("#FFFFFFFF"));
+        ~FontHandler();
+        int GetWidth();
+        int GetHeight();
+        void UpdateHandler(TTF_Font*, std::string&, int, int, TextStyle, TextAlignment);
+        void Render(Renderer&, glm::mat4&, Vector2, float, Flip , Color=Color("#FFFFFFFF"));
 
 
 
 };
-#endif//LICHEN_IMAGE
+#endif//LICHEN_FONTHANDLER

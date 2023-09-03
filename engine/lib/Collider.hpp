@@ -4,12 +4,14 @@
 #include "Component.hpp"
 #include "Vector2.hpp"
 #include "Rect.hpp"
+#include "Draw.hpp"
 
 class Collider : public Component
 {
     private:
         Vector2 _Scale;
         Vector2 _Offset;
+        Draw _Form;
 
     public:
         Rect Box;

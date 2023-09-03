@@ -1,3 +1,6 @@
+#include "GL/glew.h"
+#include "GLFW/glfw3.h"
+
 #include "../lib/Input.hpp"
 #include "../lib/Engine.hpp"
 #include "../lib/Vector2.hpp"
@@ -56,22 +59,22 @@ Input::~Input()
     }
 }
 
-
 void Input::Update()
 {
     SDL_Event InputEvent;
     int KeySym;
-	SDL_GetMouseState(&_MouseX, &_MouseY);//Get mouse coordinates
     _UpdateCounter++;
+
+    if(Engine::Instance().GetWindow().QuitRequested())
+    {
+        _QuitRequested = true;
+    }
+    glfwGetCursorPos(Engine::Instance().GetWindow().GetGLWindow(), &_MouseX, &_MouseY);//Get mouse coordinates
 
 	while(SDL_PollEvent(&InputEvent))//Returns 1 if there's an event happening
     {
         switch(InputEvent.type)
         {
-            case SDL_QUIT:
-                _QuitRequested = true;
-                break;
-
             case SDL_KEYDOWN:
                 if(!InputEvent.key.repeat) //If there's no repetition (we can't mess the update counter)
                 {
@@ -141,6 +144,8 @@ bool Input::IsMouseDown(int Switch)
     return _MouseState[Switch];
 }
 
+//These three must be fixed once the camera structure is integrated with OpenGL, and when internal resolution enters in scene
+
 int Input::GetMouseX()
 {
     return _MouseX + Engine::Instance().CurrentState().Cam.Position.x;
@@ -151,7 +156,7 @@ int Input::GetMouseY()
     return _MouseY + Engine::Instance().CurrentState().Cam.Position.y;
 }
 
-Vector2 Input::GetMouseVector2()
+Vector2 Input::MousePosition()
 {
-    return Vector2(GetMouseX(), GetMouseY());
+    return Vector2(_MouseX, _MouseY);
 }

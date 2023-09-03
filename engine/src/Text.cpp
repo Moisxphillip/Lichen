@@ -4,7 +4,7 @@
 #include "../lib/Tools.hpp"
 #include "../lib/Settings.hpp"
 
-Text::Text(GameObject& GameObj, std::string Font, int Size, TextStyle Style, std::string Text, SDL_Color NewColor)
+Text::Text(GameObject& GameObj, std::string Font, int Size, TextStyle Style, std::string Text, Color NewColor)
 : Component(GameObj)
 {
     _FontFile = Font;
@@ -13,57 +13,30 @@ Text::Text(GameObject& GameObj, std::string Font, int Size, TextStyle Style, std
     _Style = Style;
     _Text = Text;
     _Font = Resources::GetFont(_FontFile);
-    _Texture = nullptr;
+    _Handler = new FontHandler(NewColor);
+    _Wrap = 0;//break line on new line
+    _Align = TextAlignment::LEFT; //Align text on the left
     _RemakeTexture();
 }
 
 Text::~Text()
 {
-    if(_Texture != nullptr)
+    if(_Handler != nullptr)
     {
-        SDL_DestroyTexture(_Texture);
-        _Texture = nullptr;
+        delete _Handler;
+        _Handler = nullptr;
     }
 }
 
 void Text::_RemakeTexture()
 {
-    if(TTF_SetFontSize(_Font, _FontSize) < 0)
-    {
-        Error("Text::_RemakeTexture: Could not set font size");
-    }
-
-    SDL_Surface* FontSurface;
-
-    if(_Style == TextStyle::SOLID)
-    {
-        FontSurface = TTF_RenderText_Solid(_Font, _Text.c_str(), _Color);
-    }
-    else if(_Style == TextStyle::BLENDED)
-    {
-        FontSurface = TTF_RenderText_Blended(_Font, _Text.c_str(), _Color);
-    }
-    else if(_Style == TextStyle::SHADED)
-    {
-        SDL_Color Black = {0,0,0,0};
-        FontSurface = TTF_RenderText_Shaded(_Font, _Text.c_str(), _Color, Black);
-    }
-
-    Parent.Box.Redimension(Vector2(FontSurface->w, FontSurface->h));
-    _Texture = SDL_CreateTextureFromSurface(Engine::Instance().GetRenderer(), FontSurface);
-    
-    if(_Texture == nullptr)
-    {
-        Error("Text::_RemakeTexture: Could not convert surface into texture");
-    }
-
-    SDL_FreeSurface(FontSurface);
+   _Handler->UpdateHandler(_Font, _Text, _FontSize, _Wrap, _Style, _Align);
+    Parent.Box.Redimension(Vector2(_Handler->GetWidth(), _Handler->GetHeight()));
 }
 
-void Text::SetColor(SDL_Color NewColor)
+void Text::SetColor(Color NewColor)
 {
     _Color = NewColor;
-    _RemakeTexture();
 }
 
 void Text::SetFontFile(std::string Font)
@@ -79,9 +52,21 @@ void Text::SetFontSize(int Size)
     _RemakeTexture();
 }
 
+void Text::SetWrap(int Wrap)
+{
+    _Wrap = Wrap;
+    _RemakeTexture();
+}
+
 void Text::SetStyle(TextStyle Style)
 {
     _Style = Style;
+    _RemakeTexture();
+}
+
+void Text::SetAlignment(TextAlignment Align)
+{
+    _Align = Align;
     _RemakeTexture();
 }
 
@@ -91,7 +76,6 @@ void Text::SetText(std::string Text)
     _RemakeTexture();
 }
 
-
 bool Text::Is(std::string Type)
 {
     return ("Text" == Type);
@@ -99,21 +83,9 @@ bool Text::Is(std::string Type)
 
 void Text::Render()
 {
-    if(_Texture != nullptr)
-    {
-        SDL_Rect Clip = {0,0, (int)Parent.Box.w, (int)Parent.Box.h};
-        SDL_Rect Destiny = {(int)(Parent.Box.x - Engine::Instance().CurrentState().Cam.Position.x),
-            (int)(Parent.Box.y - Engine::Instance().CurrentState().Cam.Position.y),
-            (int)Parent.Box.w, (int)Parent.Box.h};
-        if(SDL_RenderCopyEx(Engine::Instance().GetRenderer(), _Texture, &Clip, &Destiny, 
-            Vector2::RadToDeg(Parent.Angle),nullptr, (SDL_RendererFlip) Flip::N))
-        {
-            Error("Text::Render: Could not render text");
-        }
-    }
+    _Handler->Render(Engine::Instance().GetRenderer(),Engine::Instance().GetWindow().GetProjection(), Parent.Box.Position(), Parent.Angle, Flip::N, _Color);
 }
 
-void Text::Update(float Dt)
+void Text::Update(float Dt)//Add time flickering here
 {
-
 }

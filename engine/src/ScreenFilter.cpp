@@ -28,16 +28,16 @@ bool ScreenFilter::Is(std::string Type)
 
 void ScreenFilter::Render()
 {
-    SDL_Texture* ToShow = SDL_CreateTextureFromSurface(Engine::Instance().GetRenderer(), _FilterSurface);
-    SDL_SetTextureBlendMode(ToShow, SDL_BLENDMODE_BLEND);
-	SDL_RenderCopy(Engine::Instance().GetRenderer(), ToShow, nullptr, nullptr);
-	SDL_DestroyTexture(ToShow);
+    // SDL_Texture* ToShow = SDL_CreateTextureFromSurface(Engine::Instance().GetRenderer(), _FilterSurface);
+    // SDL_SetTextureBlendMode(ToShow, SDL_BLENDMODE_BLEND);
+	// SDL_RenderCopy(Engine::Instance().GetRenderer(), ToShow, nullptr, nullptr);
+	// SDL_DestroyTexture(ToShow);
 }
 
 void ScreenFilter::Update(float Dt)
 {
-    SDL_SetSurfaceAlphaMod(_FilterSurface, 255-FilterColor.A);
-    SDL_FillRect(_FilterSurface, nullptr, FilterColor.ColorUint32());
+    // SDL_SetSurfaceAlphaMod(_FilterSurface, 255-(int)(FilterColor.a*255));
+    // SDL_FillRect(_FilterSurface, nullptr, FilterColor.ColorUint32());
 }
 		
 		

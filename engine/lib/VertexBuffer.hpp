@@ -1,6 +1,8 @@
 #ifndef LICHEN_VBO
 #define LICHEN_VBO
 
+#include "../lib/Enum.hpp"
+
 class VertexBuffer
 {
     private:
@@ -10,7 +12,7 @@ class VertexBuffer
         static unsigned int _CurrentlyBound;
         
     public:
-        VertexBuffer(const void*, unsigned int);
+        VertexBuffer(const void*, unsigned int, DrawMode);
         ~VertexBuffer();
 
         void Bind();
