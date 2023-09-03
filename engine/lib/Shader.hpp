@@ -24,7 +24,7 @@ class Shader
         Shader();
         ~Shader();
         
-        void CreateShader(const std::string& = (std::string)"./engine/shader/V.vert", const std::string& = (std::string)"./engine/shader/F.frag");
+        void CreateShader(const std::string& = (std::string)"./engine/shader/Basic.vert", const std::string& = (std::string)"./engine/shader/Basic.frag");
         unsigned int GetProgramID();
         unsigned int GetVertexID();
         unsigned int GetFragmentID();
@@ -42,8 +42,5 @@ class Shader
         void SetUniform1i(const std::string&, int);
         void SetUniform1ui(const std::string&, unsigned int);
 };
-        // void UseProgram();
-        // void DeleteProgram();
-        // void CompileShaders(const std::string&, const std::string&);
-        // void LinkShaders();
+
 #endif// LICHEN_SHADER
