@@ -1,9 +1,6 @@
 #include "../lib/IndexBuffer.hpp"
 #include "../lib/Renderer.hpp"
 
-
-unsigned int IndexBuffer::_CurrentlyBound = 0;
-
 IndexBuffer::IndexBuffer(const unsigned int *Data, unsigned int Count)
 {
     _Count = Count;
@@ -20,17 +17,13 @@ IndexBuffer::~IndexBuffer()
 
 void IndexBuffer::Bind()
 {
-    if(_CurrentlyBound != _RendererID)
-    {
-        _CurrentlyBound = _RendererID;
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _RendererID);
-    }
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _RendererID);
 }
 
 void IndexBuffer::Unbind()
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-    _CurrentlyBound = 0;
 }
 
 unsigned int IndexBuffer::GetID()

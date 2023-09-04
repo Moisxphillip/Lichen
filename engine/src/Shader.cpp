@@ -4,7 +4,6 @@
 #include <vector>
 #include "../lib/Tools.hpp"
 
-unsigned int Shader::_CurrentlyBound = 0;
 
 Shader::Shader()
 : _ProgramID(0), _VertexID(0), _FragmentID(0)
@@ -98,18 +97,12 @@ unsigned int Shader::GetFragmentID()
 
 void Shader::Bind()
 {
-    if(_CurrentlyBound != _ProgramID)
-    {
-        _CurrentlyBound = _ProgramID;
-        glUseProgram(_ProgramID);
-    }
-
+    glUseProgram(_ProgramID);
 }
 
 void Shader::Unbind()
 {
     glUseProgram(0);
-    _CurrentlyBound = 0;
 }
 
 int Shader::GetUniformLocation(const std::string& Name)

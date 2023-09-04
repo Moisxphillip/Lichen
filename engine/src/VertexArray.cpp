@@ -3,7 +3,6 @@
 //controversy: structure is recommended by opengl, but using a global VAO and binding 
 //new forms is faster in performance. If slow, benchmark and substitute for globals.
 
-unsigned int VertexArray::_CurrentlyBound = 0;
 
 VertexArray::VertexArray()
 {
@@ -18,17 +17,12 @@ VertexArray::~VertexArray()
 
 void VertexArray::Bind()
 {
-    if(_CurrentlyBound != _RendererID)
-    {
-        _CurrentlyBound = _RendererID;
-        glBindVertexArray(_RendererID);
-    }
+    glBindVertexArray(_RendererID);
 }
 
 void VertexArray::Unbind()
 {
     glBindVertexArray(0);
-    _CurrentlyBound = 0;
 }
 
 void VertexArray::AddBuffer(VertexBuffer& Vb, VertexBufferLayout& Vbl)

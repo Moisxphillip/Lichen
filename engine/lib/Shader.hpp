@@ -18,7 +18,6 @@ class Shader
         unsigned int _FragmentID;
         unsigned int _CompileShader(unsigned int, const std::string&);
         std::unordered_map<std::string, int> _UniformCache;
-        static unsigned int _CurrentlyBound;
         
     public:
         Shader();
