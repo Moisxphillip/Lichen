@@ -15,7 +15,7 @@ class Draw
     public:
         Draw();
         void DrawCircle(const Circle&, Color, int, glm::mat4&, glm::mat4&);
-        void DrawRectangle(const Rect&, Color, glm::mat4&, glm::mat4&);
+        void DrawRectangle(const Rect&, Color, glm::mat4&, glm::mat4&, float=0);
 };
 
 #endif//LICHEN_DRAW

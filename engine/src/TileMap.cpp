@@ -152,7 +152,7 @@ void TileMap::Render()
         for (int x = std::max(Lx, 0); x < std::min(Hx, _MapWidth); x++) 
         {
             _CurrTileSet->RenderTile(
-                (unsigned)_TileMatrix[y][x],
+                _TileMatrix[y][x],
                 (float)(Parent.Box.x+x)*_CurrTileSet->GetTileWidth()-((_Parallax-1)*(int)Lower.x),
                 (float)(Parent.Box.y+y)*_CurrTileSet->GetTileHeight()-((_Parallax-1)*(int)Lower.y)
             );
@@ -162,7 +162,6 @@ void TileMap::Render()
 
 void TileMap::Start()
 {
-
 }
 
 void TileMap::Update(float Dt)
@@ -367,7 +366,7 @@ void TileMap::LoadCollision(std::string fileName)
         GameObject *ColliderObj = new GameObject();
         Collider *TileCollider = new Collider(*ColliderObj);
         ColliderObj->AddComponent(TileCollider);
-        // ColliderObj->SignalTerrain();
+        // ColliderObj->SignalTerrain();// Add terrain flags around here
         ColliderObj->Box = Rect(Block[i].x*_CurrTileSet->GetTileWidth(), Block[i].y*_CurrTileSet->GetTileHeight(),
             Block[i].w*_CurrTileSet->GetTileWidth(), Block[i].h*_CurrTileSet->GetTileHeight());
         Engine::Instance().CurrentState().AddGameObj(ColliderObj);

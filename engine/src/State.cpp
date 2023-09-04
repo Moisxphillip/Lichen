@@ -118,6 +118,7 @@ void State::StateRender()
 	{
 		StateGameObjects[i]->Render(); //Calls render procedure for each existing GameObject
 	}
+	Render();
 }
 
 void State::StatePause()

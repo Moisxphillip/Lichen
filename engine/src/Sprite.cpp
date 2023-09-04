@@ -3,51 +3,39 @@
 #include "../lib/Resources.hpp"
 #include "../lib/Tools.hpp"
 
-Sprite::Sprite(GameObject& GameObj)
+Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount , int Columns, int Rows, float FrameTime, float LifeTime)
 : Component(GameObj)
 {
     _SpriteImage = nullptr;
+    Open(File);
     _Scale = Vector2(1,1);
     _Parallax = Vector2(1,1);
-    _FrameCount = 0;
+    _FrameCount = FrameCount;
     _CurrFrame = 0;
+    _XFrames = Columns;
+    _YFrames = Rows;
+    _FrameTime = FrameTime;
     _TimeElapsed = 0;
-    _FrameTime = 0;
+    SetFrame(_CurrFrame);
     _Orientation = Flip::N;
     Loop = true;
-    LifeTime = 0;
+    this->LifeTime = LifeTime;
     ToSelfDestruct.Restart();
 }
 
+Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount, int Columns, int Rows)
+: Sprite(GameObj, File, FrameCount, Columns, Rows, 0.0f, 0.0f)
+{
+}
+
 Sprite::Sprite(GameObject& GameObj, std::string File)
-: Sprite(GameObj)
+: Sprite(GameObj, File, 1, 1, 1)
 {
-    Open(File);
-}
-
-Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount = 1, float FrameTime = 1)
-: Sprite(GameObj)
-{
-    Open(File);
-    _FrameCount = FrameCount;
-    _FrameTime = FrameTime;
-    _SpriteWidth /= FrameCount;
-    SetClip(0,0, _SpriteWidth, _SpriteHeight);    
-}
-
-Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount = 1, float FrameTime = 1, float LifeTime = 0)
-: Sprite(GameObj)
-{
-    Open(File);
-    _FrameCount = FrameCount;
-    _FrameTime = FrameTime;
-    _SpriteWidth /= FrameCount;
-    SetClip(0,0, _SpriteWidth, _SpriteHeight);
-    this->LifeTime = LifeTime;
-}
+}  
 
 Sprite::~Sprite()
 {
+    delete _SpriteImage;
 }
 
 void Sprite::Open(std::string File)
@@ -69,12 +57,12 @@ void Sprite::SetClip(int x, int y, int w, int h)
 
 int Sprite::GetWidth()
 {
-    return (_SpriteWidth * _Scale.x);
+    return (_SpriteWidth/_XFrames * _Scale.x);
 }
 
 int Sprite::GetHeight()
 {
-    return (_SpriteHeight * _Scale.y);
+    return (_SpriteHeight/_YFrames * _Scale.y);
 }
 
 void Sprite::SetScale(float ScaleX, float ScaleY)
@@ -113,18 +101,26 @@ void Sprite::SetFrame(int Frame)
     {
         Error("Sprite::SetFrame: Frame requested exceeds the max number of frames on current texture");
     }
+    int Column = Frame % _XFrames, Row = Frame / _XFrames;
+    float Width = _SpriteWidth / _XFrames;
+    float Height = _SpriteHeight / _YFrames;
     
-    //Gets the position of needed sprite section
-    int ClipX = (Frame%_XFrames)* _SpriteWidth,
-        ClipY = (Frame/_YFrames)*_SpriteHeight;
-
-    //Sets the sprite area to be exhibited and renders it
-    SetClip(ClipX, ClipY, _SpriteWidth, _SpriteHeight);
+    SetClip(Column * Width, Row * Height, Width, Height);
 }
 
 void Sprite::SetFrameCount(int FrameCount)
 {
     _FrameCount = FrameCount;
+}
+
+void Sprite::SetColumns(int Columns)
+{
+    _XFrames = Columns;
+}
+
+void Sprite::SetRows(int Rows)
+{
+    _YFrames = Rows;
 }
 
 void Sprite::SetFrameTime(float FrameTime)
@@ -162,8 +158,8 @@ void Sprite::Render(float x, float y)
 void Sprite::Render(float x, float y, float Angle)
 {
     Vector2 Destiny;
-    Destiny.x = (x+GetWidth()/2)*_Parallax.x - Engine::Instance().CurrentState().Cam.Position.x;
-    Destiny.y = (y+GetHeight()/2)*_Parallax.y - Engine::Instance().CurrentState().Cam.Position.y;
+    Destiny.x = (x+GetWidth()/2)*_Parallax.x;
+    Destiny.y = (y+GetHeight()/2)*_Parallax.y;
 
     _SpriteImage->Render(Engine::Instance().GetRenderer(),
         Engine::Instance().GetWindow().GetProjection(),
@@ -185,17 +181,18 @@ void Sprite::Update(float Dt)
         }
     }
 
-    _TimeElapsed += Dt;
-    if(_TimeElapsed >= _FrameTime && _FrameCount > 1)
+    if (_FrameTime>0)
     {
-        
-        if(Loop == true || _CurrFrame < _FrameCount-1)
+        _TimeElapsed += Dt;
+        if(_TimeElapsed >= _FrameTime && _FrameCount > 1)
         {
-            ++_CurrFrame%=_FrameCount;
-            SetFrame(_CurrFrame);
+            if(Loop == true || _CurrFrame < _FrameCount-1)
+            {
+                ++_CurrFrame%=_FrameCount;
+                SetFrame(_CurrFrame);
+            }    
+            _TimeElapsed = 0;
         }
-            
-        _TimeElapsed = 0;
     }
 }
 

@@ -1,13 +1,28 @@
-#include "GL/glew.h"
-#include "GLFW/glfw3.h"
+#include <cmath>
 
 #include "../lib/Input.hpp"
 #include "../lib/Engine.hpp"
-#include "../lib/Vector2.hpp"
 #include "../lib/Tools.hpp"
 
-//Set value for singleton class
+// //Set value for singleton class
 Input* Input::_InputM = nullptr;
+GLFWwindow* Input::_Window = nullptr;
+bool  Input::_Controller1On = false;
+bool  Input::_QuitRequested = false;
+
+bool  Input::_KeyState[static_cast<int>(Key::LastKey)] = {false};
+bool  Input::_PrevKeyState[static_cast<int>(Key::LastKey)] = {false};
+
+bool  Input::_MouseState[static_cast<int>(MouseButton::LastButton)] = {false};
+bool  Input::_PrevMouseState[static_cast<int>(MouseButton::LastButton)] = {false};
+
+bool  Input::_ControllerState[static_cast<int>(ControllerButton::LastButton)] = {false};
+bool  Input::_PrevControllerState[static_cast<int>(ControllerButton::LastButton)] = {false};
+float Input::_ControllerAxis[static_cast<int>(ControllerAxis::LastAxis)] = {0.0f};
+float Input::_ControllerDeadzone = 0.2f;
+double Input::_MouseX = 0.0;
+double Input::_MouseY = 0.0;
+MouseScroll Input::_ScrollDirection = MouseScroll::None;
 
 Input& Input::Instance()
 {
@@ -30,133 +45,219 @@ Input::Input()
         _InputM = this;
     }
 
-    //init mouse & keyboard states
-    for(int i = 0; i<6; i++)
-    {
-        this->_MouseState[i] = false;
-        this->_MouseUpdate[i] = 0;
-    }
-    for(int i = 0; i<416; i++)
-    {
-        this->_KeyState[i] = false;
-        this->_KeyUpdate[i] = 0;
-    }
-    _MouseX = 0;
-    _MouseY = 0;
-    _UpdateCounter = 0;
-
-    //will only change based on game or window requests
     this->_QuitRequested = false;
-
+    Init(Engine::Instance().GetWindow().GetGLWindow());
 }
 
-Input::~Input()
+void Input::Init(GLFWwindow* _Window) 
 {
-    if(_InputM != nullptr)
+    Input::_Window = _Window;
+    glfwSetKeyCallback(_Window, KeyCallback);
+    glfwSetMouseButtonCallback(_Window, MouseButtonCallback);
+    glfwSetCursorPosCallback(_Window, CursorPosCallback);
+    glfwSetScrollCallback(_Window, ScrollCallback);
+    glfwSetJoystickCallback(ControllerCallback);
+
+    // Init controllers
+    if (glfwJoystickPresent(GLFW_JOYSTICK_1)) 
     {
-        delete _InputM;
-        _InputM = nullptr;
+        _Controller1On = true;
+    } 
+    else 
+    {
+        _Controller1On = false;
     }
 }
 
-void Input::Update()
-{
-    SDL_Event InputEvent;
-    int KeySym;
-    _UpdateCounter++;
-
-    if(Engine::Instance().GetWindow().QuitRequested())
-    {
-        _QuitRequested = true;
-    }
-    glfwGetCursorPos(Engine::Instance().GetWindow().GetGLWindow(), &_MouseX, &_MouseY);//Get mouse coordinates
-
-	while(SDL_PollEvent(&InputEvent))//Returns 1 if there's an event happening
-    {
-        switch(InputEvent.type)
-        {
-            case SDL_KEYDOWN:
-                if(!InputEvent.key.repeat) //If there's no repetition (we can't mess the update counter)
-                {
-                    KeySym = ((InputEvent.key.keysym.sym <= 0x7F) ? InputEvent.key.keysym.sym : InputEvent.key.keysym.sym-0x3FFFFF81);//adjustment for fitting on key vector
-                    _KeyState[KeySym] = true;
-                    _KeyUpdate[KeySym] = _UpdateCounter;
-                }                
-                break;
-
-            case SDL_KEYUP:
-                KeySym = ((InputEvent.key.keysym.sym <= 0x7F) ? InputEvent.key.keysym.sym : InputEvent.key.keysym.sym-0x3FFFFF81);//adjustment for fitting on key vector
-                _KeyState[KeySym] = false;
-                _KeyUpdate[KeySym] = _UpdateCounter;
-                break;
-
-            case SDL_MOUSEBUTTONDOWN:
-                _MouseState[InputEvent.button.button] = true;
-                _MouseUpdate[InputEvent.button.button] = _UpdateCounter;
-                break;
-
-            case SDL_MOUSEBUTTONUP:
-                _MouseState[InputEvent.button.button] = false;
-                _MouseUpdate[InputEvent.button.button] = _UpdateCounter;
-                break;
-
-            default:
-                break;
-        }
-    }
-}
-
-bool Input::QuitRequested()
+bool Input::QuitRequested() 
 {
     return _QuitRequested;
 }
 
-bool Input::KeyPress(int Key)
+void Input::Update()
 {
-    int KeySym = ((Key <= 0x7F) ? Key : Key-0x3FFFFF81);
-    return (_KeyState[KeySym] && (_KeyUpdate[KeySym] == _UpdateCounter));
+    // Update previous Key and mouse Button states
+    for (int i = 0; i < static_cast<int>(Key::LastKey); ++i)
+    {
+        _PrevKeyState[i] = _KeyState[i];
+    }
+    for (int i = 0; i < static_cast<int>(MouseButton::LastButton); ++i)
+    {
+        _PrevMouseState[i] = _MouseState[i];
+    }
+
+    if(Engine::Instance().GetWindow().QuitRequested())//Poll events is inside here, for tests with window alone
+    {
+        _QuitRequested = true; 
+    }
+
+    // Update controller states
+    if (_Controller1On) 
+    {
+        GLFWgamepadstate ControllerState;
+        glfwGetGamepadState(GLFW_JOYSTICK_1, &ControllerState);
+        for (int i = 0; i < static_cast<int>(ControllerAxis::LastAxis); ++i) 
+        {
+            _ControllerAxis[i] = ControllerState.axes[i];
+        }
+        for (int i = 0; i < static_cast<int>(ControllerButton::LastButton); ++i) 
+        {
+            _PrevControllerState[i] = _ControllerState[i];
+            _ControllerState[i] = ControllerState.buttons[i];
+        }
+    }
 }
 
-bool Input::KeyRelease(int Key)
+// Key functions
+bool Input::KeyJustPressed(Key KbKey) 
 {
-    int KeySym = ((Key <= 0x7F) ? Key : Key-0x3FFFFF81);
-    return (!_KeyState[KeySym] && (_KeyUpdate[KeySym] == _UpdateCounter));
+    return _KeyState[static_cast<int>(KbKey)] && !_PrevKeyState[static_cast<int>(KbKey)];
 }
 
-bool Input::IsKeyDown(int Key)
+bool Input::KeyPressedDown(Key KbKey) 
 {
-    return _KeyState[((Key <= 0x7F) ? Key : Key-0x3FFFFF81)];
+    return _KeyState[static_cast<int>(KbKey)];
 }
 
-
-bool Input::MousePress(int Switch)
+bool Input::KeyJustReleased(Key KbKey) 
 {
-    return (_MouseState[Switch] && _MouseUpdate[Switch] == _UpdateCounter);
+    return !_KeyState[static_cast<int>(KbKey)] && _PrevKeyState[static_cast<int>(KbKey)];
 }
 
-bool Input::MouseRelease(int Switch)
+bool Input::KeyReleased(Key KbKey) 
 {
-    return (!_MouseState[Switch] && _MouseUpdate[Switch] == _UpdateCounter);
+    return !_KeyState[static_cast<int>(KbKey)];
 }
 
-bool Input::IsMouseDown(int Switch)
+// Mouse Button functions
+bool Input::MouseJustPressed(MouseButton Button) 
 {
-    return _MouseState[Switch];
+    return _MouseState[static_cast<int>(Button)] && !_PrevMouseState[static_cast<int>(Button)];
 }
 
-//These three must be fixed once the camera structure is integrated with OpenGL, and when internal resolution enters in scene
-
-int Input::GetMouseX()
+bool Input::MousePressedDown(MouseButton Button)
 {
-    return _MouseX + Engine::Instance().CurrentState().Cam.Position.x;
+    return _MouseState[static_cast<int>(Button)];
 }
 
-int Input::GetMouseY()
+bool Input::MouseJustReleased(MouseButton Button)
 {
-    return _MouseY + Engine::Instance().CurrentState().Cam.Position.y;
+    return !_MouseState[static_cast<int>(Button)] && _PrevMouseState[static_cast<int>(Button)];
+}
+
+bool Input::MouseReleased(MouseButton Button)
+{
+    return !_MouseState[static_cast<int>(Button)];
 }
 
 Vector2 Input::MousePosition()
 {
-    return Vector2(_MouseX, _MouseY);
+    return Vector2((float)_MouseX, (float)_MouseY) + Engine::Instance().CurrentState().Cam.Position;
+}
+
+// Controller functions
+bool Input::ControllerButtonJustPressed(ControllerButton Button) 
+{
+    return _ControllerState[static_cast<int>(Button)] && !_PrevControllerState[static_cast<int>(Button)];
+}
+
+bool Input::ControllerButtonPressedDown(ControllerButton Button) 
+{
+    return _ControllerState[static_cast<int>(Button)];
+}
+
+bool Input::ControllerButtonJustReleased(ControllerButton Button) 
+{
+    return !_ControllerState[static_cast<int>(Button)] && _PrevControllerState[static_cast<int>(Button)];
+}
+
+bool Input::ControllerButtonReleased(ControllerButton Button) 
+{
+    return !_ControllerState[static_cast<int>(Button)];
+}
+
+float Input::GetControllerAxis(ControllerAxis Axis) 
+{
+    if (static_cast<int>(Axis) >= 0 
+        && static_cast<int>(Axis) < static_cast<int>(ControllerAxis::LastAxis) 
+        && abs(_ControllerAxis[static_cast<int>(Axis)]) > _ControllerDeadzone) 
+    {
+        return _ControllerAxis[static_cast<int>(Axis)];
+    }
+    return 0.0f;
+}
+
+void Input::SetControllerButtonDeadzone(float Deadzone) 
+{
+    _ControllerDeadzone = Deadzone;
+}
+
+void Input::VibrateController(float LeftMotor, float RightMotor) 
+{
+    if (_Controller1On) 
+    {
+        // Not supported yet by GLFW
+    }
+}
+
+//Callbacks for events
+void Input::KeyCallback(GLFWwindow* Window, int KbKey, int Scancode, int Action, int Mods)
+{
+    if (Action == GLFW_PRESS) 
+    {
+        _KeyState[KbKey] = true;
+    } 
+    else if (Action == GLFW_RELEASE) 
+    {
+        _KeyState[KbKey] = false;
+    }
+}
+
+void Input::MouseButtonCallback(GLFWwindow* Window, int Button, int Action, int Mods)
+{
+    if (Action == GLFW_PRESS) 
+    {
+        _MouseState[Button] = true;
+    } 
+    else if (Action == GLFW_RELEASE) 
+    {
+        _MouseState[Button] = false;
+    }
+}
+
+void Input::CursorPosCallback(GLFWwindow* Window, double XPos, double YPos) 
+{
+    _MouseX = XPos;
+    _MouseY = YPos;
+}
+
+void Input::ScrollCallback(GLFWwindow* Window, double XOffset, double YOffset) 
+{
+    if (YOffset > 0) 
+    {
+        _ScrollDirection = MouseScroll::Up;
+        return;
+    }
+    else if (YOffset < 0)
+    {
+        _ScrollDirection = MouseScroll::Down;
+        return;
+    }
+    _ScrollDirection = MouseScroll::None;
+}
+
+//TODO Add multi controller management
+void Input::ControllerCallback(int ID, int Event) 
+{
+    if (ID == GLFW_JOYSTICK_1)
+    {
+        if (Event == GLFW_CONNECTED) 
+        {
+            _Controller1On = true;
+        } 
+        else if (Event == GLFW_DISCONNECTED) 
+        {
+            _Controller1On = false;
+        }
+    }
 }

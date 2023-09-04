@@ -11,7 +11,7 @@ Engine* Engine::_GameInstance = nullptr;
 void Engine::_InitEngineSystems()
 {
     //init SDL
-    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0)
+    if(SDL_Init(SDL_INIT_AUDIO | SDL_INIT_TIMER) != 0)
     {
         Error("Engine::_InitEngineSystems: SDL could not be initialized");
     }
@@ -68,13 +68,14 @@ Engine::Engine(std::string Name = "LichenEngine", int Width = 1024, int Height =
 
     //Init Engine Resources
     
-    _GameWindow = new Window(Name, Width, Height, true);
+    _GameWindow = new Window(Name, Width, Height, Width, Height, true);
     _GameRenderer = new Renderer;
     _GameRenderer->SetViewPosition(Vector2(0,0));
     _GameRenderer->SetClearColor(Color("#000000"));
     _GameRenderer->SetBlendMode(BlendMode::Add);
     _InitEngineSystems();
 
+    SDL_CreateWindowFrom((void*)_GameWindow->GetGLWindow());
     _FrameStart = SDL_GetTicks();
     _Dt = 0.0f;
 
@@ -128,13 +129,6 @@ bool Engine::_ChangeState()
 
 void Engine::Run()
 {   
-    while(!Input::Instance().QuitRequested())
-    {
-        // glfwPollEvents();
-        // glfwSwapBuffers(_GLWindow);
-    }
-
-    // Uncomment and add GL structure when finished.
     _ChangeState();
     while(!StateStack.empty() && !StateStack.top()->QuitRequested())    //Wait for quit state
     {
@@ -145,6 +139,7 @@ void Engine::Run()
 
         while(!StateStack.top()->PopRequested())
         {
+            _GameRenderer->Clear();
             _CalculateDt();
             Input::Instance().Update();
             
@@ -178,26 +173,6 @@ void Engine::Run()
         }
     }
 }
-    //Window creation
-    // _GameWindow = SDL_CreateWindow(_GameTitle.c_str(), SDL_WINDOWPOS_CENTERED, 
-    // SDL_WINDOWPOS_CENTERED, _GameWidth, _GameHeight, SDL_WINDOW_SHOWN);
-    // if(_GameWindow == nullptr)
-    // {
-    //     Error("Engine::Engine: Window could not be created");   
-    // }
-    
-    // //Renderer creation
-    // //-1 allows SDL to choose the most appropriate render drive
-    // _GameRenderer = SDL_CreateRenderer(_GameWindow, -1, SDL_RENDERER_ACCELERATED);
-    // if(_GameRenderer == nullptr) 
-    // {
-    //     Error("Engine::Engine: Renderer could not be created");   
-    // }
-    // if (SDL_RenderSetVSync(_GameRenderer,1) != 0) {
-    //     _NoVSync = true;
-    // }
-
-// SDL_RenderPresent(_GameRenderer);//Presents the new rendered stuff on screen
 
 Renderer& Engine::GetRenderer()
 {

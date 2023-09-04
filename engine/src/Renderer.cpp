@@ -63,7 +63,6 @@ void Renderer::Clear()
 
 void Renderer::Draw(VertexArray& Va, IndexBuffer& Ib, Shader& Sh)
 {
-    Sh.Bind();  //TODO verify if binding shader here is needed when using multiple shaders
     Va.Bind();
     Ib.Bind();
     glDrawElements(GL_TRIANGLES, Ib.GetCount(), GL_UNSIGNED_INT, nullptr);// to use with index buffers. If converting to short int, change the 3rd definition

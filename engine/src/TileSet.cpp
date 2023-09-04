@@ -20,19 +20,20 @@ TileSet::TileSet(int TileWidth, int TileHeight, std::string File)
     //Calculates the number of items on the tilemap based on total image dimensions/tile dimensions
     _Rows = _Set->GetHeight()/_TileHeight;
     _Columns = _Set->GetWidth()/_TileWidth;
+    _Set->SetRows(_Rows);
+    _Set->SetColumns(_Columns);
     _MaxTiles = _Rows*_Columns;
+    _Set->SetFrameCount(_MaxTiles);
 }
 
 TileSet::~TileSet()
 {
-    //Memory leaks are not cool
     delete _TileObj;
     delete _Set;
 }
-
 void TileSet::RenderTile(int Index, float x, float y)
 {
-    if(Index == 0)//For use with TileD maps, -1
+    if(Index <= 0)
     {
         return;
     } 

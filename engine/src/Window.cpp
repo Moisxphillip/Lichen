@@ -10,7 +10,7 @@ Window::Window(std::string Name, int Width, int Height, int ProjectionWidth, int
         Error("Window::Window: GLFW init failed");
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //hints for the window
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3); //hints for the _Window
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //must have a vertex array if using this
 

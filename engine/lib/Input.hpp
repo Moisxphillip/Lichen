@@ -1,70 +1,70 @@
 #ifndef LICHEN_INPUT
 #define LICHEN_INPUT
 
-#include "SDL2/SDL.h"
-#include "SDL2/SDL_image.h"
-#include "SDL2/SDL_mixer.h"
-#include "SDL2/SDL_ttf.h"
+#include <iostream>
 
-//Engine
+#include "GL/glew.h"
+#include "GLFW/glfw3.h"
+
 #include "Vector2.hpp"
+#include "Enum.hpp"
 
-#define K_LEFTARROW SDLK_LEFT
-#define K_RIGHTARROW SDLK_RIGHT
-#define K_UPARROW SDLK_UP
-#define K_DOWNARROW SDLK_DOWN
-#define K_ENTER SDLK_RETURN
-#define K_SPACE SDLK_SPACE
 
-#define K_W  SDLK_w
-#define K_A SDLK_a
-#define K_S SDLK_s
-#define K_D SDLK_d
-#define K_B SDLK_b
-#define K_P SDLK_p
-
-#define K_ESC SDLK_ESCAPE
-#define M_LEFT SDL_BUTTON_LEFT
-#define M_RIGHT SDL_BUTTON_RIGHT
-
-class Input
+class Input 
 {
     private:
         Input();
-        ~Input();
         static Input* _InputM;
-        
-        bool _QuitRequested;
-        int _UpdateCounter;
+        static GLFWwindow* _Window;
+        static bool _KeyState[static_cast<int>(Key::LastKey)];
+        static bool _PrevKeyState[static_cast<int>(Key::LastKey)];
+        static bool _MouseState[static_cast<int>(MouseButton::LastButton)];
+        static bool _PrevMouseState[static_cast<int>(MouseButton::LastButton)];
+        static bool _Controller1On;
+        static bool _ControllerState[static_cast<int>(ControllerButton::LastButton)];
+        static bool _PrevControllerState[static_cast<int>(ControllerButton::LastButton)];
+        static float _ControllerAxis[static_cast<int>(ControllerAxis::LastAxis)];
+        static float _ControllerDeadzone;
+        static bool _QuitRequested;
+        static double _MouseX, _MouseY;
+        static MouseScroll _ScrollDirection;
 
-        bool _KeyState[416];
-        int _KeyUpdate[416];
-        
-        bool _MouseState[6];
-        int _MouseUpdate[6];
-        double _MouseX;
-        double _MouseY;
-        
+        // GLFW callbacks for events
+        static void KeyCallback(GLFWwindow*, int, int, int, int);
+        static void MouseButtonCallback(GLFWwindow*, int, int, int);
+        static void CursorPosCallback(GLFWwindow* , double, double);
+        static void ScrollCallback(GLFWwindow* , double, double);
+        static void ControllerCallback(int, int);
+
     public:
-        //Copy prevention
-        Input(const Input&) = delete;
-        void operator=(Input &InputMg)= delete;
-
-        void Update();
-        bool QuitRequested();
+        //General functions
         static Input& Instance();
-        
-        bool KeyPress(int);
-        bool KeyRelease(int);
-        bool IsKeyDown(int);
+        static void Init(GLFWwindow*);
+        static void Update();
+        static bool QuitRequested();
 
-        bool MousePress(int);
-        bool MouseRelease(int);
-        bool IsMouseDown(int);
-        int GetMouseX();
-        int GetMouseY();
-        Vector2 MousePosition();
+        // Key functions
+        static bool KeyJustPressed(Key);
+        static bool KeyPressedDown(Key);
+        static bool KeyJustReleased(Key);
+        static bool KeyReleased(Key);
 
+        // Mouse functions
+        static bool MouseJustPressed(MouseButton);
+        static bool MousePressedDown(MouseButton);
+        static bool MouseJustReleased(MouseButton);
+        static bool MouseReleased(MouseButton);
+        static bool MouseScrolled(MouseScroll);
+        static Vector2 MousePosition();
+
+        // Controller functions
+        static bool ControllerButtonJustPressed(ControllerButton);
+        static bool ControllerButtonPressedDown(ControllerButton);
+        static bool ControllerButtonJustReleased(ControllerButton);
+        static bool ControllerButtonReleased(ControllerButton);
+        static void VibrateController(float, float);
+        static void SetControllerButtonDeadzone(float);
+        static float GetControllerAxis(ControllerAxis);
 };
 
 #endif//LICHEN_INPUT

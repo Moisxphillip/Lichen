@@ -60,9 +60,17 @@ void Image::Render(Renderer& RenderDevice, glm::mat4& Projection, Vector2 Positi
         _Model = glm::rotate(_Model,Angle, glm::vec3(0, 0, 1));
     }
 
+    _Texture->Bind();
+    _Shader->SetUniform1i("U_Texture", 0);
+    if(_NextColor != _LastColor)
+    {
+        _LastColor = _NextColor;
+        _Shader->SetUniform4f("U_Color", _LastColor.r, _LastColor.g, _LastColor.b, _LastColor.a);
+    }
     glm::mat4 MVP = Projection*RenderDevice.GetView()*_Model;
+    _Shader->SetUniformMat4f("U_Mvp",MVP);
     
-    if (Scale != _LastScale || Dst != _LastDst || _LastFlip != CurrFlip)
+    if (Scale != _LastScale || !(Dst == _LastDst) || _LastFlip != CurrFlip)
     {
         _LastScale=Scale;_LastDst=Dst;_LastFlip=CurrFlip;
 
@@ -82,15 +90,6 @@ void Image::Render(Renderer& RenderDevice, glm::mat4& Projection, Vector2 Positi
         
         _Vb->Bind();
     }
-    _Texture->Bind();
-    _Shader->SetUniform1i("U_Texture", 0);
-    if(_NextColor != _LastColor)
-    {
-        _LastColor = _NextColor;
-        _Shader->SetUniform4f("U_Color", _LastColor.r, _LastColor.g, _LastColor.b, _LastColor.a);
-    }
-    
-    _Shader->SetUniformMat4f("U_Mvp",MVP);
     RenderDevice.Draw(*_Va, *_Ib, *_Shader);
 }
 

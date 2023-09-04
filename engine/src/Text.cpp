@@ -83,7 +83,10 @@ bool Text::Is(std::string Type)
 
 void Text::Render()
 {
-    _Handler->Render(Engine::Instance().GetRenderer(),Engine::Instance().GetWindow().GetProjection(), Parent.Box.Position(), Parent.Angle, Flip::N, _Color);
+    Vector2 Position = Parent.Box.Position();
+    Position.x+=_Handler->GetWidth()/2.0f;
+    Position.y+=_Handler->GetHeight()/2.0f;
+    _Handler->Render(Engine::Instance().GetRenderer(),Engine::Instance().GetWindow().GetProjection(), Position, Parent.Angle, Flip::N, _Color);
 }
 
 void Text::Update(float Dt)//Add time flickering here

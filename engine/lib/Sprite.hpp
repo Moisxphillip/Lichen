@@ -3,8 +3,6 @@
 
 #include <string>
 
-#include "SDL2/SDL_image.h"
-
 #include "GameObject.hpp"
 #include "Component.hpp"
 #include "Settings.hpp"
@@ -15,7 +13,6 @@
 class Sprite : public Component
 {
     private:
-        // SDL_Texture* _SpriteTexture;
         Image* _SpriteImage;
         int _SpriteWidth;
         int _SpriteHeight;
@@ -35,10 +32,9 @@ class Sprite : public Component
         Timer ToSelfDestruct;
         float LifeTime;
 
-        Sprite(GameObject&);
+        Sprite(GameObject&, std::string, int, int, int, float, float);
+        Sprite(GameObject&, std::string, int, int, int);
         Sprite(GameObject&, std::string);
-        Sprite(GameObject&, std::string, int, float);
-        Sprite(GameObject&, std::string, int, float, float);
         ~Sprite();
         
         void Open(std::string);
@@ -53,6 +49,8 @@ class Sprite : public Component
         bool IsOpen();
 
         void SetFrame(int);
+        void SetColumns(int);
+        void SetRows(int);
         void SetFrameCount(int);
         void SetFrameTime(float);
         void SetFlip(Flip);

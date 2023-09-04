@@ -42,6 +42,6 @@ void Camera::Update(float Dt)
 
         //Todo camera smoothing around here
 
-        Engine::Instance().GetRenderer().SetViewPosition(Position);
+        Engine::Instance().GetRenderer().SetViewPosition(Position*-1);
     }
 }

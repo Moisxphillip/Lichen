@@ -42,6 +42,7 @@ class Engine
         Engine(std::string, int, int);
         static Engine* _GameInstance;
         Window* _GameWindow = nullptr;
+        SDL_Window* _SDLWindow = nullptr;
         Renderer* _GameRenderer = nullptr;
         
         State* _GameState = nullptr;
