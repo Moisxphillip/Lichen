@@ -24,6 +24,7 @@ class Shader
         ~Shader();
         
         void CreateShader(const std::string& = (std::string)"./engine/shader/Basic.vert", const std::string& = (std::string)"./engine/shader/Basic.frag");
+        void SubstituteShader(const std::string& = (std::string)"./engine/shader/Basic.vert", const std::string& = (std::string)"./engine/shader/Basic.frag");
         unsigned int GetProgramID();
         unsigned int GetVertexID();
         unsigned int GetFragmentID();

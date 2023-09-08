@@ -17,7 +17,6 @@
 #define LICHEN_TILEWIDTH 64
 #define LICHEN_TILEHEIGHT 64
 
-ScreenFade* Screener = nullptr;
 
 StageState::StageState()
 {
@@ -85,22 +84,22 @@ void StageState::LoadAssets()
 	Cam.Follow(PenguinObj);
 	
 	//Alien
-	XrandU64 X, Y, N;
-	X.seed(rand());
-	Y.seed(rand());
-	N.seed(rand());
-	X.range(0, 1408);
-	Y.range(0, 1280);
+	// XrandU64 X, Y, N;
+	// X.seed(rand());
+	// Y.seed(rand());
+	// N.seed(rand());
+	// X.range(0, 1408);
+	// Y.range(0, 1280);
 
-	for(int i = 0; i<5; i++)
-	{
-		GameObject* AlienObj = new GameObject(3);
-		Alien* Et = new Alien(*AlienObj, 4+(N.gen()%4));
-		AlienObj->Box.SetCenter(Vector2(X.gen(),Y.gen()));
-		AlienObj->AddComponent(Et);
-		AddGameObj(AlienObj);
-	}
-	//Play music
+	// for(int i = 0; i<5; i++)
+	// {
+	// 	GameObject* AlienObj = new GameObject(3);
+	// 	Alien* Et = new Alien(*AlienObj, 4+(N.gen()%4));
+	// 	AlienObj->Box.SetCenter(Vector2(X.gen(),Y.gen()));
+	// 	AlienObj->AddComponent(Et);
+	// 	AddGameObj(AlienObj);
+	// }
+	// //Play music
 	_StateMusic = new Music(FMUS_STAGE1);//Load the music file for the current state
 	_StateMusic->Play(-1, 1000); //Start playing phase theme
 }
@@ -117,12 +116,11 @@ void StageState::Update(float Dt)
 
 	if(_QuitFade && !Mix_PlayingMusic())//Ensures fadeout finishes before closing
 	{
-		if(Alien::AlienCount == 0 || PenguinBody::Player == nullptr)
+		if(/*Alien::AlienCount == 0 ||*/ PenguinBody::Player == nullptr)
 		{
 			EndState* Ended = new EndState();
 			Engine::Instance().Push(Ended);
 		}
-		Screener = nullptr;
 		_PopRequested = true;
 	}
 
@@ -132,13 +130,25 @@ void StageState::Update(float Dt)
 		GameStats::PlayerVictory = true;
 		_QuitFade = true;
 	}
-
-	if(Alien::AlienCount == 0 && !_QuitFade)
+	if(Input::Instance().KeyJustPressed(Key::O))
 	{
-		_StateMusic->Stop(1000);
-		GameStats::PlayerVictory = true;
-		_QuitFade = true;
+		Window& X = Engine::Instance().GetWindow();
+		glm::mat4 Proj =  glm::ortho(0.0f, (float)X.GetWidth(), (float)X.GetHeight(), 0.0f, -1000.0f, 1000.0f);
+		X.SetProjection(Proj);
 	}
+	if(Input::Instance().KeyJustPressed(Key::P))
+	{
+		Window& X = Engine::Instance().GetWindow();
+		glm::mat4 Proj =  glm::perspective(glm::radians(45.0f), (float)X.GetWidth()/(float)X.GetHeight(), 0.1f, 1000.0f);
+		X.SetProjection(Proj);
+	}
+
+	// if(Alien::AlienCount == 0 && !_QuitFade)
+	// {
+	// 	_StateMusic->Stop(1000);
+	// 	GameStats::PlayerVictory = true;
+	// 	_QuitFade = true;
+	// }
 	else if(PenguinBody::Player == nullptr && !_QuitFade)
 	{
 		_StateMusic->Stop(1000);

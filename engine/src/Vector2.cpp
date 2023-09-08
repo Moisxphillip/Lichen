@@ -184,7 +184,7 @@ Vector2& Vector2::operator+=(const Vector2& Vector)
 
 Vector2& Vector2::operator-=(const Vector2& Vector)
 {
-    this->x-=this->x - Vector.x;
+    this->x-=Vector.x;
     this->y-=Vector.y;
     return *this;
 }

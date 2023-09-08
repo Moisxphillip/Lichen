@@ -40,14 +40,14 @@ project "LichenEngine"
         "SDL2_image",
         "SDL2_mixer",
         "SDL2_ttf",
-        "freetype",
         "m",
         "glfw3",
         "gdi32",
         "opengl32",
         "glew32", --compile glew32s to link the static lib on compilation if wanted
-        "soloud_static_x86",
-        "irrKlang"
+        -- "freetype",
+        -- "soloud_static_x86",
+        -- "irrKlang"
     }
 
     filter "configurations:Debug"

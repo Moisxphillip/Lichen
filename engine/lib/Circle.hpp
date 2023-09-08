@@ -11,7 +11,8 @@ class Circle
         Circle(float, float, float);
         Circle(Vector2, float);
         Circle();
-        Vector2 Position();
+        Vector2 Center();
+        Vector2 Corner();
         void SetCorner(Vector2);
         float Area();
         float Circumference();

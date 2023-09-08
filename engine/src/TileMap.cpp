@@ -140,7 +140,7 @@ bool TileMap::Is(std::string Type)
 
 void TileMap::Render()
 {
-    Vector2 Lower = Camera::Position*_Parallax;
+    Vector2 Lower = Camera::Position()*_Parallax;
     Vector2 Upper = (Lower + Engine::Instance().GetRenderSize())*_Parallax;
     int Lx = floor(Lower.x)/_CurrTileSet->GetTileWidth()-4;//0;//
     int Hx = floor(Upper.x)/_CurrTileSet->GetTileWidth()+4;//MapWidth;//

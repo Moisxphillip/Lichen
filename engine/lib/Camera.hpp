@@ -2,23 +2,54 @@
 #define LICHEN_CAMERA
 
 #include "Vector2.hpp"
+#include "Circle.hpp"
 #include "GameObject.hpp"
+
+enum class CameraMode
+{
+    Fixed,
+    Lazy,
+    Ahead,
+    Pointer,
+};
+
+enum class CameraFormat
+{
+    Rectangle,
+    Circle,
+};
 
 class Camera
 {
     private:
         GameObject* _Focus;
-        
+        static Vector2 _Position;
+        Vector2 _Velocity;
+        float _MaxSpeed;
+        float _Acceleration;
+        CameraMode _CurrentMode;
+        CameraFormat _CurrentForm;
+
+        Rect _RectBounds;
+        Circle _CircBounds;
+
     public:
-        static Vector2 Position;
-        Vector2 Speed;
         
         Camera();
+        void SetMaxSpeed(float);
+        void SetMode(float);
+
         static Vector2 Center();
+        static Vector2 Position();
         void Follow(GameObject*);
         bool IsFollowing();
         void Unfollow();
+        void SetCameraMode(CameraMode);
+        void SetCameraFormat(CameraFormat);
+        void SetRectangleBounds(Rect);
+        void SetCircleBounds(Circle);
         void Update(float);
+        void UpdateLazy(float, Vector2&);
 
 };
 

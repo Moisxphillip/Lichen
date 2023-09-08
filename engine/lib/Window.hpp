@@ -24,6 +24,7 @@ class Window
         int GetWidth();
         int GetHeight();
         bool QuitRequested();
+        void SetProjection(glm::mat4&);
         glm::mat4& GetProjection();
 };
 

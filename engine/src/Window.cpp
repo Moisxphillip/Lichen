@@ -67,6 +67,11 @@ bool Window::QuitRequested()
     return glfwWindowShouldClose(_Window);
 }
 
+void Window::SetProjection(glm::mat4& Target)
+{
+    *_Projection = Target;
+}
+
 glm::mat4& Window::GetProjection()
 {
     return *_Projection;

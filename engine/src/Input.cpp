@@ -152,7 +152,7 @@ bool Input::MouseReleased(MouseButton Button)
 
 Vector2 Input::MousePosition()
 {
-    return Vector2((float)_MouseX, (float)_MouseY) + Engine::Instance().CurrentState().Cam.Position;
+    return Vector2((float)_MouseX, (float)_MouseY) + Engine::Instance().CurrentState().Cam.Position();
 }
 
 // Controller functions

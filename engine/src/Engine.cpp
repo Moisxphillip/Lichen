@@ -130,6 +130,11 @@ bool Engine::_ChangeState()
 void Engine::Run()
 {   
     _ChangeState();
+
+    //These are for timesteps in physics
+    const float Step = 0.01f;
+    float Accumulator = 0.0f;
+
     while(!StateStack.empty() && !StateStack.top()->QuitRequested())    //Wait for quit state
     {
         if(!StateStack.top()->HasStarted())
@@ -143,7 +148,13 @@ void Engine::Run()
             _CalculateDt();
             Input::Instance().Update();
             
-            StateStack.top()->StatePhysicsUpdate(1/60);//TODO fix at render device target rate
+            Accumulator+=GetDt();
+            while(Accumulator>=Step)
+            {
+                StateStack.top()->StatePhysicsUpdate(Step);
+                Accumulator -=(SDL_GetTicks() - _FrameStart)/1000.0f + Step;//Step time used
+            }
+            
             StateStack.top()->StateUpdate(GetDt());
             StateStack.top()->StateLateUpdate(GetDt());
             StateStack.top()->StateRender();
@@ -151,7 +162,7 @@ void Engine::Run()
             _GameRenderer->Show(_GameWindow->GetGLWindow());
             if (_NoVSync)
             {
-                SDL_Delay(Fps(60));//controls the framerate //TODO fix at render device target rate
+                SDL_Delay(Fps(60));//TODO change to glfw method or anything else later
             }
             if(_ChangeState())
             {
@@ -198,7 +209,8 @@ Engine& Engine::Instance()
 {
     if(_GameInstance == nullptr) //Only creates a new Engine if there's no other instance of the class currently running
     {
-        _GameInstance = new Engine("Lichen", 1024, 600);
+        // _GameInstance = new Engine("Lichen", 1024, 600); //Penguin
+        _GameInstance = new Engine("Lichen", 1280, 720);
     }
     return *_GameInstance;
 }

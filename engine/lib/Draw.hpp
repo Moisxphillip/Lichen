@@ -14,7 +14,7 @@ class Draw
 
     public:
         Draw();
-        void DrawCircle(const Circle&, Color, int, glm::mat4&, glm::mat4&);
+        void DrawCircle(const Circle&, Color, glm::mat4&, glm::mat4&, int=25);
         void DrawRectangle(const Rect&, Color, glm::mat4&, glm::mat4&, float=0);
 };
 

@@ -28,19 +28,19 @@ class Image
         unsigned int _Index[6];
         Texture* _Texture;
         glm::mat4 _Model;
-
         VertexArray* _Va;
         VertexBuffer* _Vb;
         VertexBufferLayout* _Vbl;
         IndexBuffer* _Ib;
-
         Shader* _Shader;
+        bool _DynamicLayerMode;
 
         //State registering
         Vector2 _LastPos;
         Vector2 _LastScale;
         Rect _LastDst;
         float _LastAngle;
+        float _LastDepth;
         Flip _LastFlip;
         Color _LastColor, _NextColor;
 
@@ -48,8 +48,11 @@ class Image
         Image(const std::string&);
         ~Image();
         void SetColor(Color);
+        Color GetColor();
         void Render(Renderer&, glm::mat4&, Vector2, Vector2, Rect, float=0, Flip=Flip::N);
         int GetWidth();
         int GetHeight();
+        void SetDynamicLayers(bool);
+        Shader& GetShader();
 };
 #endif//LICHEN_IMAGE

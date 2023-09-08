@@ -18,13 +18,10 @@ TitleState::TitleState()
 TitleState::~TitleState()
 {
 }
-Image* Tester = nullptr;
-Rect Crop(0,0,50,50);
-Rect Crop2(50,0,50,50);
+
 
 void TitleState::LoadAssets()
 {
-    Tester = new Image("./res/img/tests.png");
     GameObject* Title = new GameObject(0);
     Sprite* TitleImage = new Sprite(*Title, FIMG_MAINSCR);
     Title->Box.Redimension(Vector2(TitleImage->GetWidth(),TitleImage->GetHeight()));
@@ -71,25 +68,12 @@ void TitleState::Update(float Dt)
 	{
 		_PopRequested = true;
 		_QuitRequested = true;
-        delete Tester;
-        Tester = nullptr;
     }
 }
 
 
 void TitleState::Render()
 {
-    if(Tester !=nullptr)
-    {
-        Tester->Render(
-            Engine::Instance().GetRenderer(), Engine::Instance().GetWindow().GetProjection(),
-            Vector2(150, 150), Vector2(1,1), Crop); 
-        
-        Tester->Render(
-            Engine::Instance().GetRenderer(), Engine::Instance().GetWindow().GetProjection(),
-            Vector2(300, 150), Vector2(1,1), Crop2); 
-    }
-    
 }
 
 

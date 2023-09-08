@@ -87,15 +87,18 @@ void PenguinBody::Update(float Dt)
     {
         _LinearSpeed = -LICHEN_PENGSPDMAX;
     }
-
-    // if(Parent.Box.Center().y < 0 || Parent.Box.Center().y > 1280)
-    // {
-    //     Parent.Angle = -Parent.Angle;
-    // }
-    // if(Parent.Box.Center().x < 0 || Parent.Box.Center().x > 1400)
-    // {
-    //     Parent.Angle = M_PI - Parent.Angle;
-    // }
+    if (Input::Instance().KeyPressedDown(Key::B))
+    {
+        _LinearSpeed = 0;
+    }
+    if(Parent.Box.Center().y < 0 || Parent.Box.Center().y > 1280)
+    {
+        Parent.Angle = -Parent.Angle;
+    }
+    if(Parent.Box.Center().x < 0 || Parent.Box.Center().x > 1400)
+    {
+        Parent.Angle = M_PI - Parent.Angle;
+    }
     Vector2 Move(_LinearSpeed*Dt, 0);
     Move.Rotate(Parent.Angle);
     Parent.Box-=Move;

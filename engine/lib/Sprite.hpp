@@ -26,6 +26,7 @@ class Sprite : public Component
         float _FrameTime;
         Flip _Orientation;
         Vector2 _Parallax;
+        Color _SpriteColor;
 
     public:
         bool Loop;
@@ -48,6 +49,8 @@ class Sprite : public Component
         Vector2 GetParallax();
         bool IsOpen();
 
+        void SetColor(Color);
+        Color GetColor();
         void SetFrame(int);
         void SetColumns(int);
         void SetRows(int);
@@ -62,6 +65,7 @@ class Sprite : public Component
         void Render(float, float, float);
         void Start();
         void Update(float);
+        Shader& GetShader();
         
 };
 

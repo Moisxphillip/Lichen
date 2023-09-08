@@ -27,6 +27,9 @@ _Index{0,1,2,2,3,0}
     _Shader = new Shader();
     _Shader->CreateShader();
 
+    _DynamicLayerMode = true; //See if it is needed to make it off by default
+
+    _LastDepth = -99999;
     _LastScale = Vector2(-99999, -99999);
     _LastPos = Vector2(-99999, -99999);
     _LastAngle = -99999;
@@ -50,6 +53,13 @@ void Image::SetColor(Color CurrColor)
     _NextColor = CurrColor;
 }
 
+Color Image::GetColor()
+{
+    return _NextColor;
+}
+
+#include <algorithm>
+
 void Image::Render(Renderer& RenderDevice, glm::mat4& Projection, Vector2 Position, Vector2 Scale, Rect Dst, float Angle, Flip CurrFlip)
 {
     if(_LastPos != Position || _LastAngle != Angle)
@@ -70,27 +80,56 @@ void Image::Render(Renderer& RenderDevice, glm::mat4& Projection, Vector2 Positi
     glm::mat4 MVP = Projection*RenderDevice.GetView()*_Model;
     _Shader->SetUniformMat4f("U_Mvp",MVP);
     
-    if (Scale != _LastScale || !(Dst == _LastDst) || _LastFlip != CurrFlip)
+
+    bool VbAltered = false;
+    if (Scale != _LastScale )
     {
-        _LastScale=Scale;_LastDst=Dst;_LastFlip=CurrFlip;
-
+        _LastScale=Scale;
         //Calculate image size
-        float X = (Dst.w/2) * Scale.x, Y = (Dst.h/2) *Scale.y;
+        float X = (Dst.w/2) * (Scale.x), Y = (Dst.h/2) *(Scale.y);
+        // float X = (Dst.w/2) * (Scale.x + 17e-3), Y = (Dst.h/2) *(Scale.y + 17e-3);//Deforms the tiles tho, find a better way to do this later
+        _Square[0].x = -X; _Square[0].y = -Y;
+        _Square[1].x =  X; _Square[1].y = -Y;
+        _Square[2].x =  X; _Square[2].y =  Y;
+        _Square[3].x = -X; _Square[3].y =  Y;
+        VbAltered = true;
+    }
 
+    if(_DynamicLayerMode && Position.y != _LastDepth)
+    {
+        _Square[0].z = (Position.y+_Height)/1000.0f;
+        _Square[1].z = (Position.y+_Height)/1000.0f;
+        _Square[2].z = (Position.y+_Height)/1000.0f;
+        _Square[3].z = (Position.y+_Height)/1000.0f;
+        VbAltered = true;
+    }
+
+    if(!(Dst == _LastDst) || _LastFlip != CurrFlip)
+    {
         //Map texture positions on X and Y based on Dst rectangle
+        _LastDst=Dst;_LastFlip=CurrFlip;
         float DstX0 = Clamp(CurrFlip == Flip::H || CurrFlip == Flip::HV ? (Dst.x+Dst.w)/_Width : Dst.x/_Width),
               DstX1 = Clamp(CurrFlip == Flip::H || CurrFlip == Flip::HV ? Dst.x/_Width : (Dst.x+Dst.w)/_Width);
-        float DstY0 = Clamp(CurrFlip == Flip::V || CurrFlip == Flip::HV? 1.0f-Dst.y/_Height : 1.0f-(Dst.y+Dst.h)/_Height),
-              DstY1 = Clamp(CurrFlip == Flip::V || CurrFlip == Flip::HV?1.0f-(Dst.y+Dst.h)/_Height : 1.0f-Dst.y/_Height);
+        float DstY0 = Clamp(CurrFlip == Flip::V || CurrFlip == Flip::HV ? 1.0f-Dst.y/_Height : 1.0f-(Dst.y+Dst.h)/_Height),
+              DstY1 = Clamp(CurrFlip == Flip::V || CurrFlip == Flip::HV ? 1.0f-(Dst.y+Dst.h)/_Height : 1.0f-Dst.y/_Height);
 
-        _Square[0] = {-1 * X,-1 * Y, 0.0f,        DstX0,   DstY1};
-        _Square[1] = { 1 * X,-1 * Y, 0.0f,        DstX1,   DstY1};
-        _Square[2] = { 1 * X, 1 * Y, 0.0f,        DstX1,   DstY0};
-        _Square[3] = {-1 * X, 1 * Y, 0.0f,        DstX0,   DstY0};
-        
-        _Vb->Bind();
+        _Square[0].dstx = DstX0; _Square[0].dsty = DstY1;
+        _Square[1].dstx = DstX1; _Square[1].dsty = DstY1;
+        _Square[2].dstx = DstX1; _Square[2].dsty = DstY0;
+        _Square[3].dstx = DstX0; _Square[3].dsty = DstY0;
+        VbAltered = true;
     }
+    if(VbAltered)
+    {
+        _Vb->Bind(); //Update positional data
+    }
+
     RenderDevice.Draw(*_Va, *_Ib, *_Shader);
+}
+
+void Image::SetDynamicLayers(bool Mode)
+{
+    _DynamicLayerMode = Mode;
 }
 
 int Image::GetWidth()
@@ -101,4 +140,9 @@ int Image::GetWidth()
 int Image::GetHeight()
 {
     return _Height;
+}
+
+Shader& Image::GetShader()
+{
+    return *_Shader;
 }

@@ -17,9 +17,14 @@ Circle::Circle()
 {
 }
 
-Vector2 Circle::Position()
+Vector2 Circle::Center()
 {
     return Vector2(x,y);
+}
+
+Vector2 Circle::Corner()
+{
+    return Vector2(x-r,y-r);
 }
 
 void Circle::SetCorner(Vector2 Pos) //as if it is a square

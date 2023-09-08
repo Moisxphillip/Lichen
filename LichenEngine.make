@@ -23,7 +23,7 @@ INCLUDES += -Iextlib/include -I/engine/lib -I/game/lib
 FORCE_INCLUDE +=
 ALL_CPPFLAGS += $(CPPFLAGS) -MD -MP $(DEFINES) $(INCLUDES)
 ALL_RESFLAGS += $(RESFLAGS) $(DEFINES) $(INCLUDES)
-LIBS += -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lfreetype -lm -lglfw3 -lgdi32 -lopengl32 -lglew32 -lsoloud_static_x86 -lirrKlang
+LIBS += -lSDL2 -lSDL2main -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lm -lglfw3 -lgdi32 -lopengl32 -lglew32
 LDDEPS +=
 LINKCMD = $(CXX) -o "$@" $(OBJECTS) $(RESOURCES) $(ALL_LDFLAGS) $(LIBS)
 define PREBUILDCMDS
@@ -63,6 +63,7 @@ endif
 GENERATED :=
 OBJECTS :=
 
+GENERATED += $(OBJDIR)/AABB.o
 GENERATED += $(OBJDIR)/Alien.o
 GENERATED += $(OBJDIR)/Bullet.o
 GENERATED += $(OBJDIR)/Camera.o
@@ -95,6 +96,7 @@ GENERATED += $(OBJDIR)/Sound.o
 GENERATED += $(OBJDIR)/Sprite.o
 GENERATED += $(OBJDIR)/StageState.o
 GENERATED += $(OBJDIR)/State.o
+GENERATED += $(OBJDIR)/TestState.o
 GENERATED += $(OBJDIR)/Text.o
 GENERATED += $(OBJDIR)/Texture.o
 GENERATED += $(OBJDIR)/TileMap.o
@@ -110,6 +112,7 @@ GENERATED += $(OBJDIR)/Window.o
 GENERATED += $(OBJDIR)/Xrand.o
 GENERATED += $(OBJDIR)/glm.o
 GENERATED += $(OBJDIR)/main.o
+OBJECTS += $(OBJDIR)/AABB.o
 OBJECTS += $(OBJDIR)/Alien.o
 OBJECTS += $(OBJDIR)/Bullet.o
 OBJECTS += $(OBJDIR)/Camera.o
@@ -142,6 +145,7 @@ OBJECTS += $(OBJDIR)/Sound.o
 OBJECTS += $(OBJDIR)/Sprite.o
 OBJECTS += $(OBJDIR)/StageState.o
 OBJECTS += $(OBJDIR)/State.o
+OBJECTS += $(OBJDIR)/TestState.o
 OBJECTS += $(OBJDIR)/Text.o
 OBJECTS += $(OBJDIR)/Texture.o
 OBJECTS += $(OBJDIR)/TileMap.o
@@ -220,6 +224,9 @@ endif
 # File Rules
 # #############################################
 
+$(OBJDIR)/AABB.o: engine/src/AABB.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Camera.o: engine/src/Camera.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -353,6 +360,9 @@ $(OBJDIR)/PenguinCannon.o: game/src/PenguinCannon.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/StageState.o: game/src/StageState.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/TestState.o: game/src/TestState.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/TitleState.o: game/src/TitleState.cpp

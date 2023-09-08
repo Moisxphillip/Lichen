@@ -12,7 +12,7 @@ Draw::Draw()
     Forms.CreateShader("./engine/shader/Line.vert", "./engine/shader/Line.frag");
 }
 
-void Draw::DrawCircle(const Circle& Form, Color Colour, int Segments, glm::mat4& Projection, glm::mat4& View)
+void Draw::DrawCircle(const Circle& Form, Color Colour, glm::mat4& Projection, glm::mat4& View, int Segments)
 {
     unsigned int VAO, VBO;
     glGenVertexArrays(1, &VAO);

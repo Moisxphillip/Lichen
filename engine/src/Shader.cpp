@@ -58,6 +58,12 @@ unsigned int Shader::_CompileShader(unsigned int Type, const std::string& Source
 
 void Shader::CreateShader(const std::string& VertexShader, const std::string& FragmentShader)
 {
+    if(_ProgramID != 0)
+    {
+        Error("Shader::CreateShader: Attempted to create a new Shader over an existing one");
+        return;
+    }
+
     _ProgramID = glCreateProgram();
 
     _VertexID = _CompileShader(GL_VERTEX_SHADER, VertexShader);
@@ -78,6 +84,17 @@ void Shader::CreateShader(const std::string& VertexShader, const std::string& Fr
     glValidateProgram(_ProgramID);
     glDeleteShader(_VertexID);
     glDeleteShader(_FragmentID);
+}
+
+void Shader::SubstituteShader(const std::string& VertexShader, const std::string& FragmentShader)
+{
+    if(_ProgramID != 0)
+    {
+        Unbind();
+        glDeleteProgram(_ProgramID);
+        _ProgramID = 0;
+    }
+    CreateShader(VertexShader, FragmentShader);
 }
 
 unsigned int Shader::GetProgramID()

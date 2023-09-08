@@ -21,6 +21,7 @@ Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount , int Colum
     Loop = true;
     this->LifeTime = LifeTime;
     ToSelfDestruct.Restart();
+    _SpriteColor = Color("#FFFFFFFF");
 }
 
 Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount, int Columns, int Rows)
@@ -93,6 +94,16 @@ Vector2 Sprite::GetParallax()
 bool Sprite::IsOpen()
 {
     return (_SpriteImage != nullptr);
+}
+
+void Sprite::SetColor(Color New)
+{
+    _SpriteImage->SetColor(New);
+}
+
+Color Sprite::GetColor()
+{
+    return _SpriteImage->GetColor();
 }
 
 void Sprite::SetFrame(int Frame)
@@ -196,4 +207,8 @@ void Sprite::Update(float Dt)
     }
 }
 
+Shader& Sprite::GetShader()
+{
+    return _SpriteImage->GetShader();
+}
 

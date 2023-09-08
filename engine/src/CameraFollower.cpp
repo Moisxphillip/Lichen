@@ -9,8 +9,8 @@ CameraFollower::CameraFollower(GameObject& GameObj)
 
 void CameraFollower::LateUpdate(float Dt)
 {
-    Parent.Box.x = Engine::Instance().CurrentState().Cam.Position.x + Offset.x;
-    Parent.Box.y = Engine::Instance().CurrentState().Cam.Position.y + Offset.y;
+    Parent.Box.x = Engine::Instance().CurrentState().Cam.Position().x + Offset.x;
+    Parent.Box.y = Engine::Instance().CurrentState().Cam.Position().y + Offset.y;
 }
 
 bool CameraFollower::Is(std::string Type)
