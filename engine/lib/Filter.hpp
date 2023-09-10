@@ -5,20 +5,19 @@
 
 #include "Component.hpp"
 #include "Color.hpp"
+#include "FontHandler.hpp"
 
-class ScreenFilter : public Component
+class Filter : public Component
 {
     private:
         SDL_Surface* _FilterSurface;
+        FontHandler* _Canvas;
 
     public:
         Color FilterColor;
-        ScreenFilter(GameObject&, Color);
-        ~ScreenFilter();
-
-        bool Is(std::string);
+        Filter(GameObject&, Color);
+        ~Filter();
         void Render();
-        void Update(float);
 
 };
 

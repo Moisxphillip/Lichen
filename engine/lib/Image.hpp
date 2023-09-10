@@ -33,14 +33,15 @@ class Image
         VertexBufferLayout* _Vbl;
         IndexBuffer* _Ib;
         Shader* _Shader;
-        bool _DynamicLayerMode;
+        DepthMode _LayerMode;
+        bool _ShaderUpdated;
 
         //State registering
         Vector2 _LastPos;
         Vector2 _LastScale;
-        Rect _LastDst;
+        ___ImageRect _LastDst;
         float _LastAngle;
-        float _LastDepth;
+        int _LastDepth;
         Flip _LastFlip;
         Color _LastColor, _NextColor;
 
@@ -49,10 +50,9 @@ class Image
         ~Image();
         void SetColor(Color);
         Color GetColor();
-        void Render(Renderer&, glm::mat4&, Vector2, Vector2, Rect, float=0, Flip=Flip::N);
+        void Render(Renderer&, glm::mat4&, Vector2, Vector2, ___ImageRect, float=0, Flip=Flip::N, DepthMode=DepthMode::Background, int=0);
         int GetWidth();
         int GetHeight();
-        void SetDynamicLayers(bool);
         Shader& GetShader();
 };
 #endif//LICHEN_IMAGE

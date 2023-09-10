@@ -46,9 +46,11 @@ void Engine::_InitEngineSystems()
     }
 }
 
-Engine::Engine(std::string Name = "LichenEngine", int Width = 1024, int Height = 600)
+Engine::Engine(std::string Name = "LichenEngine", int Width = 1024, int Height = 600, int InternalWidth, int InternalHeight, bool VSync)
 {
-    _NoVSync = false;
+    _VSync = VSync;
+    // _VSync = false;
+
     if(_GameInstance != nullptr)//Report //Error if there is another instance working already
     {
         Error("Engine::Engine: Instance already exists");
@@ -68,17 +70,15 @@ Engine::Engine(std::string Name = "LichenEngine", int Width = 1024, int Height =
 
     //Init Engine Resources
     
-    _GameWindow = new Window(Name, Width, Height, Width, Height, true);
+    _GameWindow = new Window(Name, Width, Height, InternalWidth, InternalHeight, _VSync);
     _GameRenderer = new Renderer;
     _GameRenderer->SetViewPosition(Vector2(0,0));
     _GameRenderer->SetClearColor(Color("#000000"));
     _GameRenderer->SetBlendMode(BlendMode::Add);
     _InitEngineSystems();
 
-    SDL_CreateWindowFrom((void*)_GameWindow->GetGLWindow());
-    _FrameStart = SDL_GetTicks();
+    _FrameStart = glfwGetTime();
     _Dt = 0.0f;
-
     _GameState = nullptr;//new StageState; //Creates a base state for the Engine 
 }
 
@@ -140,6 +140,7 @@ void Engine::Run()
         if(!StateStack.top()->HasStarted())
         {
             StateStack.top()->StateStart();
+            _CalculateDt(); //Will recalculate, maybe solves loading time Dt growth
         }
 
         while(!StateStack.top()->PopRequested())
@@ -152,7 +153,7 @@ void Engine::Run()
             while(Accumulator>=Step)
             {
                 StateStack.top()->StatePhysicsUpdate(Step);
-                Accumulator -=(SDL_GetTicks() - _FrameStart)/1000.0f + Step;//Step time used
+                Accumulator -=(glfwGetTime() - _FrameStart)+Step;
             }
             
             StateStack.top()->StateUpdate(GetDt());
@@ -160,10 +161,10 @@ void Engine::Run()
             StateStack.top()->StateRender();
 
             _GameRenderer->Show(_GameWindow->GetGLWindow());
-            if (_NoVSync)
-            {
-                SDL_Delay(Fps(60));//TODO change to glfw method or anything else later
-            }
+            // if (_VSync)
+            // {
+            //     //TODO make suitable framerate control if needed
+            // }
             if(_ChangeState())
             {
                 break;
@@ -210,15 +211,15 @@ Engine& Engine::Instance()
     if(_GameInstance == nullptr) //Only creates a new Engine if there's no other instance of the class currently running
     {
         // _GameInstance = new Engine("Lichen", 1024, 600); //Penguin
-        _GameInstance = new Engine("Lichen", 1280, 720);
+        _GameInstance = new Engine("Lichen", 1280, 720); //Tests
     }
     return *_GameInstance;
 }
 
 inline void Engine::_CalculateDt()
 {
-    int FrameEnd = SDL_GetTicks(); //Get Ms count since app start
-    _Dt = (FrameEnd - _FrameStart)/1000.0f;//Ms->s is done by the division
+    double FrameEnd = glfwGetTime(); //Get seconds count count since app start
+    _Dt = FrameEnd - _FrameStart;
     _FrameStart = FrameEnd;
 }
 

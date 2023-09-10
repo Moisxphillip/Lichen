@@ -23,6 +23,10 @@ class Window
         GLFWwindow* GetGLWindow();
         int GetWidth();
         int GetHeight();
+        int GetProjectionWidth();
+        int GetProjectionHeight();
+        void SetWidth(int);
+        void SetHeight(int);
         bool QuitRequested();
         void SetProjection(glm::mat4&);
         glm::mat4& GetProjection();

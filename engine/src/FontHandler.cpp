@@ -3,7 +3,7 @@
 #include "../lib/Tools.hpp"
 
 
-FontHandler::FontHandler(Color CurrColor):
+FontHandler::FontHandler():
 _Index{0,1,2,2,3,0}
 {
     std::string Path = "none";
@@ -71,6 +71,11 @@ void FontHandler::UpdateHandler(TTF_Font* CurrFont, std::string& CurrText, int F
             break;
     }
     _Texture->UpdateTexture(FontSurface);
+}
+
+void FontHandler::CustomUpdate(SDL_Surface* Surf)
+{
+    _Texture->UpdateTexture(Surf);
 }
 
 int FontHandler::GetWidth()

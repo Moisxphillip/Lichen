@@ -13,10 +13,11 @@ Text::Text(GameObject& GameObj, std::string Font, int Size, TextStyle Style, std
     _Style = Style;
     _Text = Text;
     _Font = Resources::GetFont(_FontFile);
-    _Handler = new FontHandler(NewColor);
+    _Handler = new FontHandler();
     _Wrap = 0;//break line on new line
     _Align = TextAlignment::LEFT; //Align text on the left
     _RemakeTexture();
+    _Type = ComponentType::Text;
 }
 
 Text::~Text()
@@ -74,11 +75,6 @@ void Text::SetText(std::string Text)
 {
     _Text = Text;
     _RemakeTexture();
-}
-
-bool Text::Is(std::string Type)
-{
-    return ("Text" == Type);
 }
 
 void Text::Render()

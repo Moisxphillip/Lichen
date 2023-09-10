@@ -24,6 +24,8 @@ TileMap::TileMap(GameObject& GameObj, std::string File, TileSet* CurrTileSet, bo
         this->LoadCSV(File);
     }
     this->SetTileSet(CurrTileSet);
+
+    _Type = ComponentType::TileMap;
     _Parallax = 1;
 }
 
@@ -111,8 +113,6 @@ void TileMap::SetTileSet(TileSet* ToBeSet)
     _CurrTileSet = ToBeSet;
 }
 
-
-
 int TileMap::GetWidth()
 {
     return _MapWidth;
@@ -131,11 +131,6 @@ void TileMap::SetParallax(float New)
 float TileMap::GetParallax()
 {
     return _Parallax;
-}
-
-bool TileMap::Is(std::string Type)
-{
-    return (Type == "TileMap");
 }
 
 void TileMap::Render()
@@ -158,14 +153,6 @@ void TileMap::Render()
             );
         }
     }
-}
-
-void TileMap::Start()
-{
-}
-
-void TileMap::Update(float Dt)
-{
 }
 
 //__________________________________

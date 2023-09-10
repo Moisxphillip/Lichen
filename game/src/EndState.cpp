@@ -95,7 +95,7 @@ void EndState::Update(float Dt)
     TextColor.SetHSV(ColorMod, 100, 80);
     for(int i = 0; i< (int) (StateGameObjects.size()); i++)
     {
-        Text *ScrTxt = (Text*)StateGameObjects[i]->GetComponent("Text");
+        Text *ScrTxt = (Text*)StateGameObjects[i]->GetComponent(ComponentType::Text);
         if(ScrTxt != nullptr)
         {
             ScrTxt->SetColor(TextColor);

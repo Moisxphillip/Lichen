@@ -42,11 +42,12 @@ class FontHandler
         Color _LastColor;
 
     public:
-        FontHandler(Color=Color("#FFFFFFFF"));
+        FontHandler();
         ~FontHandler();
         int GetWidth();
         int GetHeight();
         void UpdateHandler(TTF_Font*, std::string&, int, int, TextStyle, TextAlignment);
+        void CustomUpdate(SDL_Surface*);
         void Render(Renderer&, glm::mat4&, Vector2, float, Flip , Color=Color("#FFFFFFFF"));
 
 

@@ -41,7 +41,7 @@ void Draw::DrawCircle(const Circle& Form, Color Colour, glm::mat4& Projection, g
     glBufferData(GL_ARRAY_BUFFER, Vertices.size() * sizeof(float), Vertices.data(), GL_DYNAMIC_DRAW);
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    Forms.SetUniform4f("color", Colour.r, Colour.g, Colour.b, Colour.a);
+    Forms.SetUniform4f("U_Color", Colour.r, Colour.g, Colour.b, Colour.a);
     
     glm::mat4 VP = Projection*View;
     Forms.SetUniformMat4f("U_Mvp",VP);
@@ -74,7 +74,7 @@ void Draw::DrawRectangle(const Rect& Form, Color Colour, glm::mat4& Projection, 
     glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
-    Forms.SetUniform4f("color", Colour.r, Colour.g, Colour.b, Colour.a);
+    Forms.SetUniform4f("U_Color", Colour.r, Colour.g, Colour.b, Colour.a);
     glm::mat4 MVP = Projection*View*Model;
     Forms.SetUniformMat4f("U_Mvp",MVP);
 

@@ -34,11 +34,4 @@ class Rect
         Rect& operator-=(const Vector2&);
 
 };
-
-    //=
-    // Rect& operator=(const Rect&);
-    // Rect(const Rect&);// Custom copy constructor
-    // Rect& operator=(const Rect&);// Custom copy assignment operator
-    // Rect(Rect&&);// Custom move constructor
-    // Rect& operator=(Rect&&);// Custom move assignment operator
 #endif//LICHEN_RECT

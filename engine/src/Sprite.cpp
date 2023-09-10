@@ -22,6 +22,7 @@ Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount , int Colum
     this->LifeTime = LifeTime;
     ToSelfDestruct.Restart();
     _SpriteColor = Color("#FFFFFFFF");
+    _Type = ComponentType::Sprite;
 }
 
 Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount, int Columns, int Rows)
@@ -151,11 +152,6 @@ Flip Sprite::GetFlip()
 
 
 //Inheritance
-bool Sprite::Is(std::string Type)
-{
-    return ("Sprite" == Type);
-}
-
 void Sprite::Render()
 {
     Render(Parent.Box.x, Parent.Box.y);
@@ -171,10 +167,10 @@ void Sprite::Render(float x, float y, float Angle)
     Vector2 Destiny;
     Destiny.x = (x+GetWidth()/2)*_Parallax.x;
     Destiny.y = (y+GetHeight()/2)*_Parallax.y;
-
+    int Layer = (Parent.Depth == DepthMode::Dynamic ? Destiny.y + GetHeight() : Parent.GetLayer());
     _SpriteImage->Render(Engine::Instance().GetRenderer(),
         Engine::Instance().GetWindow().GetProjection(),
-        Destiny, _Scale, _ClipRect, Angle, _Orientation);
+        Destiny, _Scale, _ClipRect, Angle, _Orientation, Parent.Depth, Layer);
 }
 
 void Sprite::Start()

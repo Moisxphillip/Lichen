@@ -1,6 +1,6 @@
-#include "../lib/ScreenFade.hpp"
+#include "../lib/Fade.hpp"
 
-ScreenFade::ScreenFade(GameObject& GameObj, Color FilterColor, float Start, float Finish, float Time)
+Fade::Fade(GameObject& GameObj, Color FilterColor, float Start, float Finish, float Time)
 : Component(GameObj), _FadeFilter(GameObj, FilterColor)
 {
     _StartPercent = Start;
@@ -12,14 +12,14 @@ ScreenFade::ScreenFade(GameObject& GameObj, Color FilterColor, float Start, floa
     float Diff = _FinishPercent - _StartPercent;
     (Diff > 0 ? _FadeIn = true : _FadeIn = false);
     _Step = Diff/_Time;
-    // _FadeFilter.FilterColor.A = 255 - 255*_StartPercent;
+    _Type = ComponentType::Fade;
 }
 
-ScreenFade::~ScreenFade()
+Fade::~Fade()
 {
 }
 
-void ScreenFade::RedirectFade(float Finish)
+void Fade::RedirectFade(float Finish)
 {
     _StartPercent = _CurrPercent;
     _FinishPercent = Finish;
@@ -29,23 +29,17 @@ void ScreenFade::RedirectFade(float Finish)
     _Step = Diff/_Time;
 }
 
-void ScreenFade::SetTime(float Time)
+void Fade::SetTime(float Time)
 {
     _Time = Time;
 }
 
-
-bool ScreenFade::Is(std::string Type)
-{
-    return ("ScreenFade == Type");
-}
-
-void ScreenFade::Render()
+void Fade::Render()
 {
     _FadeFilter.Render();
 }
 
-void ScreenFade::Update(float Dt)
+void Fade::Update(float Dt)
 {
     if(!_Finished)
     {
@@ -56,8 +50,21 @@ void ScreenFade::Update(float Dt)
             _CurrPercent = _FinishPercent;
             _Finished = true;
         }
-        // _FadeFilter.FilterColor.A = 255 - 255*_CurrPercent;
+        _FadeFilter.FilterColor.a = _CurrPercent;
         _FadeFilter.Update(Dt);
     }
     
+}
+
+void Fade::SetColor(Color New)
+{
+    _FadeFilter.FilterColor.r = New.r;
+    _FadeFilter.FilterColor.g = New.g;
+    _FadeFilter.FilterColor.b = New.b;
+    //Doesn't set alpha
+}
+
+Color Fade::GetColor()
+{
+    return _FadeFilter.FilterColor;
 }

@@ -12,7 +12,6 @@ class Minion : public Component
     public:
         Minion(GameObject&, std::weak_ptr<GameObject>, float);
         void Shoot(Vector2);
-        bool Is(std::string);
         void Render();
         void Start();
         void Update(float);

@@ -16,8 +16,7 @@ class Bullet : public Component
         Bullet(GameObject&, float, float, int, float, std::string, int, bool, bool);
         int GetDamage();
 
-        void Collided(GameObject&);
-        bool Is(std::string);
+        void OnCollision(GameObject&);
         void Render();
         void Start();
         void Update(float);

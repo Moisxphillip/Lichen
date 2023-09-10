@@ -7,6 +7,8 @@
 #include "../lib/Tools.hpp"
 //TODO future improvement: sort component vector on new addition, implement binary search for Get/Remove;
 
+unsigned int GameObject::_ID = 0;
+
 GameObject::GameObject(int Layer)
 {
     Box = Rect(0,0,0,0); //Inits Object Rectangle
@@ -14,6 +16,11 @@ GameObject::GameObject(int Layer)
     Started = false;
     Angle = 0;
     _Layer = Layer;
+    Depth = DepthMode::Background;
+    Represents = CollisionMask::None;
+    Interacts = CollisionMask::None;
+    _UID = _ID;
+    _ID++;
 }
 
 GameObject::GameObject()
@@ -64,11 +71,11 @@ void GameObject::LateUpdate(float Dt)
     }
 }
 
-void GameObject::Collided(GameObject& Other)
+void GameObject::OnCollision(GameObject& Other)
 {
     for(int i = 0; i < (int)(_GameObjComponents.size()); i++)
     {
-        _GameObjComponents[i]->Collided(Other);
+        _GameObjComponents[i]->OnCollision(Other);
     }
 }
 
@@ -92,32 +99,44 @@ void GameObject::RequestDelete()
 
 void GameObject::AddComponent(Component* GameComponent)
 {
+    _Contains = _Contains | GameComponent->Type();
     _GameObjComponents.emplace_back(GameComponent); //Stores components belonging to current GameObject
 }
 
 void GameObject::RemoveComponent(Component* GameComponent)
 {
-
     for (int i = 0; i < (int)(_GameObjComponents.size()); i++)
     {
         if(_GameObjComponents[i].get() == GameComponent)
         {
+            _Contains = _Contains ^ GameComponent->Type();
             _GameObjComponents.erase(_GameObjComponents.begin()+i); //Removal of an specific component identified by its pointer
             return;
         }
     }
 }
 
-Component* GameObject::GetComponent(std::string ComponentName)
+Component* GameObject::GetComponent(ComponentType ComponentEnum)
 {
+    if((ComponentEnum & _Contains) == ComponentType::None)
+    {
+        return nullptr; //Nothing has been found
+    }
+
     for (int i = 0; i < (int)(_GameObjComponents.size()); i++)
     {
-        if(_GameObjComponents[i]->Is(ComponentName))
+        if(_GameObjComponents[i]->Is(ComponentEnum))
         {
             return _GameObjComponents[i].get(); //Get the pointer of the 1st component from a given type found on the Component array
         }
     }
-    return nullptr; //Nothing has been found
+    
+    return nullptr; //so the compiler won't cry
+}
+
+bool GameObject::Contains(ComponentType GO)
+{
+    return static_cast<bool>(GO & _Contains);
 }
 
 int GameObject::GetLayer()
@@ -130,12 +149,13 @@ void GameObject::SetLayer(int Layer)
     _Layer = Layer;
 }
 
-// bool GameObject::operator<(std::shared_ptr<GameObject> &Other)  
-// {
-//     return (_Layer < Other.get()->GetLayer());
-// }
+int GameObject::GetUID() const
+{
+    return _UID;
+}
 
-// bool GameObject::operator<(GameObject &Other)  
-// {
-//     return (_Layer < Other.GetLayer());
-// }
+std::ostream& operator<<(std::ostream& Out, const GameObject& Other)
+{
+    Out << "GameObject: " << Other.GetUID();
+    return Out;
+}

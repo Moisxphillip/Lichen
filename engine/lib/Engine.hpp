@@ -32,14 +32,14 @@ class Engine
         int _WindowHeight;
         std::string _GameTitle;
         int _MixChannels;
-        bool _NoVSync;
+        bool _VSync;
 
         //internal procedures
         void _InitEngineSystems();
         bool _ChangeState();
         
         //Mandatory
-        Engine(std::string, int, int);
+        Engine(std::string, int, int, int=0, int=0, bool=true);
         static Engine* _GameInstance;
         Window* _GameWindow = nullptr;
         SDL_Window* _SDLWindow = nullptr;
@@ -48,7 +48,7 @@ class Engine
         State* _GameState = nullptr;
         std::stack<std::unique_ptr<State>> StateStack;
 
-        int _FrameStart;
+        double _FrameStart;
         float _Dt;
         void _CalculateDt();
 

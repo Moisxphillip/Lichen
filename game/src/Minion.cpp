@@ -23,6 +23,7 @@ Minion::Minion(GameObject& GameObj, std::weak_ptr<GameObject> AlienCenter, float
 	CollideMinion->Box = Parent.Box;
     Parent.AddComponent(Mini);
     Parent.AddComponent(CollideMinion);
+    _Type = ComponentType::Type02;
 }
 
 void Minion::Shoot(Vector2 Target)
@@ -35,11 +36,6 @@ void Minion::Shoot(Vector2 Target)
     GoBullet->Box.SetCenter(Parent.Box.Center());
     GoBullet->AddComponent(Projectile);
     Engine::Instance().CurrentState().AddGameObj(GoBullet);
-}
-
-bool Minion::Is(std::string Type)
-{
-    return (Type == "Minion");
 }
 
 void Minion::Render()

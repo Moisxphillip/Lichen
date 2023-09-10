@@ -10,13 +10,14 @@
 #include "Tools.hpp"
 #include "Image.hpp"
 
+
 class Sprite : public Component
 {
     private:
         Image* _SpriteImage;
         int _SpriteWidth;
         int _SpriteHeight;
-        Rect _ClipRect;
+        ___ImageRect _ClipRect;
         Vector2 _Scale;
         int _XFrames;
         int _YFrames;
@@ -58,8 +59,7 @@ class Sprite : public Component
         void SetFrameTime(float);
         void SetFlip(Flip);
         Flip GetFlip();
-        
-        bool Is(std::string);
+
         void Render();
         void Render(float, float);
         void Render(float, float, float);

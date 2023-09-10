@@ -35,7 +35,6 @@ class Text : public Component
         void SetAlignment(TextAlignment);
         void SetText(std::string);
 
-        bool Is(std::string);
         void Render();
         void Update(float);
 

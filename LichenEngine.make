@@ -75,6 +75,9 @@ GENERATED += $(OBJDIR)/Component.o
 GENERATED += $(OBJDIR)/Draw.o
 GENERATED += $(OBJDIR)/EndState.o
 GENERATED += $(OBJDIR)/Engine.o
+GENERATED += $(OBJDIR)/Enum.o
+GENERATED += $(OBJDIR)/Fade.o
+GENERATED += $(OBJDIR)/Filter.o
 GENERATED += $(OBJDIR)/FontHandler.o
 GENERATED += $(OBJDIR)/GameObject.o
 GENERATED += $(OBJDIR)/GameStats.o
@@ -89,8 +92,6 @@ GENERATED += $(OBJDIR)/PenguinCannon.o
 GENERATED += $(OBJDIR)/Rect.o
 GENERATED += $(OBJDIR)/Renderer.o
 GENERATED += $(OBJDIR)/Resources.o
-GENERATED += $(OBJDIR)/ScreenFade.o
-GENERATED += $(OBJDIR)/ScreenFilter.o
 GENERATED += $(OBJDIR)/Shader.o
 GENERATED += $(OBJDIR)/Sound.o
 GENERATED += $(OBJDIR)/Sprite.o
@@ -124,6 +125,9 @@ OBJECTS += $(OBJDIR)/Component.o
 OBJECTS += $(OBJDIR)/Draw.o
 OBJECTS += $(OBJDIR)/EndState.o
 OBJECTS += $(OBJDIR)/Engine.o
+OBJECTS += $(OBJDIR)/Enum.o
+OBJECTS += $(OBJDIR)/Fade.o
+OBJECTS += $(OBJDIR)/Filter.o
 OBJECTS += $(OBJDIR)/FontHandler.o
 OBJECTS += $(OBJDIR)/GameObject.o
 OBJECTS += $(OBJDIR)/GameStats.o
@@ -138,8 +142,6 @@ OBJECTS += $(OBJDIR)/PenguinCannon.o
 OBJECTS += $(OBJDIR)/Rect.o
 OBJECTS += $(OBJDIR)/Renderer.o
 OBJECTS += $(OBJDIR)/Resources.o
-OBJECTS += $(OBJDIR)/ScreenFade.o
-OBJECTS += $(OBJDIR)/ScreenFilter.o
 OBJECTS += $(OBJDIR)/Shader.o
 OBJECTS += $(OBJDIR)/Sound.o
 OBJECTS += $(OBJDIR)/Sprite.o
@@ -251,6 +253,15 @@ $(OBJDIR)/Draw.o: engine/src/Draw.cpp
 $(OBJDIR)/Engine.o: engine/src/Engine.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Enum.o: engine/src/Enum.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Fade.o: engine/src/Fade.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Filter.o: engine/src/Filter.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/FontHandler.o: engine/src/FontHandler.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -279,12 +290,6 @@ $(OBJDIR)/Renderer.o: engine/src/Renderer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Resources.o: engine/src/Resources.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/ScreenFade.o: engine/src/ScreenFade.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/ScreenFilter.o: engine/src/ScreenFilter.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Shader.o: engine/src/Shader.cpp

@@ -3,7 +3,7 @@
 Component::Component(GameObject& GameObj)
 : Parent(GameObj)
 {
-    _Type = ComponentType::_None;
+    _Type = ComponentType::None;
 }
 
 Component::~Component()
@@ -18,7 +18,7 @@ void Component::Start()
 {
 }
 
-void Component::Collided(GameObject& Other)
+void Component::OnCollision(GameObject& Other)
 {
 }
 
@@ -34,10 +34,11 @@ void Component::LateUpdate(float Dt)
 {
 }
 
-bool Component::Is(std::string Type)
+ComponentType Component::Type()
 {
-    return (Type == "Component");
+    return _Type;
 }
+
 bool Component::Is(ComponentType Type)
 {
     return (Type == _Type);

@@ -28,9 +28,6 @@ class Sound : public Component
         bool IsPlaying();
         
         //Inheritance Functions
-        bool Is(std::string);
-        void Render();
-        void Start();
         void Update(float);
 
 };

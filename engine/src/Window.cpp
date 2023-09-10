@@ -29,9 +29,30 @@ Window::Window(std::string Name, int Width, int Height, int ProjectionWidth, int
         Error("Window::Window: GLEW init failed");
     }
 
-    (ProjectionWidth  != 0 ? _ProjectionWidth  = ProjectionWidth  : _ProjectionWidth  = Width ); //In case there's internal resolution...
-    (ProjectionHeight != 0 ? _ProjectionHeight = ProjectionHeight : _ProjectionHeight = Height);
+    // glEnable(GL_DEPTH_TEST); //For 3D Depth
+    _ProjectionWidth = (ProjectionWidth != 0 ? ProjectionWidth  : Width ); //In case there's internal resolution
+    _ProjectionHeight = (ProjectionHeight != 0 ? ProjectionHeight : Height);
 
+    int x=0,y=0,w=_Width,h=_Height;
+    float DesiredRatio = (float)_ProjectionWidth/_ProjectionHeight;
+    float AspectRatio = (float)_Width/(float)_Height;
+
+    if(DesiredRatio < AspectRatio)
+    {
+        int nW = (int)(_Width * DesiredRatio);
+        x = (_Width - nW)/2;
+        y = 0;
+        w = nW;
+    }
+    else if(DesiredRatio > AspectRatio)
+    {
+        int nH = (int)(_Height/DesiredRatio);
+        x = 0;
+        y = (_Height-nH)/2;
+        h = nH;
+    }
+    glViewport(x,y,w,h);
+    
     _Projection = new glm::mat4(glm::ortho( //X = ➡, Y = ⬇
         0.0f, (float)_ProjectionWidth,  //X
         (float)_ProjectionHeight, 0.0f, //Y
@@ -61,6 +82,27 @@ int  Window::GetHeight()
 {
     return _Height;
 }
+
+int  Window::GetProjectionWidth()
+{
+    return _ProjectionWidth;
+}
+
+int  Window::GetProjectionHeight()
+{
+    return _ProjectionHeight;
+}
+
+void  Window::SetWidth(int W)
+{
+    _Width = W;
+}
+
+void  Window::SetHeight(int H)
+{
+    _Height = H;
+}
+
 bool Window::QuitRequested()
 {
     glfwPollEvents(); //Must be here when you're not using input, otherwise the polling never occurs

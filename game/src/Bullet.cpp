@@ -26,32 +26,12 @@ float MaxDistance, std::string Texture, int Frames, bool Loop, bool TargetsPlaye
     
     _Damage = Damage;
 
+    _Type = ComponentType::Type01;
+
 }
 
-void Bullet::Collided(GameObject& Other)
+void Bullet::OnCollision(GameObject& Other)
 {
-    // Bullet* Shot = (Bullet*) Other.GetComponent("Bullet");
-    // if(Shot == nullptr)
-    // {
-    //     Component* Entity = Other.GetComponent("Alien");
-    //     if(Entity != nullptr && !TargetsPlayer)
-    //     {
-    //         Parent.RequestDelete();
-    //         return;
-    //     }
-
-    //     Entity = Other.GetComponent("PenguinBody");
-    //     if(Entity != nullptr && TargetsPlayer)
-    //     {
-    //         Parent.RequestDelete();
-    //         return;
-    //     }
-    // }
-}
-
-bool Bullet::Is(std::string Type)
-{
-    return (Type == "Bullet");
 }
 
 void Bullet::Render()

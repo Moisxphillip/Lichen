@@ -1,13 +1,14 @@
 #include "../lib/Generic.hpp"
 
-Generic::Generic(GameObject& GameObj, std::string Type)
+Generic::Generic(GameObject& GameObj, std::string Name)
 : Component(GameObj), Angle(Parent.Angle), Box(Parent.Box)
 {
-    _Type = Type;
+    _Name = Name;
     this->Started = false;
     _Render = nullptr;
     _Start = nullptr;
     _Update = nullptr;
+    _Type = ComponentType::Generic;
 }
 
 void Generic::SetRender(void(*Render)(Generic*))
@@ -28,12 +29,6 @@ void Generic::SetUpdate(void(*Update)(float, Generic*))
 void Generic::RequestDelete()
 {
     this->Parent.RequestDelete();
-}
-
-
-bool Generic::Is(std::string Type)
-{
-    return (Type == _Type);
 }
 
 void Generic::Render()
@@ -62,3 +57,7 @@ void Generic::Update(float Dt)
     }
 }
 
+std::string Generic::GetName()
+{
+    return _Name;
+}

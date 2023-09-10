@@ -5,6 +5,12 @@
 
 #include <string>
 
+
+struct ___ImageRect
+{
+    int x, y, w, h;
+};
+
 void Error(std::string);
 int Fps(int);
 double WrapMax(double, double);

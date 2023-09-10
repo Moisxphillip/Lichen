@@ -7,6 +7,7 @@ Collider::Collider(GameObject& GameObj, Vector2 Scale, Vector2 Offset)
 {
     _Scale = Scale;
     _Offset = Offset;
+	_Type = ComponentType::Collider;
 }
 
 Collider::Collider(GameObject& GameObj)
@@ -21,11 +22,6 @@ void Collider::SetScale(Vector2 NewScale)
 void Collider::SetOffset(Vector2 NewOffset)
 {
     _Offset = NewOffset;
-}
-
-bool Collider::Is(std::string Type)
-{
-    return ("Collider" == Type);
 }
 
 void Collider::Render() 

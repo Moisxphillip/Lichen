@@ -18,8 +18,7 @@ class PenguinBody : public Component
         ~PenguinBody();
         Vector2 CurrPosition();
 
-        void Collided(GameObject&);
-        bool Is(std::string);
+        void OnCollision(GameObject&);
         void Render();
         void Start();
         void Update(float);

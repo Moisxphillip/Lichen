@@ -40,17 +40,10 @@ class TileMap: public Component
         int GetHeight();
         void SetParallax(float);
         float GetParallax();
-
         void LoadCollision(std::string fileName);
 
-        void SetRefLayer(int);
-
         //inheritance functions
-        bool Is(std::string);
         void Render();
-        void Start();
-        void Update(float);
-    
 };
 
 

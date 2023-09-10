@@ -8,7 +8,7 @@
 class Generic : public Component
 {
     private:
-        std::string _Type;
+        std::string _Name;
         void(*_Render)(Generic*);
         void(*_Start)(Generic*);
         void(*_Update)(float, Generic*);
@@ -30,8 +30,8 @@ class Generic : public Component
         void SetStart(void(*)(Generic*));
         void SetUpdate(void(*)(float, Generic*));
         void RequestDelete();
-        
-        bool Is(std::string);
+
+        std::string GetName();
         void Render();
         void Start();
         void Update(float);

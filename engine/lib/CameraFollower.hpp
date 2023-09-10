@@ -11,7 +11,6 @@ class CameraFollower: public Component
         Vector2 Offset;
         CameraFollower(GameObject&);
         void LateUpdate(float);
-        bool Is(std::string);
 };
 
 

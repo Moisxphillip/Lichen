@@ -9,7 +9,7 @@
 #include "../../engine/lib/Input.hpp"
 #include "../../engine/lib/CameraFollower.hpp"
 #include "../../engine/lib/Collision.hpp"
-#include "../../engine/lib/ScreenFade.hpp"
+#include "../../engine/lib/Fade.hpp"
 #include "../../engine/lib/Sprite.hpp"
 #include "../../engine/lib/TileSet.hpp"
 #include "../../engine/lib/TileMap.hpp"
@@ -69,6 +69,7 @@ void StageState::LoadAssets()
 	
 	//Init layer over map
 	StateMap = new GameObject(10);
+	StateMap->Depth = DepthMode::Foreground;
 	StateTileSet = new TileSet(LICHEN_TILEWIDTH, LICHEN_TILEHEIGHT, FIMG_TILESET);
 	StateTileMap = new TileMap(*StateMap, FMAP_TILEMAP1, StateTileSet, false, true);
 	StateTileMap->SetParallax(1.5);
@@ -83,22 +84,22 @@ void StageState::LoadAssets()
 	AddGameObj(PenguinObj);
 	Cam.Follow(PenguinObj);
 	
-	//Alien
-	// XrandU64 X, Y, N;
-	// X.seed(rand());
-	// Y.seed(rand());
-	// N.seed(rand());
-	// X.range(0, 1408);
-	// Y.range(0, 1280);
+	// Alien
+	XrandU64 X, Y, N;
+	X.seed(rand());
+	Y.seed(rand());
+	N.seed(rand());
+	X.range(0, 1408);
+	Y.range(0, 1280);
 
-	// for(int i = 0; i<5; i++)
-	// {
-	// 	GameObject* AlienObj = new GameObject(3);
-	// 	Alien* Et = new Alien(*AlienObj, 4+(N.gen()%4));
-	// 	AlienObj->Box.SetCenter(Vector2(X.gen(),Y.gen()));
-	// 	AlienObj->AddComponent(Et);
-	// 	AddGameObj(AlienObj);
-	// }
+	for(int i = 0; i<5; i++)
+	{
+		GameObject* AlienObj = new GameObject(3);
+		Alien* Et = new Alien(*AlienObj, 4+(N.gen()%4));
+		AlienObj->Box.SetCenter(Vector2(X.gen(),Y.gen()));
+		AlienObj->AddComponent(Et);
+		AddGameObj(AlienObj);
+	}
 	// //Play music
 	_StateMusic = new Music(FMUS_STAGE1);//Load the music file for the current state
 	_StateMusic->Play(-1, 1000); //Start playing phase theme
@@ -116,7 +117,7 @@ void StageState::Update(float Dt)
 
 	if(_QuitFade && !Mix_PlayingMusic())//Ensures fadeout finishes before closing
 	{
-		if(/*Alien::AlienCount == 0 ||*/ PenguinBody::Player == nullptr)
+		if(Alien::AlienCount == 0 || PenguinBody::Player == nullptr)
 		{
 			EndState* Ended = new EndState();
 			Engine::Instance().Push(Ended);
@@ -143,12 +144,12 @@ void StageState::Update(float Dt)
 		X.SetProjection(Proj);
 	}
 
-	// if(Alien::AlienCount == 0 && !_QuitFade)
-	// {
-	// 	_StateMusic->Stop(1000);
-	// 	GameStats::PlayerVictory = true;
-	// 	_QuitFade = true;
-	// }
+	if(Alien::AlienCount == 0 && !_QuitFade)
+	{
+		_StateMusic->Stop(1000);
+		GameStats::PlayerVictory = true;
+		_QuitFade = true;
+	}
 	else if(PenguinBody::Player == nullptr && !_QuitFade)
 	{
 		_StateMusic->Stop(1000);
@@ -161,28 +162,38 @@ void StageState::Update(float Dt)
 		_QuitFade = true;
 	}
 		
+	//TODO transfer to State, add the masks to it
 	for(int i = 0; i< (int)StateGameObjects.size()-1; i++)
 	{
-		Component* ColA = StateGameObjects[i]->GetComponent("Collider");
-		if(ColA != nullptr)
+		if(!StateGameObjects[i]->Contains(ComponentType::Collider))
 		{
-			for(int j = i+1; j < (int)StateGameObjects.size(); j++)
+			continue;
+		}
+
+		Component* ColA = StateGameObjects[i]->GetComponent(ComponentType::Collider);
+		for(int j = i+1; j < (int)StateGameObjects.size(); j++)
+		{
+
+			if(!StateGameObjects[j]->Contains(ComponentType::Collider) /*|| //Activate once object masks are being used
+				(((StateGameObjects[i]->Represents & StateGameObjects[j]->Interacts) 
+				| (StateGameObjects[j]->Represents & StateGameObjects[i]->Interacts)) 
+				== CollisionMask::None)*/)
 			{
-				Component* ColB = StateGameObjects[j]->GetComponent("Collider");
-				if(ColB != nullptr)
-				{
-					if(Collision::IsColliding(StateGameObjects[i]->Box, StateGameObjects[j]->Box, StateGameObjects[i]->Angle, StateGameObjects[j]->Angle))
-					{
-						StateGameObjects[i]->Collided(*StateGameObjects[j]);
-						StateGameObjects[j]->Collided(*StateGameObjects[i]);
-					}
-				}
+				continue;
+			}
+
+			Component* ColB = StateGameObjects[j]->GetComponent(ComponentType::Collider);
+			if(Collision::IsColliding(StateGameObjects[i]->Box, StateGameObjects[j]->Box, StateGameObjects[i]->Angle, StateGameObjects[j]->Angle))
+			{
+				StateGameObjects[i]->OnCollision(*StateGameObjects[j]);
+				StateGameObjects[j]->OnCollision(*StateGameObjects[i]);
 			}
 		}
 	}
 }
 
-
 void StageState::Render()
 {
+
 }
+

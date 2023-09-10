@@ -22,7 +22,6 @@ class Collider : public Component
         void SetScale(Vector2);
         void SetOffset(Vector2);
 
-        bool Is(std::string);
         void Render();
         void LateUpdate(float);
 

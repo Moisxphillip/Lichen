@@ -1,14 +1,13 @@
 #ifndef LICHEN_SCRFADE
 #define LICHEN_SCRFADE
 
-#include "ScreenFilter.hpp"
+#include "Filter.hpp"
 #include "Timer.hpp"
 
-class ScreenFade : public Component
+class Fade : public Component
 {
     private:
-        //SDL_Surface* _FilterSurface;
-        ScreenFilter _FadeFilter;
+        Filter _FadeFilter;
         bool _FadeIn;
         bool _Finished;
         float _StartPercent;
@@ -18,15 +17,15 @@ class ScreenFade : public Component
         float _Time;
 
     public:
-        Color FilterColor;
         Timer FadeStep;
 
-        ScreenFade(GameObject&, Color, float, float, float);
-        ~ScreenFade();
+        Fade(GameObject&, Color, float, float, float);
+        ~Fade();
         void RedirectFade(float);
         void SetTime(float);
-        
-        bool Is(std::string);
+        void SetColor(Color);
+        Color GetColor();
+
         void Render();
         void Update(float);
 

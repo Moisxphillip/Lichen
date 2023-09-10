@@ -2,6 +2,7 @@
 #define LICHEN_INPUT
 
 #include <iostream>
+#include <map>
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
@@ -17,23 +18,29 @@ class Input
         static Input* _InputM;
         static GLFWwindow* _Window;
         static bool _KeyState[static_cast<int>(Key::LastKey)];
-        static bool _PrevKeyState[static_cast<int>(Key::LastKey)];
+        static int _PrevKeyState[static_cast<int>(Key::LastKey)];
+
         static bool _MouseState[static_cast<int>(MouseButton::LastButton)];
-        static bool _PrevMouseState[static_cast<int>(MouseButton::LastButton)];
-        static bool _Controller1On;
-        static bool _ControllerState[static_cast<int>(ControllerButton::LastButton)];
-        static bool _PrevControllerState[static_cast<int>(ControllerButton::LastButton)];
-        static float _ControllerAxis[static_cast<int>(ControllerAxis::LastAxis)];
-        static float _ControllerDeadzone;
-        static bool _QuitRequested;
+        static int _PrevMouseState[static_cast<int>(MouseButton::LastButton)];
         static double _MouseX, _MouseY;
         static MouseScroll _ScrollDirection;
+        
+        static bool _ControllerState[static_cast<int>(ControllerButton::LastButton)];
+        static int _PrevControllerState[static_cast<int>(ControllerButton::LastButton)];
+        static float _ControllerAxis[static_cast<int>(ControllerAxis::LastAxis)];
+        static bool _Controller1On;
+        static float _ControllerDeadzone;
+        
+        static std::map<int, Key> _KeyCode;
+        static bool _QuitRequested;
+        static int _Ctr;
 
         // GLFW callbacks for events
         static void KeyCallback(GLFWwindow*, int, int, int, int);
         static void MouseButtonCallback(GLFWwindow*, int, int, int);
         static void CursorPosCallback(GLFWwindow* , double, double);
         static void ScrollCallback(GLFWwindow* , double, double);
+        static void WindowResizeCallback(GLFWwindow* , int, int);
         static void ControllerCallback(int, int);
 
     public:

@@ -37,9 +37,9 @@ Vector2 PenguinBody::CurrPosition()
     return Parent.Box.Center();
 }
 
-void PenguinBody::Collided(GameObject& Other)
+void PenguinBody::OnCollision(GameObject& Other)
 {
-    Bullet* Shot = (Bullet*) Other.GetComponent("Bullet");
+    Bullet* Shot = (Bullet*) Other.GetComponent(ComponentType::Type01);
     if(Shot != nullptr)
     {
         if (Shot->TargetsPlayer)
@@ -52,11 +52,6 @@ void PenguinBody::Collided(GameObject& Other)
             }
         }
     }
-}
-
-bool PenguinBody::Is(std::string Type)
-{
-    return ("PenguinBody" == Type);
 }
 
 void PenguinBody::Render()

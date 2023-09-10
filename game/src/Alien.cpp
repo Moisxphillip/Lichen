@@ -36,9 +36,9 @@ Alien::~Alien()
     AlienCount--;
 }
 
-void Alien::Collided(GameObject& Other)
+void Alien::OnCollision(GameObject& Other)
 {
-    Bullet* Shot = (Bullet*) Other.GetComponent("Bullet");
+    Bullet* Shot = (Bullet*) Other.GetComponent(ComponentType::Type01);
     if(Shot != nullptr)
     {
         if (!Shot->TargetsPlayer)
@@ -91,7 +91,7 @@ void Alien::Update(float Dt)
                     Index = i;
                 }
             }
-            Minion* ChosenToShoot = (Minion*) _MinionVec[Index].lock()->GetComponent("Minion");
+            Minion* ChosenToShoot = (Minion*) _MinionVec[Index].lock()->GetComponent(ComponentType::Type02);
             ChosenToShoot->Shoot(PenguinBody::Player->CurrPosition());
             _ExtraTime = _WaitTime.gen();
         }        
@@ -149,9 +149,4 @@ void Alien::Update(float Dt)
 
 void Alien::Render()
 {
-}
-
-bool Alien::Is(std::string Type)
-{
-    return (Type == "Alien");
 }

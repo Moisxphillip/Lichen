@@ -10,6 +10,7 @@ Sound::Sound(GameObject& GameObj)
     SelfDestruct = false;
     _SoundChunk = nullptr;
     _SoundVolume = 255;
+    _Type = ComponentType::Sound;
 }
 
 Sound::Sound(GameObject& GameObj, std::string File)
@@ -91,21 +92,6 @@ void Sound::_SoundPosition()
 }
 
 //Inheritance Functions
-bool Sound::Is(std::string Type)
-{
-    return Type == "Sound";
-}
-
-void Sound::Render()
-{
-
-}
-
-void Sound::Start()
-{
-
-}
-
 void Sound::Update(float Dt)
 {
     if(IsPlaying())

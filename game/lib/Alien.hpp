@@ -29,8 +29,7 @@ class Alien : public Component
         Alien(GameObject&, int);
         ~Alien();
         
-        void Collided(GameObject&);
-        bool Is(std::string);
+        void OnCollision(GameObject&);
         void Render();
         void Start();
         void Update(float);

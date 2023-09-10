@@ -36,11 +36,6 @@ void PenguinCannon::Shoot()
     Engine::Instance().CurrentState().AddGameObj(GoBullet);
 }
 
-bool PenguinCannon::Is(std::string Type)
-{
-    return ("PenguinCannon" == Type);
-}
-
 void PenguinCannon::Render()
 {
 
