@@ -51,7 +51,7 @@ void Draw::DrawCircle(const Circle& Form, Color Colour, glm::mat4& Projection, g
     glDeleteBuffers(1, &VBO);
 }
 
-void Draw::DrawRectangle(const Rect& Form, Color Colour, glm::mat4& Projection, glm::mat4& View, float Angle)
+void Draw::DrawRectangle(const Rectangle& Form, Color Colour, glm::mat4& Projection, glm::mat4& View, float Angle)
 {
     unsigned int VAO, VBO;
     glGenVertexArrays(1, &VAO);

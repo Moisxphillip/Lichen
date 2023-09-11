@@ -6,7 +6,7 @@
 #include <memory>
 
 //Engine includes
-#include "Rect.hpp"
+#include "Rectangle.hpp"
 #include "Enum.hpp"
 
 class Component;
@@ -23,7 +23,7 @@ class GameObject
 
     public:
         DepthMode Depth;
-        Rect Box;
+        Rectangle Box;
         bool Started;
         float Angle;
         CollisionMask Represents, Interacts; 

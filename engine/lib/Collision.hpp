@@ -1,7 +1,7 @@
 #include <cmath>
 #include <algorithm>
 #include "Vector2.hpp"
-#include "Rect.hpp"
+#include "Rectangle.hpp"
 
 class Collision 
 {
@@ -31,7 +31,7 @@ class Collision
 		// Observação: IsColliding espera ângulos em radianos!
 		// Para usar graus, forneça a sua própria implementação de Rotate,
 		// ou transforme os ângulos no corpo de IsColliding.
-		static inline bool IsColliding(Rect& a, Rect& b, float angleOfA, float angleOfB) 
+		static inline bool IsColliding(Rectangle& a, Rectangle& b, float angleOfA, float angleOfB) 
         {
 			Vector2 A[] = { Vector2( a.x, a.y + a.h ),
 						  Vector2( a.x + a.w, a.y + a.h ),

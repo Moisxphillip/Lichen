@@ -33,6 +33,12 @@ void Circle::SetCorner(Vector2 Pos) //as if it is a square
     y = Pos.y-r;
 }
 
+void Circle::SetCenter(Vector2 Pos) //as if it is a square
+{
+    x = Pos.x;
+    y = Pos.y;
+}
+
 float Circle::Area()
 {
     return 3.14159265359f * r * r;

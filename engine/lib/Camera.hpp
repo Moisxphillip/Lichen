@@ -30,7 +30,7 @@ class Camera
         CameraMode _CurrentMode;
         CameraFormat _CurrentForm;
 
-        Rect _RectBounds;
+        Rectangle _RectBounds;
         Circle _CircBounds;
 
     public:
@@ -46,7 +46,7 @@ class Camera
         void Unfollow();
         void SetCameraMode(CameraMode);
         void SetCameraFormat(CameraFormat);
-        void SetRectangleBounds(Rect);
+        void SetRectangleBounds(Rectangle);
         void SetCircleBounds(Circle);
         void Update(float);
         void UpdateLazy(float, Vector2&);

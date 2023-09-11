@@ -5,7 +5,7 @@
 #include "GLM/gtc/matrix_transform.hpp"
 
 #include "Vector2.hpp"
-#include "Rect.hpp"
+#include "Rectangle.hpp"
 #include "Renderer.hpp"
 #include "Texture.hpp"
 #include "VertexArray.hpp"
@@ -36,7 +36,7 @@ class FontHandler
         //State registering
         Vector2 _LastPos;
         Vector2 _LastScale;
-        Rect _LastDst;
+        Rectangle _LastDst;
         float _LastAngle;
         Flip _LastFlip;
         Color _LastColor;

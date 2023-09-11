@@ -89,7 +89,7 @@ GENERATED += $(OBJDIR)/Minion.o
 GENERATED += $(OBJDIR)/Music.o
 GENERATED += $(OBJDIR)/PenguinBody.o
 GENERATED += $(OBJDIR)/PenguinCannon.o
-GENERATED += $(OBJDIR)/Rect.o
+GENERATED += $(OBJDIR)/Rectangle.o
 GENERATED += $(OBJDIR)/Renderer.o
 GENERATED += $(OBJDIR)/Resources.o
 GENERATED += $(OBJDIR)/Shader.o
@@ -139,7 +139,7 @@ OBJECTS += $(OBJDIR)/Minion.o
 OBJECTS += $(OBJDIR)/Music.o
 OBJECTS += $(OBJDIR)/PenguinBody.o
 OBJECTS += $(OBJDIR)/PenguinCannon.o
-OBJECTS += $(OBJDIR)/Rect.o
+OBJECTS += $(OBJDIR)/Rectangle.o
 OBJECTS += $(OBJDIR)/Renderer.o
 OBJECTS += $(OBJDIR)/Resources.o
 OBJECTS += $(OBJDIR)/Shader.o
@@ -283,7 +283,7 @@ $(OBJDIR)/Input.o: engine/src/Input.cpp
 $(OBJDIR)/Music.o: engine/src/Music.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Rect.o: engine/src/Rect.cpp
+$(OBJDIR)/Rectangle.o: engine/src/Rectangle.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Renderer.o: engine/src/Renderer.cpp

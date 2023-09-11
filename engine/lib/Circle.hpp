@@ -13,7 +13,8 @@ class Circle
         Circle();
         Vector2 Center();
         Vector2 Corner();
-        void SetCorner(Vector2);
+        void SetCorner(Vector2 Pos);
+        void SetCenter(Vector2 Pos);
         float Area();
         float Circumference();
         bool Contains(Vector2);

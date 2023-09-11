@@ -1,7 +1,7 @@
 #ifndef LICHEN_DRAW
 #define LICHEN_DRAW
 
-#include "Rect.hpp"
+#include "Rectangle.hpp"
 #include "Circle.hpp"
 #include "Color.hpp"
 #include "Shader.hpp"
@@ -15,7 +15,7 @@ class Draw
     public:
         Draw();
         void DrawCircle(const Circle&, Color, glm::mat4&, glm::mat4&, int=25);
-        void DrawRectangle(const Rect&, Color, glm::mat4&, glm::mat4&, float=0);
+        void DrawRectangle(const Rectangle&, Color, glm::mat4&, glm::mat4&, float=0);
 };
 
 #endif//LICHEN_DRAW

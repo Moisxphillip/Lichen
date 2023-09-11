@@ -15,7 +15,7 @@ _CurrentMode(CameraMode::Fixed),
 _CurrentForm(CameraFormat::Rectangle)
 {
     _Focus = nullptr;
-    SetRectangleBounds(Rect(0.0f,0.0f,200.0f,160.0f));
+    SetRectangleBounds(Rectangle(0.0f,0.0f,200.0f,160.0f));
     _Position = Vector2(0,0);
 }
 
@@ -55,7 +55,7 @@ void Camera::SetCameraFormat(CameraFormat New)
     _CurrentForm = New;
 }
         
-void Camera::SetRectangleBounds(Rect Base)
+void Camera::SetRectangleBounds(Rectangle Base)
 {
     _RectBounds.x = Base.x-Base.w/2;
     _RectBounds.y = Base.y-Base.h/2;

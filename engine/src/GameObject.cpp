@@ -3,7 +3,7 @@
 
 #include "../lib/GameObject.hpp"
 #include "../lib/Component.hpp"
-#include "../lib/Rect.hpp"
+#include "../lib/Rectangle.hpp"
 #include "../lib/Tools.hpp"
 //TODO future improvement: sort component vector on new addition, implement binary search for Get/Remove;
 
@@ -11,7 +11,7 @@ unsigned int GameObject::_ID = 0;
 
 GameObject::GameObject(int Layer)
 {
-    Box = Rect(0,0,0,0); //Inits Object Rectangle
+    Box = Rectangle(0,0,0,0); //Inits Object rectangle
     _GameObjDead = false;//Sets as alive for future checks in the gameObject lifetime
     Started = false;
     Angle = 0;

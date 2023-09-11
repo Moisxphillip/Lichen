@@ -3,7 +3,7 @@
 
 #include "Component.hpp"
 #include "Vector2.hpp"
-#include "Rect.hpp"
+#include "Rectangle.hpp"
 #include "Draw.hpp"
 
 class Collider : public Component
@@ -14,7 +14,7 @@ class Collider : public Component
         Draw _Form;
 
     public:
-        Rect Box;
+        Rectangle Box;
         
         Collider(GameObject&);
         Collider(GameObject&, Vector2, Vector2);

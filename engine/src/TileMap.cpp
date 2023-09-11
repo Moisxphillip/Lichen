@@ -354,7 +354,7 @@ void TileMap::LoadCollision(std::string fileName)
         Collider *TileCollider = new Collider(*ColliderObj);
         ColliderObj->AddComponent(TileCollider);
         // ColliderObj->SignalTerrain();// Add terrain flags around here
-        ColliderObj->Box = Rect(Block[i].x*_CurrTileSet->GetTileWidth(), Block[i].y*_CurrTileSet->GetTileHeight(),
+        ColliderObj->Box = Rectangle(Block[i].x*_CurrTileSet->GetTileWidth(), Block[i].y*_CurrTileSet->GetTileHeight(),
             Block[i].w*_CurrTileSet->GetTileWidth(), Block[i].h*_CurrTileSet->GetTileHeight());
         Engine::Instance().CurrentState().AddGameObj(ColliderObj);
     }

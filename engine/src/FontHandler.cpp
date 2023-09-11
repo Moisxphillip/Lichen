@@ -30,7 +30,7 @@ _Index{0,1,2,2,3,0}
     _LastScale = Vector2(-99999, -99999);
     _LastPos = Vector2(-99999, -99999);
     _LastAngle = -99999;
-    _LastDst = Rect(-99999, -99999,-99999, -99999);
+    _LastDst = Rectangle(-99999, -99999,-99999, -99999);
     _LastFlip = Flip::N;
     _LastColor = Color("#ffaafa");
 }
@@ -90,7 +90,7 @@ int FontHandler::GetHeight()
 
 void FontHandler::Render(Renderer& RenderDevice, glm::mat4& Projection, Vector2 Position, float Angle, Flip CurrFlip, Color CurrColor)
 {
-    Rect Dst(0.0f, 0.0f, _Texture->GetWidth(), _Texture->GetHeight());
+    Rectangle Dst(0.0f, 0.0f, _Texture->GetWidth(), _Texture->GetHeight());
     if(_LastPos != Position || _LastAngle != Angle)
     {
         _LastAngle=Angle;_LastPos=Position;

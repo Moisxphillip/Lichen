@@ -19,7 +19,7 @@ PenguinBody::PenguinBody(GameObject& GameObj)
     Parent.Angle = 0;
     _LinearSpeed = 0;
     Sprite* Body = new Sprite(GameObj, FIMG_PENGBODY);
-    Parent.Box = Rect(0,0, Body->GetWidth(), Body->GetHeight());
+    Parent.Box = Rectangle(0,0, Body->GetWidth(), Body->GetHeight());
     Collider* CollidePenguin = new Collider(GameObj);
 	CollidePenguin->Box = Parent.Box;
     Parent.AddComponent(Body);

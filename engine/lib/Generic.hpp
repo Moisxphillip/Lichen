@@ -22,7 +22,7 @@ class Generic : public Component
         std::map<std::string, bool> Bool;
         std::map<std::string, void*> Ptr;
         float& Angle;
-        Rect& Box;
+        Rectangle& Box;
 
 
         Generic(GameObject&, std::string);

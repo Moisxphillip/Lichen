@@ -12,7 +12,7 @@ PenguinCannon::PenguinCannon(GameObject& GameObj, std::weak_ptr<GameObject> Body
     Parent.Angle = 0;
     Sprite* Cannon = new Sprite(GameObj, FIMG_PENGGUN);
     Cannon->SetScale(0.8,0.8);
-    Parent.Box = Rect(0,0,Cannon->GetWidth(),Cannon->GetHeight());
+    Parent.Box = Rectangle(0,0,Cannon->GetWidth(),Cannon->GetHeight());
     _Body = Body;
     Parent.Box.SetCenter(_Body.lock()->Box.Center());
     Collider* CollideCannon = new Collider(GameObj);

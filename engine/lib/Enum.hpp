@@ -63,7 +63,7 @@ enum class ComponentType : long long int
     Type52 = 1LL << 51,
     Type53 = 1LL << 52,
     Type54 = 1LL << 53,
-    Type55 = 1LL << 54,
+    AACollider = 1LL << 54,
     Generic = 1LL << 55,
     Fade = 1LL << 56,
     Filter = 1LL << 57,

@@ -5,7 +5,7 @@
 #include "GLM/gtc/matrix_transform.hpp"
 
 #include "Vector2.hpp"
-#include "Rect.hpp"
+#include "Rectangle.hpp"
 #include "Renderer.hpp"
 #include "Texture.hpp"
 #include "VertexArray.hpp"
