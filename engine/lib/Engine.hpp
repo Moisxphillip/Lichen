@@ -48,6 +48,8 @@ class Engine
         State* _GameState = nullptr;
         std::stack<std::unique_ptr<State>> StateStack;
 
+        double _PingCounter;
+        bool _Ping;
         double _FrameStart;
         float _Dt;
         void _CalculateDt();
@@ -72,6 +74,7 @@ class Engine
         State& CurrentState();
         static Engine& Instance();
         float GetDt();
+        bool GetPing();
 
 };
 

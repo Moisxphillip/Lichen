@@ -1,51 +1,9 @@
-#include "../lib/AABB.hpp"
+#include "../lib/Physics.hpp"
+#include "../lib/AARectangle.hpp"
+#include "../lib/AACircle.hpp"
 
 #include <algorithm>
 #include <cmath>
-
-AACollider::AACollider(AAFormat Format, ColliderKind Property, float Mass, float Restitution)
-{
-    this->Format = Format;
-    this->Property = Property;
-    SetMass(Mass);
-    _Restitution = Restitution;
-    Force = Vector2(0.0f, 0.0f);
-}
-void AACollider::SetMass(float Mass)
-{
-    _Mass = Mass;
-    _InvMass = (Property == ColliderKind::Stationary || Mass == 0) ? 0 : 1.0f/Mass;
-}
-
-void AACollider::SetRestitution(float Restitution)
-{
-    _Restitution = Restitution;
-}
-
-float AACollider::GetMass()
-{
-    return _Mass;
-}
-
-float AACollider::GetInvMass()
-{
-    return _InvMass;
-}
-
-float AACollider::GetRestitution()
-{
-    return _Restitution;
-}
-
-void AACollider::ApplyForce(Vector2 Force)
-{
-    this->Force+=Force;
-}
-
-void AACollider::SetVelocity(Vector2 Velocity)
-{
-    this->Velocity=Velocity;
-}
 
 //Collision check
 float Physics::_CorrectionPercent = 0.2f; // should be between 20%-80% 
@@ -57,16 +15,36 @@ bool Physics::CheckCollision(AACollider& A, AACollider& B)
     {
         if(B.Format == AAFormat::Rectangle)
         {
-            return _Intersects(A.Rectan, B.Rectan);
-        } 
-        return _Intersects(A.Rectan, B.Circ);
+            return _Intersects(A.GetRect(), B.GetRect());
+        }
+        else if(B.Format == AAFormat::Circle)
+        {
+            return _Intersects(A.GetRect(), B.GetBall());
+        }
+        return _Intersects(A.GetRect(), B.GetRay());
+    }
+    else if(A.Format== AAFormat::Ray)
+    {
+        if(B.Format == AAFormat::Rectangle)
+        {
+            return _Intersects(B.GetRect(), A.GetRay());
+        }
+        else if(B.Format == AAFormat::Circle)
+        {
+            return _Intersects(B.GetBall(), A.GetRay());
+        }
+        return false;//maybe implement ray collision tho?
     }
 
     if(B.Format == AAFormat::Rectangle)
     {
-        return _Intersects(B.Rectan, A.Circ);
+        return _Intersects(B.GetRect(), A.GetBall());
     }
-    return _Intersects(A.Circ, B.Circ);
+    else if(B.Format == AAFormat::Ray)
+    {
+        return _Intersects(A.GetBall(), B.GetRay());
+    }
+    return _Intersects(A.GetBall(), B.GetBall());
 }
 
 bool Physics::_Intersects(Rectangle& A, Rectangle& B)
@@ -85,15 +63,53 @@ bool Physics::_Intersects(Rectangle& A, Circle& B)
     return std::pow(B.x - ClosestX, 2) + std::pow(B.y - ClosestY, 2) < std::pow(B.r, 2);
 }
 
+bool Physics::_Intersects(Rectangle& A, Ray& B)
+{
+    float X1 = (A.x - B.Origin.x) / B.Direction.x;
+    float X2 = (A.x + A.w - B.Origin.x) / B.Direction.x;
+    float Y1 = (A.y - B.Origin.y) / B.Direction.y;
+    float Y2 = (A.y + A.h - B.Origin.y) / B.Direction.y;
+    float Min = std::max(std::min(X1, X2), std::min(Y1, Y2));
+    float Max = std::min(std::max(X1, X2), std::max(Y1, Y2));
+    if (Max < 0 || Min > Max) 
+    {
+        return false;//no intersection
+    }
+    return true;//intersection occurred
+}
+
 bool Physics::_Intersects(Circle& A, Circle& B)
 {
     return (std::pow(A.x-B.x, 2) + std::pow(A.y-B.y, 2)) < std::pow(A.r+B.r, 2);
 }
 
+bool Physics::_Intersects(Circle& A, Ray& B)
+{
+    Vector2 RayToCenter = A.Center() - B.Origin;
+    float DotProduct = RayToCenter.Dot(B.Direction);
+    float Discriminant = DotProduct * DotProduct - RayToCenter.Dot(RayToCenter) + A.r * A.r;
+    if (Discriminant < 0) 
+    {
+        return false;
+    }    
+    float T1 = -DotProduct - std::sqrt(Discriminant);//intersection parameters
+    float T2 = -DotProduct + std::sqrt(Discriminant);
+    if (T1 < 0 && T2 < 0) 
+    {
+        return false;//no intersection
+    }
+    return true;
+}
+
+// bool Physics::_Intersects(Ray& A, Ray& B)//Won't be needed for now
+// {
+// }
+
 //Collision resolution
 void Physics::ResolveCollision(AACollider& A, AACollider& B)
 {
     if(A.Property == ColliderKind::Trigger || B.Property == ColliderKind::Trigger
+        || A.Format == AAFormat::Ray || B.Format == AAFormat::Ray
         || (A.Property == B.Property && A.Property == ColliderKind::Stationary))
     {
         return; //No resolution for triggers or stationaries together
@@ -121,8 +137,8 @@ void Physics::ResolveCollision(AACollider& A, AACollider& B)
 
 void Physics::_LinearProjection(AACollider& A, AACollider& B, Manifold& M)
 {
-    //Correction for accumulative floating point errors and sinking objects
-    Vector2 Correction = M.Normal * (std::max(M.Penetration - _CorrectionSlop, 0.0f)/(A.GetInvMass() + B.GetInvMass()) * _CorrectionPercent);
+    Vector2 Correction = M.Normal * (std::max(M.Penetration - _CorrectionSlop, 0.0f)
+        /(A.GetInvMass() + B.GetInvMass()) * _CorrectionPercent);
     A.Position -= Correction * A.GetInvMass();
     B.Position += Correction * B.GetInvMass();
 }
@@ -133,20 +149,19 @@ void Physics::_CollisionData(AACollider& A, AACollider& B, Manifold& M)
     {
         if(B.Format == AAFormat::Rectangle)
         {
-            _RectData(B.Rectan, A.Rectan, M);
+            _RectData(B.GetRect(), A.GetRect(), M);
             return;
         } 
-        _RectCircData(A.Rectan, B.Circ, M);
-        // M.Normal *= -1.0f; //Fixes normal direction since parameters invert here
+        _RectCircData(A.GetRect(), B.GetBall(), M);
         return;
     }
     if(B.Format == AAFormat::Rectangle)
     {
-        _RectCircData(B.Rectan, A.Circ, M);
+        _RectCircData(B.GetRect(), A.GetBall(), M);
         M.Normal *= -1.0f; //Fixes normal direction since parameters invert here
         return ;
     }
-    _CircData(A.Circ, B.Circ, M);
+    _CircData(A.GetBall(), B.GetBall(), M);
 }
 
 void Physics::_RectData(Rectangle& A, Rectangle& B, Manifold& M)
@@ -177,13 +192,13 @@ void Physics::_CircData(Circle& A, Circle& B, Manifold& M)
     M.Penetration = A.r; //Fixes rare cases where they occupy the same point in space
     M.Normal = Vector2(1.0f, 0.0f);
 }
-#include <iostream>
+
 void Physics::_RectCircData(Rectangle& A, Circle& B, Manifold& M)
 {
     Vector2 RelativeDist = B.Center() - A.Center();
     Vector2 Closest(std::max(A.x, std::min(B.x, A.x + A.w)), std::max(A.y, std::min(B.y, A.y + A.h))); 
 
-    bool Inserted = RelativeDist == Closest;
+    bool Inserted = A.Contains(B.Center());
     if (Inserted)
     {
         if(std::abs(RelativeDist.x) > std::abs(RelativeDist.y))
@@ -197,19 +212,25 @@ void Physics::_RectCircData(Rectangle& A, Circle& B, Manifold& M)
             Closest.y = (RelativeDist.y > 0 ? A.y+A.h : A.y);
         }
     }
+
     //if center is inserted in the other form, must be repelled outwards
     M.Normal = (Inserted ? RelativeDist*-1.0f : RelativeDist).Normalized();    
-    float Dist = (RelativeDist-Closest).Magnitude();
+    float Dist = (B.Center()-Closest).Magnitude();
     M.Penetration = B.r - Dist;
 }
 
 void Physics::Integrate(AACollider& A, float Dt)
 {
+    if(A.Property == ColliderKind::Stationary)
+    {
+        return;
+    }
     Vector2 Acceleration = A.Force * A.GetInvMass() * Dt;
     A.Velocity+= Acceleration * Dt; 
-    A.Position+= (A.Velocity)+(Acceleration * 0.5f * std::pow(Dt, 2));
+    A.Velocity+=(A.Velocity * -A.GetFriction());
+    A.Position+=(A.Velocity)+(Acceleration * 0.5f * std::pow(Dt, 2));
+    A.Force = Vector2(0.0f,0.0f);
 }
-
 
 // // Explicit Euler
 // A.Position += A.Velocity * Dt;

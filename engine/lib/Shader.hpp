@@ -6,9 +6,9 @@
 
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
-
 #include "GLM/glm.hpp"
 
+#include "Color.hpp"
 
 class Shader
 {
@@ -41,6 +41,7 @@ class Shader
         void SetUniformMat4f(const std::string&, const glm::mat4&);
         void SetUniform1i(const std::string&, int);
         void SetUniform1ui(const std::string&, unsigned int);
+        void SetColor(const std::string&, Color& Colour);
 };
 
 #endif// LICHEN_SHADER

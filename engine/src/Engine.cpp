@@ -79,6 +79,8 @@ Engine::Engine(std::string Name = "LichenEngine", int Width = 1024, int Height =
 
     _FrameStart = glfwGetTime();
     _Dt = 0.0f;
+    _PingCounter = 0.0;
+    _Ping = true;
     _GameState = nullptr;//new StageState; //Creates a base state for the Engine 
 }
 
@@ -160,6 +162,17 @@ void Engine::Run()
             StateStack.top()->StateLateUpdate(GetDt());
             StateStack.top()->StateRender();
 
+            if(_PingCounter > 1.0)//Easy signal for some applications
+            {
+                _PingCounter = 0.0;
+                _Ping = true;
+            }
+            else
+            {
+                _PingCounter+=GetDt();
+                _Ping = false;
+            }
+
             _GameRenderer->Show(_GameWindow->GetGLWindow());
             // if (_VSync)
             // {
@@ -226,6 +239,11 @@ inline void Engine::_CalculateDt()
 inline float Engine::GetDt()
 {
     return _Dt;
+}
+
+bool Engine::GetPing()
+{
+    return _Ping;
 }
 
 Vector2 Engine::GetWindowSize()

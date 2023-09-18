@@ -51,6 +51,35 @@ void Draw::DrawCircle(const Circle& Form, Color Colour, glm::mat4& Projection, g
     glDeleteBuffers(1, &VBO);
 }
 
+void Draw::DrawLine(const Vector2& Origin, const Vector2& Direction, Color Colour, glm::mat4& Projection, glm::mat4& View)
+{
+    unsigned int VAO, VBO;
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    float Vertices[] = 
+    {
+        0.0f,           0.0f,
+        Direction.x*200.0f,    Direction.y*200.0f,//todo verify resizing later
+    };
+
+    glm::mat4 Model = glm::translate(glm::mat4(1.0), glm::vec3(Origin.x, Origin.y, 0.0f));
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertices), Vertices, GL_DYNAMIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    Forms.SetUniform4f("U_Color", Colour.r, Colour.g, Colour.b, Colour.a);
+    glm::mat4 MVP = Projection*View*Model;
+    Forms.SetUniformMat4f("U_Mvp",MVP);
+
+    glDrawArrays(GL_LINE_LOOP, 0, 1); //Possible break here
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+}
+
 void Draw::DrawRectangle(const Rectangle& Form, Color Colour, glm::mat4& Projection, glm::mat4& View, float Angle)
 {
     unsigned int VAO, VBO;

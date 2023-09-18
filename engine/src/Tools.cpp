@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <cmath>
+#include <algorithm>
 // #include "SDL2/SDL.h"
 
 void Error(std::string Info)
@@ -11,7 +12,7 @@ void Error(std::string Info)
     //TODO call exit(-1) on error
 }
 
-int Fps(int Rate) //Takes intended frames per second and returns approximated time of each frame
+int Fps(int Rate) //Takes intended frames per second and returns approximated time of each frame in ms
 {
     return 1000/Rate;
 }
@@ -43,3 +44,12 @@ double SmoothStep (double LowerBound, double HigherBound, double x)
     x = Clamp((x - LowerBound) / (HigherBound - LowerBound));
     return x * x * (3 - 2 * x);
 }
+
+template <typename T>
+T Lerp(const T& Start, const T& End, float F) 
+{
+    F = std::clamp(F, 0.0f, 1.0f);
+    return Start + F * (End - Start);
+}
+template float Lerp(const float& Start, const float& End, float F);
+template double Lerp(const double& Start, const double& End, float F);

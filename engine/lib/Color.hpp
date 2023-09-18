@@ -31,6 +31,8 @@ class Color
         friend bool operator!=(const Color&, const Color&);
         friend std::ostream& operator<<(std::ostream&, const Color&);
 
+        static Color Interpolation(Color& A, Color& B, float F);
+
         SDL_Color ColorSDL();
         uint32_t ColorUint32();
 

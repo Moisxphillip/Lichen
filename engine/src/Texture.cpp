@@ -9,7 +9,6 @@
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 
-
 #include "../lib/Renderer.hpp"
 #include "../lib/Tools.hpp"
 
@@ -104,7 +103,7 @@ void Texture::UpdateTexture(SDL_Surface* FontSurface)
     }
 }
 
-int Texture::GetTextureID()
+unsigned int Texture::GetTextureID()
 {
     return _TextureID;
 }

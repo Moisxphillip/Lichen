@@ -3,6 +3,47 @@
 #include "../lib/Tools.hpp"
 #include <algorithm>
 
+//Review and fix later
+// class TextureCarrousel
+// {
+// private:
+//     static int _NextSlot;
+//     static std::vector<unsigned int> _SlotID;
+//     static void _Bind(unsigned int ID, int Slot);
+// public:
+//     static unsigned int GetAvaliableSlot(unsigned int ID);
+// };
+
+// std::vector<unsigned int> TextureCarrousel::_SlotID(0,16);
+// int TextureCarrousel::_NextSlot = 0;
+
+// unsigned int TextureCarrousel::GetAvaliableSlot(unsigned int ID)
+// {
+//     for (int i = 0; i < 16; i++)
+//     {
+//         if (_SlotID[i] == ID)
+//         {
+//             std::cout << _SlotID.size();
+//             _Bind(ID, i);
+//             return i;
+//         }
+//     }
+//     _SlotID[_NextSlot] = ID;
+//     _Bind(ID, _NextSlot);
+//     int Slot = _NextSlot;
+//     ++_NextSlot;
+//     if (_NextSlot == 16)
+//     {
+//         _NextSlot %= 16;
+//     }
+//     return Slot;
+// }
+
+// void TextureCarrousel::_Bind(unsigned int ID, int Slot)
+// {
+//     glActiveTexture(GL_TEXTURE0 + Slot);
+//     glBindTexture(GL_TEXTURE_2D, ID);
+// }
 
 Image::Image(const std::string& File):
 _Index{0,1,2,2,3,0}

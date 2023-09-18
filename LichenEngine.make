@@ -63,7 +63,11 @@ endif
 GENERATED :=
 OBJECTS :=
 
-GENERATED += $(OBJDIR)/AABB.o
+GENERATED += $(OBJDIR)/AACircle.o
+GENERATED += $(OBJDIR)/AACollider.o
+GENERATED += $(OBJDIR)/AARay.o
+GENERATED += $(OBJDIR)/AARectangle.o
+GENERATED += $(OBJDIR)/AStar.o
 GENERATED += $(OBJDIR)/Alien.o
 GENERATED += $(OBJDIR)/Bullet.o
 GENERATED += $(OBJDIR)/Camera.o
@@ -87,8 +91,10 @@ GENERATED += $(OBJDIR)/IndexBuffer.o
 GENERATED += $(OBJDIR)/Input.o
 GENERATED += $(OBJDIR)/Minion.o
 GENERATED += $(OBJDIR)/Music.o
+GENERATED += $(OBJDIR)/Particles.o
 GENERATED += $(OBJDIR)/PenguinBody.o
 GENERATED += $(OBJDIR)/PenguinCannon.o
+GENERATED += $(OBJDIR)/Physics.o
 GENERATED += $(OBJDIR)/Rectangle.o
 GENERATED += $(OBJDIR)/Renderer.o
 GENERATED += $(OBJDIR)/Resources.o
@@ -111,9 +117,14 @@ GENERATED += $(OBJDIR)/VertexBuffer.o
 GENERATED += $(OBJDIR)/VertexBufferLayout.o
 GENERATED += $(OBJDIR)/Window.o
 GENERATED += $(OBJDIR)/Xrand.o
+GENERATED += $(OBJDIR)/garbage.o
 GENERATED += $(OBJDIR)/glm.o
 GENERATED += $(OBJDIR)/main.o
-OBJECTS += $(OBJDIR)/AABB.o
+OBJECTS += $(OBJDIR)/AACircle.o
+OBJECTS += $(OBJDIR)/AACollider.o
+OBJECTS += $(OBJDIR)/AARay.o
+OBJECTS += $(OBJDIR)/AARectangle.o
+OBJECTS += $(OBJDIR)/AStar.o
 OBJECTS += $(OBJDIR)/Alien.o
 OBJECTS += $(OBJDIR)/Bullet.o
 OBJECTS += $(OBJDIR)/Camera.o
@@ -137,8 +148,10 @@ OBJECTS += $(OBJDIR)/IndexBuffer.o
 OBJECTS += $(OBJDIR)/Input.o
 OBJECTS += $(OBJDIR)/Minion.o
 OBJECTS += $(OBJDIR)/Music.o
+OBJECTS += $(OBJDIR)/Particles.o
 OBJECTS += $(OBJDIR)/PenguinBody.o
 OBJECTS += $(OBJDIR)/PenguinCannon.o
+OBJECTS += $(OBJDIR)/Physics.o
 OBJECTS += $(OBJDIR)/Rectangle.o
 OBJECTS += $(OBJDIR)/Renderer.o
 OBJECTS += $(OBJDIR)/Resources.o
@@ -161,6 +174,7 @@ OBJECTS += $(OBJDIR)/VertexBuffer.o
 OBJECTS += $(OBJDIR)/VertexBufferLayout.o
 OBJECTS += $(OBJDIR)/Window.o
 OBJECTS += $(OBJDIR)/Xrand.o
+OBJECTS += $(OBJDIR)/garbage.o
 OBJECTS += $(OBJDIR)/glm.o
 OBJECTS += $(OBJDIR)/main.o
 
@@ -226,7 +240,19 @@ endif
 # File Rules
 # #############################################
 
-$(OBJDIR)/AABB.o: engine/src/AABB.cpp
+$(OBJDIR)/AACircle.o: engine/src/AACircle.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/AACollider.o: engine/src/AACollider.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/AARay.o: engine/src/AARay.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/AARectangle.o: engine/src/AARectangle.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/AStar.o: engine/src/AStar.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Camera.o: engine/src/Camera.cpp
@@ -281,6 +307,12 @@ $(OBJDIR)/Input.o: engine/src/Input.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Music.o: engine/src/Music.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Particles.o: engine/src/Particles.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Physics.o: engine/src/Physics.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Rectangle.o: engine/src/Rectangle.cpp
@@ -374,6 +406,9 @@ $(OBJDIR)/TitleState.o: game/src/TitleState.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/main.o: game/src/main.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/garbage.o: res/garbage.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 

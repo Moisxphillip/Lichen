@@ -19,6 +19,8 @@ double Clamp(double);
 float SmootherStep(float LowerBound, float HigherBound, float x);
 float SmoothStep (float LowerBound, float HigherBound, float x);
 
+template <typename T>
+T Lerp(const T& start, const T& end, float t);
 
 
 #endif//LICHEN_TOOLS

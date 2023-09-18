@@ -156,3 +156,8 @@ uint32_t Color::ColorUint32()
     SDL_Color ThisOne = ColorSDL();
 	return (uint32_t)((uint8_t)((ThisOne.r*255) << 16) + (ThisOne.g << 8) + (ThisOne.b << 0));
 }
+
+Color Color::Interpolation(Color& A, Color& B, float F)
+{
+    return Color(Lerp(A.r, B.r, F), Lerp(A.g, B.g, F), Lerp(A.b, B.b, F), Lerp(A.a, B.a, F));
+}

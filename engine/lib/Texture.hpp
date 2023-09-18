@@ -25,7 +25,7 @@ class Texture
         void Bind(unsigned int = 0);
         void Unbind();
         void UpdateTexture(SDL_Surface*);
-        int GetTextureID();
+        unsigned int GetTextureID();
         int GetWidth();
         int GetHeight();
 

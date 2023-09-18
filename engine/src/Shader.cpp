@@ -215,3 +215,8 @@ void Shader::SetUniform1ui(const std::string& Name, unsigned int v0)
     glUniform1ui(Location, v0);
 }
 
+void Shader::SetColor(const std::string& Name,Color& Colour)
+{
+    SetUniform4f(Name, Colour.r, Colour.g, Colour.b, Colour.a);
+}
+
