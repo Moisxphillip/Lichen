@@ -1,24 +1,23 @@
-#ifndef LICHEN_ENDSTATE
-#define LICHEN_ENDSTATE
+#ifndef LICHEN_TESTSTATE
+#define LICHEN_TESTSTATE
 
-#include "../../engine/lib/State.hpp"
+#include "../../engine/lib/Scene.hpp"
 #include "../../engine/lib/Timer.hpp"
 #include "../../engine/lib/Color.hpp"
-#include "../../engine/lib/Music.hpp"
 
 
-class EndState : public State
+class Test01 : public Scene
 {
     private:
         Timer TextColorChange;
         Color TextColor;
-        Music* _EndMusic;
         
     public:
-        EndState();
-        ~EndState();
+        Test01();
+        ~Test01();
 
         void LoadAssets();
+        void PhysicsUpdate(float);
         void Update(float);
         void Render();
 
@@ -29,4 +28,4 @@ class EndState : public State
 };
 
 
-#endif//LICHEN_ENDSTATE
+#endif//LICHEN_TESTSTATE

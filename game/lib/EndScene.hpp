@@ -1,20 +1,22 @@
-#ifndef LICHEN_TITLESTATE
-#define LICHEN_TITLESTATE
+#ifndef LICHEN_ENDSTATE
+#define LICHEN_ENDSTATE
 
-#include "../../engine/lib/State.hpp"
+#include "../../engine/lib/Scene.hpp"
 #include "../../engine/lib/Timer.hpp"
 #include "../../engine/lib/Color.hpp"
+#include "../../engine/lib/Music.hpp"
 
 
-class TitleState : public State
+class EndScene : public Scene
 {
     private:
         Timer TextColorChange;
         Color TextColor;
+        Music* _EndMusic;
         
     public:
-        TitleState();
-        ~TitleState();
+        EndScene();
+        ~EndScene();
 
         void LoadAssets();
         void Update(float);
@@ -27,4 +29,4 @@ class TitleState : public State
 };
 
 
-#endif//LICHEN_TITLESTATE
+#endif//LICHEN_ENDSTATE

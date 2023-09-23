@@ -81,7 +81,7 @@ Engine::Engine(std::string Name = "LichenEngine", int Width = 1024, int Height =
     _Dt = 0.0f;
     _PingCounter = 0.0;
     _Ping = true;
-    _GameState = nullptr;//new StageState; //Creates a base state for the Engine 
+    _GameScene = nullptr;//new StageScene; //Creates a base state for the Engine 
 }
 
 Engine::~Engine()
@@ -98,32 +98,32 @@ Engine::~Engine()
 
 
     //Free last resources
-    while(!StateStack.empty())
+    while(!SceneStack.empty())
     {
-        StateStack.pop();
+        SceneStack.pop();
     }
 
     delete _GameRenderer;
     delete _GameWindow;
 
-    if(_GameState != nullptr)
+    if(_GameScene != nullptr)
     {
-        delete _GameState;
-        _GameState = nullptr;
+        delete _GameScene;
+        _GameScene = nullptr;
     }
     delete _GameInstance;
 }
 
-bool Engine::_ChangeState()
+bool Engine::_ChangeScene()
 {
-    if(_GameState != nullptr)
+    if(_GameScene != nullptr)
     {
-        if(!StateStack.empty())
+        if(!SceneStack.empty())
         {
-            StateStack.top()->StatePause();
+            SceneStack.top()->ScenePause();
         }
-        StateStack.push(std::unique_ptr<State>(_GameState));
-        _GameState = nullptr;
+        SceneStack.push(std::unique_ptr<Scene>(_GameScene));
+        _GameScene = nullptr;
         return true;
     } 
     return false;
@@ -131,21 +131,21 @@ bool Engine::_ChangeState()
 
 void Engine::Run()
 {   
-    _ChangeState();
+    _ChangeScene();
 
     //These are for timesteps in physics
     const float Step = 0.01f;
     float Accumulator = 0.0f;
 
-    while(!StateStack.empty() && !StateStack.top()->QuitRequested())    //Wait for quit state
+    while(!SceneStack.empty() && !SceneStack.top()->QuitRequested())    //Wait for quit state
     {
-        if(!StateStack.top()->HasStarted())
+        if(!SceneStack.top()->HasStarted())
         {
-            StateStack.top()->StateStart();
+            SceneStack.top()->SceneStart();
             _CalculateDt(); //Will recalculate, maybe solves loading time Dt growth
         }
 
-        while(!StateStack.top()->PopRequested())
+        while(!SceneStack.top()->PopRequested())
         {
             _GameRenderer->Clear();
             _CalculateDt();
@@ -154,13 +154,13 @@ void Engine::Run()
             Accumulator+=GetDt();
             while(Accumulator>=Step)
             {
-                StateStack.top()->StatePhysicsUpdate(Step);
+                SceneStack.top()->ScenePhysicsUpdate(Step);
                 Accumulator -=(glfwGetTime() - _FrameStart)+Step;
             }
             
-            StateStack.top()->StateUpdate(GetDt());
-            StateStack.top()->StateLateUpdate(GetDt());
-            StateStack.top()->StateRender();
+            SceneStack.top()->SceneUpdate(GetDt());
+            SceneStack.top()->SceneLateUpdate(GetDt());
+            SceneStack.top()->SceneRender();
 
             if(_PingCounter > 1.0)//Easy signal for some applications
             {
@@ -178,22 +178,22 @@ void Engine::Run()
             // {
             //     //TODO make suitable framerate control if needed
             // }
-            if(_ChangeState())
+            if(_ChangeScene())
             {
                 break;
             }
         }
-        if(StateStack.top()->PopRequested())
+        if(SceneStack.top()->PopRequested())
         {
-            bool QuitRequested = StateStack.top()->QuitRequested();
-            StateStack.pop();
-            if(QuitRequested && !StateStack.empty())
+            bool QuitRequested = SceneStack.top()->QuitRequested();
+            SceneStack.pop();
+            if(QuitRequested && !SceneStack.empty())
             {
-                StateStack.top()->RequestQuit();
+                SceneStack.top()->RequestQuit();
             }
-            else if(!StateStack.empty() && StateStack.top()->HasStarted())
+            else if(!SceneStack.empty() && SceneStack.top()->HasStarted())
             {
-                StateStack.top()->StateResume();
+                SceneStack.top()->SceneResume();
             }
         }
     }
@@ -209,14 +209,14 @@ Window& Engine::GetWindow()
     return *_GameWindow;
 }
 
-State& Engine::CurrentState()
+Scene& Engine::CurrentScene()
 {
-    return *StateStack.top().get();
+    return *SceneStack.top().get();
 }
 
-void Engine::Push(State* NewState)
+void Engine::Push(Scene* NewScene)
 {
-    _GameState = NewState;
+    _GameScene = NewScene;
 }
 
 Engine& Engine::Instance()

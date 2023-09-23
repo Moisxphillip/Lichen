@@ -1,21 +1,21 @@
 #ifndef LICHEN_STAGESTATE
 #define LICHEN_STAGESTATE
 
-#include "../../engine/lib/State.hpp"
+#include "../../engine/lib/Scene.hpp"
 #include "../../engine/lib/XRand.hpp"
 
-class StageState : public State
+class StageScene : public Scene
 {
     private:
-        Music *_StateMusic;
+        Music *_SceneMusic;
         bool _QuitFade;
         void _FadeOut();
         
     public:
         XrandU64 Rng;
 
-        StageState();
-        ~StageState();
+        StageScene();
+        ~StageScene();
 
         void LoadAssets();
 

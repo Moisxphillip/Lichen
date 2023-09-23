@@ -15,15 +15,25 @@ project "LichenEngine"
     
     files 
     {
-        "**.h",
-        "**.c",
-        "**.hpp",
-        "**.cpp"
+        "/engine/**.h",
+        "/engine/**.c",
+        "/engine/**.hpp",
+        "/engine/**.cpp",
+        
+        "/extlib/**.h",
+        "/engine/**.c",
+        "/engine/**.hpp",
+        "/engine/**.cpp",
+        
+        "/game/**.h",
+        "/game/**.c",
+        "/game/**.hpp",
+        "/game/**.cpp"
     }
 
     includedirs
     {
-        "./extlib/include", 
+        "/extlib/include", 
         "/engine/lib",
         "/game/lib"
     }
@@ -56,4 +66,5 @@ project "LichenEngine"
         
     filter "configurations:Release"
         defines {"NDEBUG"}
+        -- flags {"static"}
         optimize "On"

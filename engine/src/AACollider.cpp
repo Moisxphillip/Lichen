@@ -5,8 +5,8 @@
 #include <cmath>
 
 Ray AACollider::_L{Vector2(0.0f,0.0f),Vector2(0.0f,0.0f)};
-Circle AACollider::_C(0.0f,0.0f,0.0f);
-Rectangle AACollider::_R(0.0f,0.0f,0.0f,0.0f);
+Circle AACollider::_C(0.0f,0.0f,0.1f);
+Rectangle AACollider::_R(0.0f,0.0f,0.1f,0.1f);
 
 AACollider::AACollider(GameObject& GameObjAssoc, AAFormat Format, ColliderKind Property, float Mass, float Restitution)
 : Component(GameObjAssoc), Offset(0.0f, 0.0f), Force(0.0f, 0.0f)
@@ -26,7 +26,12 @@ void AACollider::SetFriction(float Friction)
 
 void AACollider::SetMass(float Mass)
 {
-    _InvMass = (Property == ColliderKind::Stationary || Mass == 0) ? 0 : 1.0f/Mass;
+    if(Property == ColliderKind::Stationary)
+    {
+        _InvMass = 0;
+        return;
+    }
+    _InvMass = (Mass == 0) ? 0 : 1.0f/Mass;
 }
 
 void AACollider::SetRestitution(float Restitution)

@@ -1,5 +1,5 @@
-#include "../lib/TitleState.hpp"
-#include "../lib/StageState.hpp"
+#include "../lib/TitleScene.hpp"
+#include "../lib/StageScene.hpp"
 #include "../lib/Path.hpp"
 
 #include "../../engine/lib/Engine.hpp"
@@ -8,19 +8,19 @@
 #include "../../engine/lib/Text.hpp"
 
 
-TitleState::TitleState()
+TitleScene::TitleScene()
 {
     _QuitRequested = false; //Allows loop until quit is requested
 	_PopRequested = false;
 	_Started = false;
 }
 
-TitleState::~TitleState()
+TitleScene::~TitleScene()
 {
 }
 
 
-void TitleState::LoadAssets()
+void TitleScene::LoadAssets()
 {
     GameObject* Title = new GameObject(0);
     Sprite* TitleImage = new Sprite(*Title, FIMG_MAINSCR);
@@ -38,7 +38,7 @@ void TitleState::LoadAssets()
 }
 
 
-void TitleState::Update(float Dt)
+void TitleScene::Update(float Dt)
 {
     TextColorChange.Update(Dt);
     if(TextColorChange.Get() > 4)
@@ -49,9 +49,9 @@ void TitleState::Update(float Dt)
     //Rainbow effect
     float ColorMod = TextColorChange.Get()*90;
     TextColor.SetHSV(ColorMod, 100, 80);
-    for(int i = 0; i< (int) (StateGameObjects.size()); i++)
+    for(int i = 0; i< (int) (SceneGameObjects.size()); i++)
     {
-        Text *ScrTxt = (Text*)StateGameObjects[i]->GetComponent(ComponentType::Text);
+        Text *ScrTxt = (Text*)SceneGameObjects[i]->GetComponent(ComponentType::Text);
         if(ScrTxt != nullptr)
         {
             ScrTxt->SetColor(TextColor);
@@ -61,7 +61,7 @@ void TitleState::Update(float Dt)
 
     if(Input::Instance().KeyJustPressed(Key::Space))
     {
-        StageState* Play = new StageState;
+        StageScene* Play = new StageScene;
         Engine::Instance().Push(Play);
     }
     if((Input::Instance().KeyPressedDown(Key::Escape) || Input::Instance().QuitRequested())) 
@@ -72,22 +72,22 @@ void TitleState::Update(float Dt)
 }
 
 
-void TitleState::Render()
+void TitleScene::Render()
 {
 }
 
 
-void TitleState::Start()
+void TitleScene::Start()
 {
     LoadAssets();
 }
 
-void TitleState::Pause()
+void TitleScene::Pause()
 {
 
 }
 
-void TitleState::Resume()
+void TitleScene::Resume()
 {
 
 }

@@ -1,4 +1,4 @@
-#include "../lib/EndState.hpp"
+#include "../lib/EndScene.hpp"
 #include "../lib/Path.hpp"
 #include "../lib/GameStats.hpp"
 
@@ -6,7 +6,7 @@
 #include "../../engine/lib/Text.hpp"
 #include "../../engine/lib/Input.hpp"
 
-EndState::EndState()
+EndScene::EndScene()
 {
     _QuitRequested = false; //Allows loop until quit is requested
 	_PopRequested = false;
@@ -14,14 +14,14 @@ EndState::EndState()
 	_Started = false;
 }
 
-EndState::~EndState()
+EndScene::~EndScene()
 {
     delete _EndMusic;
     _EndMusic = nullptr;
 }
 
 
-void EndState::LoadAssets()
+void EndScene::LoadAssets()
 {
     //Main Image
     GameObject* Title = new GameObject(1);
@@ -82,7 +82,7 @@ void EndState::LoadAssets()
 	_EndMusic->Play(-1, 1000);
 }
 
-void EndState::Update(float Dt)
+void EndScene::Update(float Dt)
 {
     TextColorChange.Update(Dt);
     if(TextColorChange.Get() > 4)
@@ -93,9 +93,9 @@ void EndState::Update(float Dt)
     //Rainbow effect
     float ColorMod = TextColorChange.Get()*90;
     TextColor.SetHSV(ColorMod, 100, 80);
-    for(int i = 0; i< (int) (StateGameObjects.size()); i++)
+    for(int i = 0; i< (int) (SceneGameObjects.size()); i++)
     {
-        Text *ScrTxt = (Text*)StateGameObjects[i]->GetComponent(ComponentType::Text);
+        Text *ScrTxt = (Text*)SceneGameObjects[i]->GetComponent(ComponentType::Text);
         if(ScrTxt != nullptr)
         {
             ScrTxt->SetColor(TextColor);
@@ -117,22 +117,22 @@ void EndState::Update(float Dt)
     }
 }
 
-void EndState::Render()
+void EndScene::Render()
 {
 }
 
 
-void EndState::Start()
+void EndScene::Start()
 {
     LoadAssets();
 }
 
-void EndState::Pause()
+void EndScene::Pause()
 {
 
 }
 
-void EndState::Resume()
+void EndScene::Resume()
 {
 
 }

@@ -17,7 +17,7 @@
 
 
 //Engine includes
-#include "State.hpp"
+#include "Scene.hpp"
 #include "Vector2.hpp"
 #include "Window.hpp"
 #include "Renderer.hpp"
@@ -36,7 +36,7 @@ class Engine
 
         //internal procedures
         void _InitEngineSystems();
-        bool _ChangeState();
+        bool _ChangeScene();
         
         //Mandatory
         Engine(std::string, int, int, int=0, int=0, bool=true);
@@ -45,8 +45,8 @@ class Engine
         SDL_Window* _SDLWindow = nullptr;
         Renderer* _GameRenderer = nullptr;
         
-        State* _GameState = nullptr;
-        std::stack<std::unique_ptr<State>> StateStack;
+        Scene* _GameScene = nullptr;
+        std::stack<std::unique_ptr<Scene>> SceneStack;
 
         double _PingCounter;
         bool _Ping;
@@ -63,7 +63,7 @@ class Engine
         //Mandatory
         ~Engine();
         void Run();
-        void Push(State*);
+        void Push(Scene*);
         Renderer& GetRenderer();
         Window& GetWindow();
 
@@ -71,7 +71,7 @@ class Engine
         Vector2 GetRenderSize();
         int GetSoundChannels();
 
-        State& CurrentState();
+        Scene& CurrentScene();
         static Engine& Instance();
         float GetDt();
         bool GetPing();

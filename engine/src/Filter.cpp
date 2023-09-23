@@ -1,6 +1,5 @@
 #include "../lib/Filter.hpp"
 #include "../lib/Engine.hpp"
-#include "../lib/Settings.hpp"
 
 
 Filter::Filter(GameObject& GameObj, Color FilterColor)

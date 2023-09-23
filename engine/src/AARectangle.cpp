@@ -20,16 +20,18 @@ void AARectangle::SetRect(Rectangle R)
 
 void AARectangle::PhysicsUpdate(float Dt)
 {
-    Position = Parent.Box.Center() + Offset.Rotate(Parent.Angle);
+    Vector2 Rot = Offset.Rotate(Parent.Angle);
+    Position = Parent.Box.Center() + Rot;
     Physics::Integrate(*this, Dt);
     _Rect.SetCenter(Position);
-    Parent.Box.SetCenter(Position - Offset.Rotate(Parent.Angle));
+    Parent.Box.SetCenter(Position - Rot);
 }
 
 void AARectangle::Render()
 {
 #ifdef DEBUG 
-	_Form.DrawRectangle(_Rect, Color("#ff0000"), 
+    Vector2 Rot = Offset.Rotate(Parent.Angle);
+	_Form.DrawRectangle(_Rect+Rot, Color("#ff00ff"), 
 		Engine::Instance().GetWindow().GetProjection(), 
 		Engine::Instance().GetRenderer().GetView(),
 		Parent.Angle);

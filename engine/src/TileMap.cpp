@@ -8,7 +8,6 @@
 #include "../lib/Collider.hpp"
 #include "../lib/Engine.hpp"
 #include "../lib/Tools.hpp"
-#include "../lib/Settings.hpp"
 
 TileMap::TileMap(GameObject& GameObj, std::string File, TileSet* CurrTileSet, bool LoadAsLegacy=false, bool IsZeroEmpty = true)
 : Component(GameObj)
@@ -356,7 +355,7 @@ void TileMap::LoadCollision(std::string fileName)
         // ColliderObj->SignalTerrain();// Add terrain flags around here
         ColliderObj->Box = Rectangle(Block[i].x*_CurrTileSet->GetTileWidth(), Block[i].y*_CurrTileSet->GetTileHeight(),
             Block[i].w*_CurrTileSet->GetTileWidth(), Block[i].h*_CurrTileSet->GetTileHeight());
-        Engine::Instance().CurrentState().AddGameObj(ColliderObj);
+        Engine::Instance().CurrentScene().AddGameObj(ColliderObj);
     }
 }
 

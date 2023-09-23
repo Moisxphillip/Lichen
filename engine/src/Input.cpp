@@ -297,7 +297,7 @@ Vector2 Input::MousePosition()
     return Vector2(
         (float)_MouseX * (float)Win.GetProjectionWidth()/(float)Win.GetWidth(),
         (float)_MouseY * (float)Win.GetProjectionHeight()/(float)Win.GetHeight())
-        + Engine::Instance().CurrentState().Cam.Position();
+        + Engine::Instance().CurrentScene().Cam.Position();
 }
 
 // Controller functions

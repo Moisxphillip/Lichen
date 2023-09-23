@@ -48,7 +48,7 @@ void PenguinBody::OnCollision(GameObject& Other)
             Other.RequestDelete();
             if(_HP<=0)
             {
-                Engine::Instance().CurrentState().Cam.Unfollow();
+                Engine::Instance().CurrentScene().Cam.Unfollow();
             }
         }
     }
@@ -62,9 +62,9 @@ void PenguinBody::Render()
 void PenguinBody::Start()
 {
     GameObject* Cannon = new GameObject(3);
-    PenguinCannon* CannonCub = new PenguinCannon(*Cannon, Engine::Instance().CurrentState().GetGameObjPtr(&Parent));
+    PenguinCannon* CannonCub = new PenguinCannon(*Cannon, Engine::Instance().CurrentScene().GetGameObjPtr(&Parent));
     Cannon->AddComponent(CannonCub);
-    Engine::Instance().CurrentState().AddGameObj(Cannon);
+    Engine::Instance().CurrentScene().AddGameObj(Cannon);
 }
 
 void PenguinBody::Update(float Dt)
@@ -72,15 +72,15 @@ void PenguinBody::Update(float Dt)
     Parent.Angle+= (Input::Instance().KeyPressedDown(Key::D)-Input::Instance().KeyPressedDown(Key::A))
     * Dt * M_PI;
     _LinearSpeed+= (Input::Instance().KeyPressedDown(Key::S)-Input::Instance().KeyPressedDown(Key::W)) 
-    * Dt * LICHEN_PENGACCEL;
+    * Dt * 100;
 
-    if(_LinearSpeed > LICHEN_PENGSPDMAX)
+    if(_LinearSpeed > 250.0f)
     {
-        _LinearSpeed = LICHEN_PENGSPDMAX;
+        _LinearSpeed = 250.0f;
     }
-    else if (_LinearSpeed < -LICHEN_PENGSPDMAX)
+    else if (_LinearSpeed < -250.0f)
     {
-        _LinearSpeed = -LICHEN_PENGSPDMAX;
+        _LinearSpeed = -250.0f;
     }
     if (Input::Instance().KeyPressedDown(Key::B))
     {
@@ -101,13 +101,13 @@ void PenguinBody::Update(float Dt)
     if(_HP<=0 && !Parent.IsDead())
     {
         GameObject* Death = new GameObject(2);
-        Sprite* PengDeath = new Sprite(*Death, FIMG_PENGDEATH, 5,5,1, LICHEN_DEATHFRAMETIME, 1);
+        Sprite* PengDeath = new Sprite(*Death, FIMG_PENGDEATH, 5,5,1, 0.15f, 1);
         PengDeath->Loop = false;
         Death->Box.h = PengDeath->GetHeight();
         Death->Box.w = PengDeath->GetWidth();
         Death->Box.SetCenter(Parent.Box.Center());
         Death->AddComponent(PengDeath);
-        Engine::Instance().CurrentState().AddGameObj(Death);
+        Engine::Instance().CurrentScene().AddGameObj(Death);
 
         GameObject* DeathSound = new GameObject();
         DeathSound->Box = Death->Box;
@@ -116,7 +116,7 @@ void PenguinBody::Update(float Dt)
         Boom->SelfDestruct = true; 
         Boom->Play(0);
         DeathSound->AddComponent(Boom);
-        Engine::Instance().CurrentState().AddGameObj(DeathSound);
+        Engine::Instance().CurrentScene().AddGameObj(DeathSound);
 
         Parent.RequestDelete();
     }

@@ -2,7 +2,6 @@
 #include "../lib/Engine.hpp"
 #include "../lib/Resources.hpp"
 #include "../lib/Tools.hpp"
-#include "../lib/Settings.hpp"
 
 Text::Text(GameObject& GameObj, std::string Font, int Size, TextStyle Style, std::string Text, Color NewColor)
 : Component(GameObj)

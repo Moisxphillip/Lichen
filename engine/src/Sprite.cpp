@@ -11,7 +11,10 @@ Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount , int Colum
     _Scale = Vector2(1,1);
     _Parallax = Vector2(1,1);
     _FrameCount = FrameCount;
+    _FrameSpan = FrameCount;
     _CurrFrame = 0;
+    _FrameStart = 0;
+
     _XFrames = Columns;
     _YFrames = Rows;
     _FrameTime = FrameTime;
@@ -125,6 +128,27 @@ void Sprite::SetFrameCount(int FrameCount)
     _FrameCount = FrameCount;
 }
 
+void Sprite::SetFrameSpan(int Span)
+{
+    if(_FrameStart+Span > _FrameCount)
+    {
+        Error("Sprite::SetFrameSpan: Trying to set a too large frame span for the current sprite settings");
+        return;
+    }
+    _FrameSpan = Span;
+}
+
+void Sprite::SetFrameStart(int Start)
+{
+    if(Start+_FrameSpan > _FrameCount)
+    {
+        Error("Sprite::SetFrameStart: Trying to set a too large start value for the current sprite settings");
+        return;
+    }
+    _FrameStart = Start;
+    _CurrFrame = Start;
+}
+
 void Sprite::SetColumns(int Columns)
 {
     _XFrames = Columns;
@@ -193,10 +217,10 @@ void Sprite::Update(float Dt)
         _TimeElapsed += Dt;
         if(_TimeElapsed >= _FrameTime && _FrameCount > 1)
         {
-            if(Loop == true || _CurrFrame < _FrameCount-1)
+            if(Loop == true || _CurrFrame < _FrameStart +_FrameSpan-1 /*_FrameCount-1*/)
             {
-                ++_CurrFrame%=_FrameCount;
-                SetFrame(_CurrFrame);
+                ++_CurrFrame%=_FrameSpan /*_FrameCount*/;
+                SetFrame(_FrameStart+_CurrFrame);
             }    
             _TimeElapsed = 0;
         }

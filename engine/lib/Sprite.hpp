@@ -5,7 +5,6 @@
 
 #include "GameObject.hpp"
 #include "Component.hpp"
-#include "Settings.hpp"
 #include "Timer.hpp"
 #include "Tools.hpp"
 #include "Image.hpp"
@@ -22,6 +21,8 @@ class Sprite : public Component
         int _XFrames;
         int _YFrames;
         int _FrameCount;
+        int _FrameSpan;
+        int _FrameStart;
         int _CurrFrame;
         float _TimeElapsed;
         float _FrameTime;
@@ -50,9 +51,11 @@ class Sprite : public Component
         Vector2 GetParallax();
         bool IsOpen();
 
-        void SetColor(Color);
+        void SetColor(Color Colour);
         Color GetColor();
-        void SetFrame(int);
+        void SetFrame(int Frame);
+        void SetFrameSpan(int Span);
+        void SetFrameStart(int Start);
         void SetColumns(int);
         void SetRows(int);
         void SetFrameCount(int);

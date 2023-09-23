@@ -28,12 +28,12 @@ void PenguinCannon::Shoot()
     Vector2 ExtraDistance(50,0);
     ExtraDistance.Rotate(Angle);
     GameObject* GoBullet= new GameObject(5);
-    Bullet* Projectile = new Bullet(*GoBullet, Angle, LICHEN_BULLETSPD,
-             LICHEN_BULLETDMG, LICHEN_BULLETDIST, FIMG_PENGBULLET, 4, false, false);
+    Bullet* Projectile = new Bullet(*GoBullet, Angle, 300.0f,
+             15, 900.0f, FIMG_PENGBULLET, 4, false, false);
     GoBullet->Box.SetCenter(Parent.Box.Center());
     GoBullet->Box+=ExtraDistance;
     GoBullet->AddComponent(Projectile);
-    Engine::Instance().CurrentState().AddGameObj(GoBullet);
+    Engine::Instance().CurrentScene().AddGameObj(GoBullet);
 }
 
 void PenguinCannon::Render()

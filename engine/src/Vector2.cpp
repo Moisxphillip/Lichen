@@ -43,6 +43,19 @@ Vector2 Vector2::Normalized()
     return Vector2(this->x/Mag, this->y/Mag);
 }
 
+Vector2 Vector2::Normalize()
+{
+    float Mag = this->Magnitude();
+    if(Mag == 0)
+    {
+        Error("Vector2::Normalized: Division by zero must not occur");
+        return *this;
+    }
+    this->x/=Mag;
+    this->y/=Mag;
+    return *this;
+}
+
 float Vector2::Dot(const Vector2& Vector)
 {
     return (this->x* Vector.x + this->y*Vector.y);
@@ -79,6 +92,27 @@ Vector2 Vector2::Rotate(const float& Rad)
     return *this;
 }
 
+Vector2 Vector2::Rotated(const float& Rad)
+{
+    float Sin = sin(Rad), Cos = cos(Rad);
+    float x = this->x*Cos - this->y*Sin;
+    float y = this->y*Cos + this->x*Sin;    
+    return Vector2(x,y);
+}
+
+Vector2 Vector2::MoveTo(const Vector2& Goal, const float& Speed)
+{
+    Vector2 Movement = Goal - *this;
+    float Mag = Movement.Magnitude();
+    if(Mag <= Speed || Mag == 0)
+    {
+        *this = Goal;
+        return *this;
+    }
+    *this += Movement/Mag * Speed;
+    return *this;
+}
+
 //________________________________________
 float Vector2::Dot(const Vector2& V1, const Vector2& V2)
 {
@@ -98,6 +132,14 @@ float Vector2::Distance(const Vector2& V1, const Vector2& V2)
 Vector2 Vector2::DistVector2(const Vector2& V1, const Vector2& V2)
 {
     return (V2-V1);
+}
+
+Vector2 Vector2::Bezier(const Vector2& V0, const Vector2& V1, const Vector2& V2, float& T)
+{
+    float InverseT = 1.0 - T;
+    float T2 = T * T;
+    return InverseT * InverseT * V0 + Vector2(2.0f, 2.0f) * InverseT * T * V1*V1 + T2 * V2;//remove one of the V1 later if needed
+
 }
 
 float Vector2::DistAngle(const Vector2& V1, const Vector2& V2)
@@ -132,9 +174,24 @@ Vector2 operator*(const Vector2& V1, const float& Scalar)
     return Vector2(V1.x * Scalar, V1.y * Scalar);
 }
 
+Vector2 operator*(const float& Scalar, const Vector2& V1)
+{
+    return V1 * Scalar;
+}
+
 Vector2 operator*(const Vector2& V1, const Vector2& V2)
 {
     return Vector2(V1.x * V2.x, V1.y * V2.y);
+}
+
+Vector2 operator/(const Vector2& V1, const float& Scalar)
+{
+    return Vector2(V1.x / Scalar, V1.y / Scalar);
+}
+
+Vector2 operator/(const Vector2& V1, const Vector2& V2)
+{
+    return Vector2(V1.x / V2.x, V1.y / V2.y);
 }
 
 bool operator==(const Vector2& V1, const Vector2& V2)

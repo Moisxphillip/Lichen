@@ -1,5 +1,5 @@
-#include "../lib/StageState.hpp"
-#include "../lib/EndState.hpp"
+#include "../lib/StageScene.hpp"
+#include "../lib/EndScene.hpp"
 #include "../lib/GameStats.hpp"
 #include "../lib/PenguinBody.hpp"
 #include "../lib/Alien.hpp"
@@ -18,11 +18,11 @@
 #define LICHEN_TILEHEIGHT 64
 
 
-StageState::StageState()
+StageScene::StageScene()
 {
     _QuitRequested = false; //Allows loop until quit is requested
 	_PopRequested = false;
-    _StateMusic = nullptr; 
+    _SceneMusic = nullptr; 
     _QuitFade = false;
 	_Started = false;
 	//Init random machine
@@ -30,51 +30,51 @@ StageState::StageState()
 	Rng.range(0,1000);
 }
 
-StageState::~StageState()
+StageScene::~StageScene()
 {
-    delete _StateMusic;
-    _StateMusic = nullptr;
+    delete _SceneMusic;
+    _SceneMusic = nullptr;
 }
 
-void StageState::Start()
+void StageScene::Start()
 {
 	LoadAssets();
 }
 
-void StageState::Pause()
+void StageScene::Pause()
 {
 }
 
-void StageState::Resume()
+void StageScene::Resume()
 {
 }
 
-void StageState::LoadAssets()
+void StageScene::LoadAssets()
 {
 	//Basic state elements
     GameObject *BgElement = new GameObject(0);//Create a gameobject to be associated with the background sprite 
-    Sprite* StateBg = new Sprite(*BgElement, FIMG_OCEAN);//Load image background
+    Sprite* SceneBg = new Sprite(*BgElement, FIMG_OCEAN);//Load image background
 	CameraFollower *FixedBg = new CameraFollower(*BgElement);
-	BgElement->AddComponent(StateBg); //registers component on the gameObject
+	BgElement->AddComponent(SceneBg); //registers component on the gameObject
 	BgElement->AddComponent(FixedBg); //Keeps initial coordinates fixed on camera
-	BgElement->Box.Redimension(Vector2(StateBg->GetWidth(),StateBg->GetHeight()));//Sets dimensions for the background GameObject
+	BgElement->Box.Redimension(Vector2(SceneBg->GetWidth(),SceneBg->GetHeight()));//Sets dimensions for the background GameObject
 	AddGameObj(BgElement);//Stores GameObject on scene GameObj vector
 
 	//Init TileMap
-	GameObject* StateMap = new GameObject(1);
-	TileSet* StateTileSet = new TileSet(LICHEN_TILEWIDTH, LICHEN_TILEHEIGHT, FIMG_TILESET);
-	TileMap* StateTileMap = new TileMap(*StateMap, FMAP_TILEMAP0, StateTileSet, false, true);
-	StateMap->AddComponent(StateTileMap);
-	AddGameObj(StateMap);
+	GameObject* SceneMap = new GameObject(1);
+	TileSet* SceneTileSet = new TileSet(LICHEN_TILEWIDTH, LICHEN_TILEHEIGHT, FIMG_TILESET);
+	TileMap* SceneTileMap = new TileMap(*SceneMap, FMAP_TILEMAP0, SceneTileSet, false, true);
+	SceneMap->AddComponent(SceneTileMap);
+	AddGameObj(SceneMap);
 	
 	//Init layer over map
-	StateMap = new GameObject(10);
-	StateMap->Depth = DepthMode::Foreground;
-	StateTileSet = new TileSet(LICHEN_TILEWIDTH, LICHEN_TILEHEIGHT, FIMG_TILESET);
-	StateTileMap = new TileMap(*StateMap, FMAP_TILEMAP1, StateTileSet, false, true);
-	StateTileMap->SetParallax(1.5);
-	StateMap->AddComponent(StateTileMap);
-	AddGameObj(StateMap);
+	SceneMap = new GameObject(10);
+	SceneMap->Depth = DepthMode::Foreground;
+	SceneTileSet = new TileSet(LICHEN_TILEWIDTH, LICHEN_TILEHEIGHT, FIMG_TILESET);
+	SceneTileMap = new TileMap(*SceneMap, FMAP_TILEMAP1, SceneTileSet, false, true);
+	SceneTileMap->SetParallax(1.5);
+	SceneMap->AddComponent(SceneTileMap);
+	AddGameObj(SceneMap);
 
 	//Penguin
 	GameObject* PenguinObj = new GameObject(2);
@@ -101,16 +101,16 @@ void StageState::LoadAssets()
 		AddGameObj(AlienObj);
 	}
 	// //Play music
-	_StateMusic = new Music(FMUS_STAGE1);//Load the music file for the current state
-	_StateMusic->Play(-1, 1000); //Start playing phase theme
+	_SceneMusic = new Music(FMUS_STAGE1);//Load the music file for the current state
+	_SceneMusic->Play(-1, 1000); //Start playing phase theme
 }
 
-void StageState::Update(float Dt)
+void StageScene::Update(float Dt)
 {
 	//Sets QuitFade flag if Esc or close button were pressed
 	if((!_QuitFade && (Input::Instance().KeyPressedDown(Key::Escape) || Input::Instance().QuitRequested()))) 
 	{
-		_StateMusic->Stop(0);
+		_SceneMusic->Stop(0);
 		_QuitFade = true;
 		_QuitRequested = true;
 	}
@@ -119,7 +119,7 @@ void StageState::Update(float Dt)
 	{
 		if(Alien::AlienCount == 0 || PenguinBody::Player == nullptr)
 		{
-			EndState* Ended = new EndState();
+			EndScene* Ended = new EndScene();
 			Engine::Instance().Push(Ended);
 		}
 		_PopRequested = true;
@@ -127,7 +127,7 @@ void StageState::Update(float Dt)
 
 	if(Input::Instance().KeyJustPressed(Key::Number1))
 	{
-		_StateMusic->Stop(1000);
+		_SceneMusic->Stop(1000);
 		GameStats::PlayerVictory = true;
 		_QuitFade = true;
 	}
@@ -146,13 +146,13 @@ void StageState::Update(float Dt)
 
 	if(Alien::AlienCount == 0 && !_QuitFade)
 	{
-		_StateMusic->Stop(1000);
+		_SceneMusic->Stop(1000);
 		GameStats::PlayerVictory = true;
 		_QuitFade = true;
 	}
 	else if(PenguinBody::Player == nullptr && !_QuitFade)
 	{
-		_StateMusic->Stop(1000);
+		_SceneMusic->Stop(1000);
 		GameStats::PlayerVictory = false;
 		_QuitFade = true;
 	}
@@ -162,37 +162,37 @@ void StageState::Update(float Dt)
 		_QuitFade = true;
 	}
 		
-	//TODO transfer to State, add the masks to it
-	for(int i = 0; i< (int)StateGameObjects.size()-1; i++)
+	//TODO transfer to Scene, add the masks to it
+	for(int i = 0; i< (int)SceneGameObjects.size()-1; i++)
 	{
-		if(!StateGameObjects[i]->Contains(ComponentType::Collider))
+		if(!SceneGameObjects[i]->Contains(ComponentType::Collider))
 		{
 			continue;
 		}
 
-		Component* ColA = StateGameObjects[i]->GetComponent(ComponentType::Collider);
-		for(int j = i+1; j < (int)StateGameObjects.size(); j++)
+		Component* ColA = SceneGameObjects[i]->GetComponent(ComponentType::Collider);
+		for(int j = i+1; j < (int)SceneGameObjects.size(); j++)
 		{
 
-			if(!StateGameObjects[j]->Contains(ComponentType::Collider) /*|| //Activate once object masks are being used
-				(((StateGameObjects[i]->Represents & StateGameObjects[j]->Interacts) 
-				| (StateGameObjects[j]->Represents & StateGameObjects[i]->Interacts)) 
+			if(!SceneGameObjects[j]->Contains(ComponentType::Collider) /*|| //Activate once object masks are being used
+				(((SceneGameObjects[i]->Represents & SceneGameObjects[j]->Interacts) 
+				| (SceneGameObjects[j]->Represents & SceneGameObjects[i]->Interacts)) 
 				== CollisionMask::None)*/)
 			{
 				continue;
 			}
 
-			Component* ColB = StateGameObjects[j]->GetComponent(ComponentType::Collider);
-			if(Collision::IsColliding(StateGameObjects[i]->Box, StateGameObjects[j]->Box, StateGameObjects[i]->Angle, StateGameObjects[j]->Angle))
+			Component* ColB = SceneGameObjects[j]->GetComponent(ComponentType::Collider);
+			if(Collision::IsColliding(SceneGameObjects[i]->Box, SceneGameObjects[j]->Box, SceneGameObjects[i]->Angle, SceneGameObjects[j]->Angle))
 			{
-				StateGameObjects[i]->OnCollision(*StateGameObjects[j]);
-				StateGameObjects[j]->OnCollision(*StateGameObjects[i]);
+				SceneGameObjects[i]->OnCollision(*SceneGameObjects[j]);
+				SceneGameObjects[j]->OnCollision(*SceneGameObjects[i]);
 			}
 		}
 	}
 }
 
-void StageState::Render()
+void StageScene::Render()
 {
 
 }

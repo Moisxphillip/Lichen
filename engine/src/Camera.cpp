@@ -1,6 +1,5 @@
 #include <algorithm>
 #include "../lib/Camera.hpp"
-#include "../lib/Settings.hpp"
 #include "../lib/Engine.hpp"
 
 Vector2 Camera::_Position = Vector2(0.0f,0.0f);

@@ -105,7 +105,8 @@ void Image::Render(Renderer& RenderDevice, glm::mat4& Projection, Vector2 Positi
     if(_LastPos != Position || _LastAngle != Angle)
     {
         _LastAngle=Angle;_LastPos=Position;
-        _Model = glm::translate(glm::mat4(1.0), glm::vec3(Position.x,Position.y, 0));
+        // _Model = glm::translate(glm::mat4(1.0), glm::vec3(std::floor(Position.x),std::floor(Position.y), 0));//Reduces artifacts, can have some shaking tho
+        _Model = glm::translate(glm::mat4(1.0), glm::vec3(Position.x,Position.y, 0));//Usual positioning
         _Model = glm::rotate(_Model,Angle, glm::vec3(0, 0, 1));
     }
 
@@ -123,32 +124,33 @@ void Image::Render(Renderer& RenderDevice, glm::mat4& Projection, Vector2 Positi
         VbAltered = true;
     }
 
-    if(_LayerMode!= Depth) //On depth mode switch, always make sure there's an update
-    {
-        _LayerMode=Depth;
-        _LastDepth = -999999;
-    }
+    //3D layering disabled for now
+    // if(_LayerMode!= Depth) //On depth mode switch, always make sure there's an update
+    // {
+    //     _LayerMode=Depth;
+    //     _LastDepth = -999999;
+    // }
 
-    if(_LayerMode == DepthMode::Dynamic && Layer != _LastDepth) //Checking an int is faster and enough for this. Also, layer = sprite y here
-    {
-        //Normalize between min and max y height
-        //
-        _Square[0].z = (Position.y+_Height)/1000.0f;
-        _Square[1].z = (Position.y+_Height)/1000.0f;
-        _Square[2].z = (Position.y+_Height)/1000.0f;
-        _Square[3].z = (Position.y+_Height)/1000.0f;
-        VbAltered = true;
-    }
-    else if(Layer != _LastDepth) //Won't cause problems in case of depthmode change as the last depth is changed in the mode switch above
-    {
-        //Please don't use numbers larger than 100 or negatives for layer indexes, there's no real need for that ;-;
-        float Place = (_LayerMode == DepthMode::Background ? -1.0f+(float)Layer/100.0f : 40.0f+(float)Layer/100.0f);
-        _Square[0].z = Place;
-        _Square[1].z = Place;
-        _Square[2].z = Place;
-        _Square[3].z = Place;
-        VbAltered = true;
-    }
+    // if(_LayerMode == DepthMode::Dynamic && Layer != _LastDepth) //Checking an int is faster and enough for this. Also, layer = sprite y here
+    // {
+    //     //Normalize between min and max y height
+    //     //
+    //     _Square[0].z = (Position.y+_Height)/1000.0f;
+    //     _Square[1].z = (Position.y+_Height)/1000.0f;
+    //     _Square[2].z = (Position.y+_Height)/1000.0f;
+    //     _Square[3].z = (Position.y+_Height)/1000.0f;
+    //     VbAltered = true;
+    // }
+    // else if(Layer != _LastDepth) //Won't cause problems in case of depthmode change as the last depth is changed in the mode switch above
+    // {
+    //     //Please don't use numbers larger than 100 or negatives for layer indexes, there's no real need for that ;-;
+    //     float Place = (_LayerMode == DepthMode::Background ? -1.0f+(float)Layer/100.0f : 40.0f+(float)Layer/100.0f);
+    //     _Square[0].z = Place;
+    //     _Square[1].z = Place;
+    //     _Square[2].z = Place;
+    //     _Square[3].z = Place;
+    //     VbAltered = true;
+    // }
     
     bool RectChanged = (Dst.x != _LastDst.x || Dst.y != _LastDst.y || Dst.w != _LastDst.w || Dst.h != _LastDst.h);
 

@@ -1,4 +1,5 @@
 #include "../lib/Rectangle.hpp"
+#include "../lib/Circle.hpp"
 
 Rectangle::Rectangle(float x, float y, float w, float h)
 : x(x),y(y),w(w),h(h)
@@ -48,13 +49,27 @@ float Rectangle::DistCenters(Rectangle& Other)
     return (this->Center() - Other.Center()).Magnitude();
 }
 
+float Rectangle::DistCenters(Circle& Other)
+{
+    return (this->Center() - Other.Center()).Magnitude();
+}
+
 bool Rectangle::Contains(const Vector2& Vector)
 {
     return ((Vector.x >= x) 
         && (Vector.y >= y)
         && (Vector.x <= (x+w))
         && (Vector.y <= (y+h)));
-}       
+}
+
+Rectangle Rectangle::GetIntersection(Rectangle& Other) 
+{
+    Rectangle Intersection(std::max(x, Other.x), std::max(y, Other.y), 0, 0);
+    Intersection.Redimension(Vector2(std::min(Other.x+Other.w, x+w) - Intersection.x,
+        std::min(y+h, Other.y+Other.h) - Intersection.y));
+    return Intersection;
+}
+
 
 //+, -, <<
 Rectangle operator+(const Rectangle& Other, const Vector2& Vector)
@@ -70,6 +85,16 @@ Rectangle operator-(const Rectangle& Other, const Vector2& Vector)
 Rectangle operator*(const Rectangle& Other, const Vector2& Vector)
 {
     return Rectangle(Other.x * Vector.x, Other.y * Vector.y, Other.w, Other.h);
+}
+
+Rectangle operator*(const Vector2& Vector, const Rectangle& Other)
+{
+    return Rectangle(Other.x * Vector.x, Other.y * Vector.y, Other.w, Other.h);
+}
+
+Rectangle operator/(const Rectangle& Other, const Vector2& Vector)
+{
+    return Rectangle(Other.x / Vector.x, Other.y / Vector.y, Other.w, Other.h);
 }
 
 bool operator==(const Rectangle& R1, const Rectangle& R2)
@@ -103,6 +128,20 @@ Rectangle& Rectangle::operator-=(const Vector2& Vector)
 {
     this->x-=Vector.x;
     this->y-=Vector.y;
+    return *this;
+}
+
+Rectangle& Rectangle::operator*=(const Vector2& Vector)
+{
+    this->x*=Vector.x;
+    this->y*=Vector.y;
+    return *this;
+}
+
+Rectangle& Rectangle::operator/=(const Vector2& Vector)
+{
+    this->x/=Vector.x;
+    this->y/=Vector.y;
     return *this;
 }
 

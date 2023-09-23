@@ -1,4 +1,4 @@
-#include "../lib/TestState.hpp"
+#include "../lib/TestScene.hpp"
 #include "../../engine/lib/Engine.hpp"
 #include "../../engine/lib/Sprite.hpp"
 #include "../../engine/lib/Text.hpp"
@@ -28,6 +28,7 @@ bool shading = false;
 Draw *draw = nullptr;
 
 AARectangle* Aa = nullptr;
+// AACircle* Aa = nullptr;
 
 
 ParticleManager* Pm;
@@ -37,36 +38,84 @@ void Test01::LoadAssets()
     Pm = new ParticleManager;
 
     GameObject* ColObj = new GameObject();
-    AACircle* circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(640,360, 50));
-    ColObj->AddComponent(circle);
-    ColObj->Box.SetCenter(Vector2(640,360));
-    AddGameObj(ColObj);
-    
-    ColObj = new GameObject();
     AARectangle* rect = new AARectangle(*ColObj, ColliderKind::Rigid, Rectangle(100,100, 100, 50));
     Aa = rect;
     ColObj->AddComponent(rect);
     ColObj->Box.SetPosition(rect->GetRect().Position());
     AddGameObj(ColObj);
 
-    
+    ColObj = new GameObject();
+    AACircle* circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(800,360, 50));
+    // Aa = circle;
+    ColObj->AddComponent(circle);
+    ColObj->Box.SetCenter(circle->GetBall().Center());
+    AddGameObj(ColObj);
 
-    // Aa.Ball.r = 40;
-    // // Aa.Position = Aa.Ball.Center();//mouse pointer
- 
-    // Aa.Ball.SetCenter(Vector2(640,0));//Drop test
-    // Aa.Position = Aa.Ball.Center();
-    // Aa.SetVelocity(Vector2(0,6));
-    // // Aa.SetRestitution(0.8);
+    ColObj = new GameObject();
+    circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(800,500, 70));
+    // Aa = circle;
+    ColObj->AddComponent(circle);
+    ColObj->Box.SetCenter(circle->GetBall().Center());
+    AddGameObj(ColObj);
 
-    // Aa.Rect.Redimension(Vector2(80,80));
-    // Ab.Rect.Redimension(Vector2(80,80));
-    // Ab.Rect.SetCenter(Vector2(640, 360));
-    // Ab.Position = (Vector2(640, 360));
+    ColObj = new GameObject();
+    circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(200,360, 30));
+    // Aa = circle;
+    ColObj->AddComponent(circle);
+    ColObj->Box.SetCenter(circle->GetBall().Center());
+    AddGameObj(ColObj);
     
-    // Ab.Ball.r = 40;
-    // Ab.Ball.SetCenter(Vector2(640, 360));
-    // Ab.Position = Ab.Ball.Center();
+    ColObj = new GameObject();
+    circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(400,600, 30));
+    // Aa = circle;
+    ColObj->AddComponent(circle);
+    ColObj->Box.SetCenter(circle->GetBall().Center());
+    AddGameObj(ColObj);
+
+    // ColObj = new GameObject();
+    // rect = new AARectangle(*ColObj, ColliderKind::Rigid, Rectangle(30,41, 20, 600));
+    // ColObj->AddComponent(rect);
+    // ColObj->Box = rect->GetRect();
+    // AddGameObj(ColObj);
+
+    ColObj = new GameObject();
+    rect = new AARectangle(*ColObj, ColliderKind::Rigid, Rectangle(640,360, 100, 50));
+    ColObj->AddComponent(rect);
+    ColObj->Box.SetPosition(rect->GetRect().Position());
+    AddGameObj(ColObj);
+
+    ColObj = new GameObject();
+    rect = new AARectangle(*ColObj, ColliderKind::Rigid, Rectangle(800,70, 90, 90));
+    ColObj->AddComponent(rect);
+    ColObj->Box.SetPosition(rect->GetRect().Position());
+    AddGameObj(ColObj);
+
+//Boundaries
+    ColObj = new GameObject();
+    rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(0,0, 1280, 20));
+    ColObj->AddComponent(rect);
+    ColObj->Box = rect->GetRect();
+    AddGameObj(ColObj);
+
+    ColObj = new GameObject();
+    rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(0,21, 20, 679));
+    ColObj->AddComponent(rect);
+    ColObj->Box = rect->GetRect();
+    AddGameObj(ColObj);
+    
+    ColObj = new GameObject();
+    rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(0, 700, 1280, 19));
+    ColObj->AddComponent(rect);
+    ColObj->Box = rect->GetRect();
+    AddGameObj(ColObj);
+
+    ColObj = new GameObject();
+    rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(1260,21, 20, 679));
+    ColObj->AddComponent(rect);
+    ColObj->Box = rect->GetRect();
+    AddGameObj(ColObj);
+    
+    Engine::Instance().GetRenderer().SetClearColor((std::string)"#4c0317");
 
     GameObject* imgo = new GameObject();
     sprite = new Sprite(*imgo, "./res/img/elf2.png");
@@ -91,7 +140,8 @@ Timer alter;
 void Test01::PhysicsUpdate(float Dt)
 {
     Input& input = Input::Instance();
-    Aa->SetVelocity((input.MousePosition()-Aa->Position));
+    if(Aa)
+        Aa->SetVelocity((input.MousePosition()-Aa->Position));
 
     if(input.MousePressedDown(MouseButton::Left))
     {
@@ -102,7 +152,7 @@ void Test01::PhysicsUpdate(float Dt)
         z.Acceleration =  Vector2(0,300);
         z.Angle = 0;
         z.Spread = 3.1415f;
-        z.Duration = 3.0f;
+        z.Duration = 2.0f;
         z.Windswept = true;
         z.ColorInterpolation = true;
         z.StartColor = Color("#002200ff");
@@ -111,41 +161,37 @@ void Test01::PhysicsUpdate(float Dt)
     }
 
     //TODO transfer to appropriate place, add the masks to it
-	for(int i = 0; i< (int)StateGameObjects.size()-1; i++)
+	for(int i = 0; i< (int)SceneGameObjects.size()-1; i++)
 	{
-		if(!StateGameObjects[i]->Contains(ComponentType::AACollider))
+		if(!SceneGameObjects[i]->Contains(ComponentType::AACollider))
 		{
 			continue;
 		}
 
-		AACollider* ColA = (AACollider*)StateGameObjects[i]->GetComponent(ComponentType::AACollider);
-		for(int j = i+1; j < (int)StateGameObjects.size(); j++)
+		AACollider* ColA = (AACollider*)SceneGameObjects[i]->GetComponent(ComponentType::AACollider);
+		for(int j = i+1; j < (int)SceneGameObjects.size(); j++)
 		{
-
-			if(!StateGameObjects[j]->Contains(ComponentType::AACollider) /*|| //Activate once object masks are being used
-				(((StateGameObjects[i]->Represents & StateGameObjects[j]->Interacts) 
-				| (StateGameObjects[j]->Represents & StateGameObjects[i]->Interacts)) 
-				== CollisionMask::None)*/)
+			if(!SceneGameObjects[j]->Contains(ComponentType::AACollider)  
+				/* ||(((SceneGameObjects[i]->Represents & SceneGameObjects[j]->Interacts) //Activate once object masks are being used
+				| (SceneGameObjects[j]->Represents & SceneGameObjects[i]->Interacts)) == CollisionMask::None) */
+                )
 			{
 				continue;
 			}
 
-			AACollider* ColB = (AACollider*)StateGameObjects[j]->GetComponent(ComponentType::AACollider);
+			AACollider* ColB = (AACollider*)SceneGameObjects[j]->GetComponent(ComponentType::AACollider);
 			if((Physics::CheckCollision(*ColA, *ColB)))
 			{
                 Physics::ResolveCollision(*ColA, *ColB);
-				StateGameObjects[i]->OnCollision(*StateGameObjects[j]);
-				StateGameObjects[j]->OnCollision(*StateGameObjects[i]);
+				SceneGameObjects[i]->OnCollision(*SceneGameObjects[j]);
+				SceneGameObjects[j]->OnCollision(*SceneGameObjects[i]);
 			}
 		}
 	}
-
-
 }
 
 void Test01::Update(float Dt)
 {
-
     if(shading && sprite)
     {
         // alter.Update(Dt);
@@ -196,8 +242,7 @@ void Test01::Render()
     {
         // draw->DrawRectangle(Aa.Rect, Color("#f0000f"), window.GetProjection(), renderer.GetView());
         // draw->DrawCircle(Ab.Ball, Color("#0f00f0"), window.GetProjection(), renderer.GetView());
-        // draw->DrawCircle(Aa.Ball, Color("#f0000f"), window.GetProjection(), renderer.GetView());
-        // draw->DrawRectangle(Ab.Rect, Color("#0f00f0"), window.GetProjection(), renderer.GetView());
+
     }
 
     if(draw && shading)
@@ -268,21 +313,3 @@ void Test01::Resume()
     // if(B.Depth == DepthMode::Foreground)
     //     return A.GetLayer() < B.GetLayer();
     // return false;
-// TestRect A = {0,0,80,80, true, false, 100};
-// // TestCircle A = {0,0,50,     true, false, 100};
-// TestCircle B = {980,360,80, false, true, 100}; //Statico
-// TestCircle E = {720,200,50,     true, false, 100};
-// TestRect C = {250-75,360-65,150,130, false, true, 100};//Statico
-// TestRect D = {500,300,80,80, true, false, 100};
-
-    //rectangle
-    // A.x = input.MousePosition().x - 40;
-    // A.y = input.MousePosition().y - 40;
-    //Circle
-    // A.x = input.MousePosition().x;
-    // A.y = input.MousePosition().y;
-    // // draw->DrawCircle(Circle(A.x, A.y, A.r), Color("#00ff00"), window.GetProjection(), renderer.GetView());
-    // draw->DrawCircle(Circle(B.x, B.y, B.r), Color("#ff0000"), window.GetProjection(), renderer.GetView());
-    // draw->DrawCircle(Circle(E.x, E.y, E.r), Color("#00f0f0"), window.GetProjection(), renderer.GetView());
-    // draw->DrawRectangle(Rectangle(C.x, C.y, C.w, C.h), Color("#0000ff"), window.GetProjection(), renderer.GetView());
-    // draw->DrawRectangle(Rectangle(D.x, D.y, D.w, D.h), Color("#f0f000"), window.GetProjection(), renderer.GetView());

@@ -23,33 +23,33 @@ bool Physics::CheckCollision(AACollider& A, AACollider& B)
         }
         return _Intersects(A.GetRect(), B.GetRay());
     }
-    else if(A.Format== AAFormat::Ray)
+    else if(A.Format== AAFormat::Circle)
     {
         if(B.Format == AAFormat::Rectangle)
         {
-            return _Intersects(B.GetRect(), A.GetRay());
+            return _Intersects(B.GetRect(), A.GetBall());
         }
-        else if(B.Format == AAFormat::Circle)
+        else if(B.Format == AAFormat::Ray)
         {
-            return _Intersects(B.GetBall(), A.GetRay());
+            return _Intersects(A.GetBall(), B.GetRay());
         }
-        return false;//maybe implement ray collision tho?
+        return _Intersects(A.GetBall(), B.GetBall());
     }
 
     if(B.Format == AAFormat::Rectangle)
     {
-        return _Intersects(B.GetRect(), A.GetBall());
+        return _Intersects(B.GetRect(), A.GetRay());
     }
-    else if(B.Format == AAFormat::Ray)
+    else if(B.Format == AAFormat::Circle)
     {
-        return _Intersects(A.GetBall(), B.GetRay());
+        return _Intersects(B.GetBall(), A.GetRay());
     }
-    return _Intersects(A.GetBall(), B.GetBall());
+    return false;//maybe implement ray collision tho?
 }
 
 bool Physics::_Intersects(Rectangle& A, Rectangle& B)
 {
-    if(A.x+A.h < B.x || A.x > B.x+B.h || A.y+A.h < B.y || A.y > B.y+B.h)
+    if (A.x + A.w < B.x || A.x > B.x + B.w || A.y + A.h < B.y || A.y > B.y + B.h)
     {
         return false;
     }
@@ -214,7 +214,10 @@ void Physics::_RectCircData(Rectangle& A, Circle& B, Manifold& M)
     }
 
     //if center is inserted in the other form, must be repelled outwards
-    M.Normal = (Inserted ? RelativeDist*-1.0f : RelativeDist).Normalized();    
+    M.Normal = (Inserted ? RelativeDist*-1.0f : RelativeDist).Normalized();   
+    M.Normal *= Vector2(A.h/A.w, A.w/A.h);//Fixes the exaggerated displacement when hitting wide rectangles
+    M.Normal = M.Normal.Normalized();
+
     float Dist = (B.Center()-Closest).Magnitude();
     M.Penetration = B.r - Dist;
 }

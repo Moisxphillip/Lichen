@@ -1,23 +1,22 @@
-#ifndef LICHEN_TESTSTATE
-#define LICHEN_TESTSTATE
+#ifndef LICHEN_TITLESTATE
+#define LICHEN_TITLESTATE
 
-#include "../../engine/lib/State.hpp"
+#include "../../engine/lib/Scene.hpp"
 #include "../../engine/lib/Timer.hpp"
 #include "../../engine/lib/Color.hpp"
 
 
-class Test01 : public State
+class TitleScene : public Scene
 {
     private:
         Timer TextColorChange;
         Color TextColor;
         
     public:
-        Test01();
-        ~Test01();
+        TitleScene();
+        ~TitleScene();
 
         void LoadAssets();
-        void PhysicsUpdate(float);
         void Update(float);
         void Render();
 
@@ -28,4 +27,4 @@ class Test01 : public State
 };
 
 
-#endif//LICHEN_TESTSTATE
+#endif//LICHEN_TITLESTATE

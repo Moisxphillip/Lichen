@@ -20,16 +20,18 @@ void AACircle::SetBall(Circle B)
 
 void AACircle::PhysicsUpdate(float Dt)
 {
-    Position = Parent.Box.Center() + Offset.Rotate(Parent.Angle);
+    Vector2 Rot = Offset.Rotate(Parent.Angle);
+    Position = Parent.Box.Center() + Rot;
     Physics::Integrate(*this, Dt);
     _Ball.SetCenter(Position);
-    Parent.Box.SetCenter(Position - Offset.Rotate(Parent.Angle));
+    Parent.Box.SetCenter(Position - Rot);
 }
 
 void AACircle::Render()
 {
 #ifdef DEBUG 
-	_Form.DrawCircle(_Ball, Color("#00ff00"), 
+    // Vector2 Rot = Offset.Rotate(Parent.Angle);//TODO Fix this after implementing overloaded operations for circles
+	_Form.DrawCircle(_Ball, Color("#00ffff"), 
 		Engine::Instance().GetWindow().GetProjection(), 
 		Engine::Instance().GetRenderer().GetView());
 #endif//_DEBUG

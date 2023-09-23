@@ -31,11 +31,11 @@ void Minion::Shoot(Vector2 Target)
     //Create gameobject for a projectile
     float Angle = Parent.Box.Center().DistAngle(Target);
     GameObject* GoBullet= new GameObject(4);
-    Bullet* Projectile = new Bullet(*GoBullet, Angle, LICHEN_BULLETSPD,
-             LICHEN_BULLETDMG, LICHEN_BULLETDIST, FIMG_BULLET, 3, true, true);
+    Bullet* Projectile = new Bullet(*GoBullet, Angle, 300.0f,
+             15, 900.0f, FIMG_BULLET, 3, true, true);
     GoBullet->Box.SetCenter(Parent.Box.Center());
     GoBullet->AddComponent(Projectile);
-    Engine::Instance().CurrentState().AddGameObj(GoBullet);
+    Engine::Instance().CurrentScene().AddGameObj(GoBullet);
 }
 
 void Minion::Render()
@@ -52,8 +52,8 @@ void Minion::Update(float Dt)
     {
         std::shared_ptr<GameObject> CurrCenter = _AlienCenter.lock();
         Vector2 DistToCenter(180,0);
-        _Arc += ROTFRAC*Dt;
-        Parent.Angle += ROTFRAC*Dt;
+        _Arc += (M_PI/4)*Dt;
+        Parent.Angle += (M_PI/4)*Dt;
 
         DistToCenter.Rotate(_Arc);
         Parent.Box.SetCenter(DistToCenter + CurrCenter->Box.Center());

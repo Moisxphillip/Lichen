@@ -19,6 +19,7 @@ GameObject::GameObject(int Layer)
     Depth = DepthMode::Background;
     Represents = CollisionMask::None;
     Interacts = CollisionMask::None;
+    _Contains = ComponentType::None;
     _UID = _ID;
     _ID++;
 }

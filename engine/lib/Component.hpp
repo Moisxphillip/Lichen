@@ -7,9 +7,9 @@
 class Component
 {
     protected:
-        GameObject& Parent;
         ComponentType _Type;
     public:
+        GameObject& Parent;
         Component(GameObject&);
         virtual ~Component();
         virtual void PhysicsUpdate(float);

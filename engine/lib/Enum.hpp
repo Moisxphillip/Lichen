@@ -62,7 +62,7 @@ enum class ComponentType : long long int
     Type51 = 1LL << 50,
     Type52 = 1LL << 51,
     Type53 = 1LL << 52,
-    Type54 = 1LL << 53,
+    StateMachine = 1LL << 53,
     AACollider = 1LL << 54,
     Generic = 1LL << 55,
     Fade = 1LL << 56,
@@ -349,5 +349,42 @@ CollisionMask operator&(CollisionMask A, CollisionMask B);
 CollisionMask operator^(CollisionMask A, CollisionMask B);
 
 CollisionMask operator~(CollisionMask X);
+
+enum class SMState
+{
+    None,
+    Type01,
+    Type02,
+    Type03,
+    Type04,
+    Type05,
+    Type06,
+    Type07,
+    Type08,
+    Type09,
+    Type10,
+    Type11,
+    Type12,
+    Type13,
+    Type14,
+    Type15,
+    Type16,
+    Type17,
+    Type18,
+    Type19,
+    Type20,
+    Type21,
+    Type22,
+    Type23,
+    Type24,
+    Type25,
+    Type26,
+    Type27,
+    Type28,
+    Type29,
+    Type30,
+    Type31,
+    Type32,
+};
 
 #endif//LYCHEN_ENUM
