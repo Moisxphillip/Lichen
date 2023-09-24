@@ -16,19 +16,19 @@ class Sound : public Component
     public:    
         bool Pan;
         bool SelfDestruct;
-        Sound(GameObject&);
-        Sound(GameObject&, std::string);
+        Sound(GameObject& Parent);
+        Sound(GameObject& Parent, std::string Path);
         ~Sound();
 
-        void Play(int);
+        void Play(int Times = 0);
         void Stop();
-        void Volume(int);
-        void Open(std::string);
+        void Volume(int Value);
+        void Open(std::string Path);
         bool IsOpen();
         bool IsPlaying();
         
         //Inheritance Functions
-        void Update(float);
+        void Update(float Dt);
 
 };
 

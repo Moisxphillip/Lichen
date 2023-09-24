@@ -14,9 +14,9 @@ class Draw
 
     public:
         Draw();
-        void DrawCircle(const Circle&, Color, glm::mat4&, glm::mat4&, int=25);
-        void DrawLine(const Vector2&, const Vector2&, Color, glm::mat4&, glm::mat4&);
-        void DrawRectangle(const Rectangle&, Color, glm::mat4&, glm::mat4&, float=0);
+        void DrawCircle(const Circle& Form, Color Colour, glm::mat4& Projection, glm::mat4& View, int Segments=25);
+        void DrawLine(const Vector2& Origin, const Vector2& Span, Color Colour, glm::mat4& Projection, glm::mat4& View);
+        void DrawRectangle(const Rectangle& Form, Color Colour, glm::mat4& Projection, glm::mat4& View, float Angle=0);
 };
 
 #endif//LICHEN_DRAW

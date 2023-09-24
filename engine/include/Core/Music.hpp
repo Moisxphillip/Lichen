@@ -11,13 +11,13 @@ class Music
         int _MusicVolume;
 
     public:
+        Music(std::string Path);
         Music();
-        Music(std::string);
         ~Music();
         
-        void Play(int, int);
-        void Stop(int);
-        void Open(std::string);
+        void Play(int Times = -1, int FadeIn = 0);
+        void Stop(int FadeOut  = 1500);
+        void Open(std::string Path);
         bool IsOpen();
 
 };

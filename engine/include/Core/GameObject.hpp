@@ -28,28 +28,28 @@ class GameObject
         float Angle;
         CollisionMask Represents, Interacts; 
 
-        GameObject(int);
+        GameObject(int Layer);
         GameObject();
         ~GameObject();
 
         void Start();
-        void PhysicsUpdate(float);
-        void Update(float);
-        void LateUpdate(float);
-        void OnCollision(GameObject&);
+        void PhysicsUpdate(float Dt);
+        void Update(float Dt);
+        void LateUpdate(float Dt);
+        void OnCollision(GameObject& Other);
         void Render();
         
         bool IsDead();
         void RequestDelete();
-        void AddComponent(Component*);
-        void RemoveComponent(Component*);
-        Component* GetComponent(ComponentType);
-        bool Contains(ComponentType);
+        void AddComponent(Component* Add);
+        void RemoveComponent(Component* Remove);
+        Component* GetComponent(ComponentType Type);
+        bool Contains(ComponentType Type);
 
         int GetLayer();
-        void SetLayer(int);
+        void SetLayer(int NewLayer);
         int GetUID() const;
-        friend std::ostream& operator<<(std::ostream&, const GameObject&);
+        friend std::ostream& operator<<(std::ostream& O, const GameObject& Object);
 };
 
 #endif//LICHEN_GAMEOBJ

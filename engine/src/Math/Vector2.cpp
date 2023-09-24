@@ -259,3 +259,17 @@ Vector2& Vector2::operator*=(const Vector2& Vector)
     this->y*=Vector.y;
     return *this;
 }
+
+Vector2& Vector2::operator/=(const float& Scalar)
+{
+    this->x/=Scalar;
+    this->y/=Scalar;
+    return *this;
+}
+
+Vector2& Vector2::operator/=(const Vector2& Vector)
+{
+    this->x/=Vector.x;
+    this->y/=Vector.y;
+    return *this;
+}

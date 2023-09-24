@@ -33,11 +33,11 @@ class Renderer
         Renderer();
         ~Renderer();
         void Clear();
-        void SetClearColor(Color=(std::string)"#000000");
-        void SetBlendMode(BlendMode);
-        void Draw(VertexArray&, IndexBuffer&, Shader&);
-        void Show(GLFWwindow*);
-        void SetViewPosition(Vector2);
+        void SetClearColor(Color Clear = (std::string)"#000000");
+        void SetBlendMode(BlendMode Blend);
+        void Draw(VertexArray& Va, IndexBuffer& Ib, Shader& Sh);
+        void Show(GLFWwindow* _Window);
+        void SetViewPosition(Vector2 ViewPos);
         glm::mat4& GetView();
 
 };

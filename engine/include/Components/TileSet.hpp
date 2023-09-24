@@ -15,12 +15,11 @@ class TileSet
         int _TileHeight;
 
     public:
-        TileSet(int, int, std::string);
+        TileSet(int Width, int Height, std::string Path);
         ~TileSet();
-        void RenderTile(int, float, float);
+        void RenderTile(int Index, float PosX, float PosY);
         int GetTileWidth();
         int GetTileHeight();
-    
 };
 
 

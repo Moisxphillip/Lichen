@@ -39,7 +39,7 @@ class Engine
         bool _ChangeScene();
         
         //Mandatory
-        Engine(std::string, int, int, int=0, int=0, bool=true);
+        Engine(std::string Name, int Width, int Height, int ProjWidth=0, int ProjHeight=0, bool VSync=true);
         static Engine* _GameInstance;
         Window* _GameWindow = nullptr;
         SDL_Window* _SDLWindow = nullptr;
@@ -57,13 +57,13 @@ class Engine
 
     public:
         //Copy prevention
-        Engine(const Engine&) = delete;
+        Engine(const Engine& Instance) = delete;
         void operator=(Engine &Engine)= delete;
 
         //Mandatory
         ~Engine();
         void Run();
-        void Push(Scene*);
+        void Push(Scene* NewScene);
         Renderer& GetRenderer();
         Window& GetWindow();
 

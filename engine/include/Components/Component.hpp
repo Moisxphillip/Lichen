@@ -10,16 +10,16 @@ class Component
         ComponentType _Type;
     public:
         GameObject& Parent;
-        Component(GameObject&);
+        Component(GameObject& Parent);
         virtual ~Component();
-        virtual void PhysicsUpdate(float);
-        virtual void Update(float);
-        virtual void LateUpdate(float);
-        virtual void OnCollision(GameObject&);
+        virtual void PhysicsUpdate(float Dt);
+        virtual void Update(float Dt);
+        virtual void LateUpdate(float Dt);
+        virtual void OnCollision(GameObject& Other);
         virtual void Render();
         virtual void Start();
         virtual ComponentType Type();
-        bool Is(ComponentType);
+        bool Is(ComponentType Type);
 
 };
 

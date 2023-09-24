@@ -19,15 +19,15 @@ class Fade : public Component
     public:
         Timer FadeStep;
 
-        Fade(GameObject&, Color, float, float, float);
+        Fade(GameObject& Parent, Color Colour, float StartPercent, float FinishPercent, float TimeSpan);
         ~Fade();
-        void RedirectFade(float);
-        void SetTime(float);
-        void SetColor(Color);
+        void RedirectFade(float FinishPercent);
+        void SetTime(float TimeSpan);
+        void SetColor(Color Colour);
         Color GetColor();
 
         void Render();
-        void Update(float);
+        void Update(float Dt);
 
 };
 

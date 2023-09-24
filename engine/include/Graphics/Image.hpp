@@ -46,11 +46,11 @@ class Image
         Color _LastColor, _NextColor;
 
     public:
-        Image(const std::string&);
+        Image(const std::string& Path);
         ~Image();
-        void SetColor(Color);
+        void SetColor(Color Colour);
         Color GetColor();
-        void Render(Renderer&, glm::mat4&, Vector2, Vector2, ___ImageRect, float=0, Flip=Flip::N, DepthMode=DepthMode::Background, int=0);
+        void Render(Renderer& Rend, glm::mat4& Projection, Vector2 Position, Vector2 Scale, ___ImageRect Rect, float Angle=0, Flip F=Flip::N, DepthMode Depth=DepthMode::Background, int Layer=0);
         int GetWidth();
         int GetHeight();
         Shader& GetShader();

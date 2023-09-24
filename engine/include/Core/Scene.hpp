@@ -24,9 +24,9 @@ class Scene
         virtual void Pause();
         virtual void Resume();
         virtual void LoadAssets();
-        virtual void PhysicsUpdate(float);
-        virtual void Update(float);
-        virtual void LateUpdate(float);
+        virtual void PhysicsUpdate(float Dt);
+        virtual void Update(float Dt);
+        virtual void LateUpdate(float Dt);
         virtual void Render();
 
         Music * _SceneMusic;
@@ -37,9 +37,9 @@ class Scene
         void SceneStart();
         void ScenePause();
         void SceneResume();
-        void ScenePhysicsUpdate(float);
-        void SceneUpdate(float);
-        void SceneLateUpdate(float);
+        void ScenePhysicsUpdate(float Dt);
+        void SceneUpdate(float Dt);
+        void SceneLateUpdate(float Dt);
         void SceneRender();
 
         bool HasStarted();

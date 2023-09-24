@@ -12,7 +12,7 @@ class VertexBuffer
         DrawMode _DrawAs;
         
     public:
-        VertexBuffer(const void*, unsigned int, DrawMode);
+        VertexBuffer(const void* Data, unsigned int Size, DrawMode DrawAs);
         ~VertexBuffer();
 
         void Bind();

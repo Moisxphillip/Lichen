@@ -24,20 +24,18 @@ class Text : public Component
         void _RemakeTexture();
 
     public:
-        Text(GameObject&, std::string, int, TextStyle, std::string, Color);
+        Text(GameObject& Parent, std::string FontPath, int FontSize, TextStyle Style, std::string TextLine, Color Colour);
         ~Text();
 
-        void SetColor(Color);
-        void SetFontFile(std::string);
-        void SetFontSize(int);
-        void SetWrap(int);
-        void SetStyle(TextStyle);
-        void SetAlignment(TextAlignment);
-        void SetText(std::string);
-
+        void SetColor(Color Colour);
+        void SetFontFile(std::string Path);
+        void SetFontSize(int FontSize);
+        void SetWrap(int PixelWidth);
+        void SetStyle(TextStyle Style);
+        void SetAlignment(TextAlignment Align);
+        void SetText(std::string Text);
         void Render();
-        void Update(float);
-
+        void Update(float Dt);
 };
 
 #endif// LICHEN_TEXT

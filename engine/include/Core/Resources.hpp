@@ -22,11 +22,11 @@ class Resources
         static std::unordered_map<std::string, TTF_Font*> _FontTable;
 
     public:
-        static Texture* GetTexture(const std::string&);
-        static SDL_Texture* GetImage(std::string&);
-        static Mix_Music* GetMusic(std::string&);
-        static Mix_Chunk* GetSound(std::string&);
-        static TTF_Font* GetFont(std::string&);
+        static Texture* GetTexture(const std::string& Path);
+        static SDL_Texture* GetImage(std::string& Path);
+        static Mix_Music* GetMusic(std::string& Path);
+        static Mix_Chunk* GetSound(std::string& Path);
+        static TTF_Font* GetFont(std::string& Path);
 
         static void ClearTextures();
         static void ClearImages();

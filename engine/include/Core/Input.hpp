@@ -36,42 +36,42 @@ class Input
         static int _Ctr;
 
         // GLFW callbacks for events
-        static void KeyCallback(GLFWwindow*, int, int, int, int);
-        static void MouseButtonCallback(GLFWwindow*, int, int, int);
-        static void CursorPosCallback(GLFWwindow* , double, double);
-        static void ScrollCallback(GLFWwindow* , double, double);
-        static void WindowResizeCallback(GLFWwindow* , int, int);
-        static void ControllerCallback(int, int);
+        static void KeyCallback(GLFWwindow* GLWindow, int KbKey, int Scancode, int Action, int Mods);
+        static void MouseButtonCallback(GLFWwindow* GLWindow, int Button, int Action, int Mods);
+        static void CursorPosCallback(GLFWwindow* GLWindow, double XPos, double YPos);
+        static void ScrollCallback(GLFWwindow* GLWindow, double XOffset, double YOffset);
+        static void WindowResizeCallback(GLFWwindow* GLWindow, int W, int H);
+        static void ControllerCallback(int ID, int Event);
 
     public:
         //General functions
         static Input& Instance();
-        static void Init(GLFWwindow*);
+        static void Init(GLFWwindow* _Window);
         static void Update();
         static bool QuitRequested();
 
         // Key functions
-        static bool KeyJustPressed(Key);
-        static bool KeyPressedDown(Key);
-        static bool KeyJustReleased(Key);
-        static bool KeyReleased(Key);
+        static bool KeyJustPressed(Key Value);
+        static bool KeyPressedDown(Key Value);
+        static bool KeyJustReleased(Key Value);
+        static bool KeyReleased(Key Value);
 
         // Mouse functions
-        static bool MouseJustPressed(MouseButton);
-        static bool MousePressedDown(MouseButton);
-        static bool MouseJustReleased(MouseButton);
-        static bool MouseReleased(MouseButton);
-        static bool MouseScrolled(MouseScroll);
+        static bool MouseJustPressed(MouseButton Value);
+        static bool MousePressedDown(MouseButton Value);
+        static bool MouseJustReleased(MouseButton Value);
+        static bool MouseReleased(MouseButton Value);
+        static bool MouseScrolled(MouseScroll Value);
         static Vector2 MousePosition();
 
         // Controller functions
-        static bool ControllerButtonJustPressed(ControllerButton);
-        static bool ControllerButtonPressedDown(ControllerButton);
-        static bool ControllerButtonJustReleased(ControllerButton);
-        static bool ControllerButtonReleased(ControllerButton);
-        static void VibrateController(float, float);
-        static void SetControllerButtonDeadzone(float);
-        static float GetControllerAxis(ControllerAxis);
+        static bool ControllerButtonJustPressed(ControllerButton Value);
+        static bool ControllerButtonPressedDown(ControllerButton Value);
+        static bool ControllerButtonJustReleased(ControllerButton Value);
+        static bool ControllerButtonReleased(ControllerButton Value);
+        static void VibrateController(float X, float Y);// No support yet
+        static void SetControllerButtonDeadzone(float Deadzone);
+        static float GetControllerAxis(ControllerAxis Value);
 };
 
 #endif//LICHEN_INPUT

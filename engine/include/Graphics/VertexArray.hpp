@@ -14,7 +14,7 @@ class VertexArray
         ~VertexArray();
         void Bind();
         void Unbind();
-        void AddBuffer(VertexBuffer&, VertexBufferLayout&);
+        void AddBuffer(VertexBuffer& Vb, VertexBufferLayout& Vbl);
 };
 
 

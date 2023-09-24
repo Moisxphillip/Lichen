@@ -18,17 +18,17 @@ class Window
         glm::mat4* _Projection;
 
     public:
-        Window(std::string, int=800, int=800, int=0, int=0, bool=false);
+        Window(std::string WindowName, int Width=800, int Height=800, int ProjWidth=0, int ProjHeight=0, bool VSync=false);
         ~Window();
         GLFWwindow* GetGLWindow();
         int GetWidth();
         int GetHeight();
         int GetProjectionWidth();
         int GetProjectionHeight();
-        void SetWidth(int);
-        void SetHeight(int);
+        void SetWidth(int Width);
+        void SetHeight(int Height);
         bool QuitRequested();
-        void SetProjection(glm::mat4&);
+        void SetProjection(glm::mat4& NewProjection);
         glm::mat4& GetProjection();
 };
 

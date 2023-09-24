@@ -31,17 +31,17 @@ class Shader
         
         void Bind();
         void Unbind();
-        int GetUniformLocation(const std::string&);
+        int GetUniformLocation(const std::string& Name);
 
         //Uniform modification
-        void SetUniform1f(const std::string&, float);
-        void SetUniform2f(const std::string&, float, float);
-        void SetUniform3f(const std::string&, float, float, float);
-        void SetUniform4f(const std::string&, float, float, float, float);
-        void SetUniformMat4f(const std::string&, const glm::mat4&);
-        void SetUniform1i(const std::string&, int);
-        void SetUniform1ui(const std::string&, unsigned int);
-        void SetColor(const std::string&, Color& Colour);
+        void SetUniform1f(const std::string& Name, float V0);
+        void SetUniform2f(const std::string& Name, float V0, float V1);
+        void SetUniform3f(const std::string& Name, float V0, float V1, float V2);
+        void SetUniform4f(const std::string& Name, float V0, float V1, float V2, float V3);
+        void SetUniformMat4f(const std::string& Name, const glm::mat4& Matrix);
+        void SetUniform1i(const std::string& Name, int V0);
+        void SetUniform1ui(const std::string& Name, unsigned int V0);
+        void SetColor(const std::string& Name, Color& Colour);
 };
 
 #endif// LICHEN_SHADER

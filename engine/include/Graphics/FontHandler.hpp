@@ -46,9 +46,9 @@ class FontHandler
         ~FontHandler();
         int GetWidth();
         int GetHeight();
-        void UpdateHandler(TTF_Font*, std::string&, int, int, TextStyle, TextAlignment);
-        void CustomUpdate(SDL_Surface*);
-        void Render(Renderer&, glm::mat4&, Vector2, float, Flip , Color=Color("#FFFFFFFF"));
+        void UpdateHandler(TTF_Font* Font, std::string& TextLine, int Size, int Wrap, TextStyle Style, TextAlignment Alignment);
+        void CustomUpdate(SDL_Surface* Surface);
+        void Render(Renderer& Rend, glm::mat4& Projection, Vector2 Position, float Angle, Flip F, Color Colour=Color("#FFFFFFFF"));
 
 
 

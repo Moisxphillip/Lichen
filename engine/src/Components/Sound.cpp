@@ -25,7 +25,7 @@ Sound::~Sound()
 }
 
 
-void Sound::Play(int Times = 0)
+void Sound::Play(int Times)
 {
     //Channel finding is handled by our class, since we need control over the chunk settings
     for(int i = 0; i<Engine::Instance().GetSoundChannels(); i++)

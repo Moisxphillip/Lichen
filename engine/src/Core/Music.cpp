@@ -19,7 +19,7 @@ Music::~Music()
 
 
 //-1 = infinite loop
-void Music::Play(int Times = -1, int FadeIn = 0)
+void Music::Play(int Times, int FadeIn)
 {
     if(_Music == nullptr)
     {
@@ -33,7 +33,7 @@ void Music::Play(int Times = -1, int FadeIn = 0)
     }
 }
 
-void Music::Stop(int FadeOut = 1500)
+void Music::Stop(int FadeOut)
 {
     if(!Mix_FadeOutMusic(FadeOut))
     {

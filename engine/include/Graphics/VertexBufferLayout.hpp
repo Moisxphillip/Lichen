@@ -10,7 +10,7 @@ struct VBElement
     unsigned int Count;
     unsigned int Type;
     unsigned char Normalized;
-    static unsigned int SizeOfType(unsigned int);
+    static unsigned int SizeOfType(unsigned int Type);
 };
 
 class VertexBufferLayout
@@ -24,7 +24,7 @@ class VertexBufferLayout
         unsigned int GetStride();
         std::vector<VBElement> GetElements();
 
-        void Push(unsigned int, unsigned int);
+        void Push(unsigned int Type, unsigned int Count);
 
 };
 

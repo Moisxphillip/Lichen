@@ -36,20 +36,18 @@ class Camera
     public:
         
         Camera();
-        void SetMaxSpeed(float);
-        void SetMode(float);
 
         static Vector2 Center();
         static Vector2 Position();
-        void Follow(GameObject*);
+        void Follow(GameObject* Focus);
         bool IsFollowing();
         void Unfollow();
-        void SetCameraMode(CameraMode);
-        void SetCameraFormat(CameraFormat);
-        void SetRectangleBounds(Rectangle);
-        void SetCircleBounds(Circle);
-        void Update(float);
-        void UpdateLazy(float, Vector2&);
+        void SetCameraMode(CameraMode Mode);
+        void SetCameraFormat(CameraFormat Format);
+        void SetRectangleBounds(Rectangle Bounds);
+        void SetCircleBounds(Circle Bounds);
+        void Update(float Dt);
+        void UpdateLazy(float Dt, Vector2& Position);
 
 };
 

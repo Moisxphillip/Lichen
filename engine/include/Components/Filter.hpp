@@ -15,7 +15,7 @@ class Filter : public Component
 
     public:
         Color FilterColor;
-        Filter(GameObject&, Color);
+        Filter(GameObject& Parent, Color Colour);
         ~Filter();
         void Render();
 

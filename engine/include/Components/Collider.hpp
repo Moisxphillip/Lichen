@@ -16,14 +16,14 @@ class Collider : public Component
     public:
         Rectangle Box;
         
-        Collider(GameObject&);
-        Collider(GameObject&, Vector2, Vector2);
+        Collider(GameObject& Parent);
+        Collider(GameObject& Parent, Vector2 Scale, Vector2 Offset);
         
-        void SetScale(Vector2);
-        void SetOffset(Vector2);
+        void SetScale(Vector2 Scale);
+        void SetOffset(Vector2 Offset);
 
+        void LateUpdate(float Dt);
         void Render();
-        void LateUpdate(float);
 
 };
 

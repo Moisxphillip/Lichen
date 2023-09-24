@@ -28,45 +28,47 @@ class Vector2
         float Angle();
         Vector2 Normalized();
         Vector2 Normalize();
-        float Dot(const Vector2&);
-        float DistanceSquared(const Vector2&);
-        float Distance(const Vector2&);
-        Vector2 DistVector2(const Vector2&);
-        float DistAngle(const Vector2&);
+        float Dot(const Vector2& Other);
+        float DistanceSquared(const Vector2& Other);
+        float Distance(const Vector2& Other);
+        Vector2 DistVector2(const Vector2& Other);
+        float DistAngle(const Vector2& Other);
         Vector2 Rotate(const float& Angle);
         Vector2 Rotated(const float& Angle);
         Vector2 MoveTo(const Vector2& Goal, const float& Speed);
 
         //Useful functions for external use
-        static float Dot(const Vector2&, const Vector2&);
-        static float DistanceSquared(const Vector2&, const Vector2&);
-        static float Distance(const Vector2&, const Vector2&);
-        static Vector2 DistVector2(const Vector2&, const Vector2&);
+        static float Dot(const Vector2& A, const Vector2& B);
+        static float DistanceSquared(const Vector2& A, const Vector2& B);
+        static float Distance(const Vector2& A, const Vector2& B);
+        static Vector2 DistVector2(const Vector2& A, const Vector2& B);
         static Vector2 Bezier(const Vector2& V0, const Vector2& V1, const Vector2& V2, float& T);
-        static float DistAngle(const Vector2&, const Vector2&);
-        static float DegToRad(const float&);
-        static float RadToDeg(const float&);
+        static float DistAngle(const Vector2& A, const Vector2& B);
+        static float DegToRad(const float& Degrees);
+        static float RadToDeg(const float& Radians);
         
         //Operation overloads
-        friend Vector2 operator+(const Vector2&, const Vector2&);
-        friend Vector2 operator-(const Vector2&, const Vector2&);
-        friend Vector2 operator*(const Vector2&, const float&);
-        friend Vector2 operator*(const float&, const Vector2&);
-        friend Vector2 operator*(const Vector2&, const Vector2&);
-        friend Vector2 operator/(const Vector2&, const float&);
-        friend Vector2 operator/(const Vector2&, const Vector2&);
-        friend bool operator==(const Vector2&, const Vector2&);
-        friend bool operator!=(const Vector2&, const Vector2&);
-        friend std::ostream& operator<<(std::ostream&, const Vector2&);
+        friend Vector2 operator+(const Vector2& A, const Vector2& B);
+        friend Vector2 operator-(const Vector2& A, const Vector2& B);
+        friend Vector2 operator*(const Vector2& A, const float& Scalar);
+        friend Vector2 operator*(const float& Scalar, const Vector2& B);
+        friend Vector2 operator*(const Vector2& A, const Vector2& B);
+        friend Vector2 operator/(const Vector2& A, const float& Scalar);
+        friend Vector2 operator/(const Vector2& A, const Vector2& B);
+        friend bool operator==(const Vector2& A, const Vector2&);
+        friend bool operator!=(const Vector2& A, const Vector2&);
+        friend std::ostream& operator<<(std::ostream& Out, const Vector2& Vec);
         //=
-        Vector2& operator=(const Vector2&);
-        Vector2& operator=(const std::list<float>&);
-        Vector2& operator=(const std::list<int>&);
+        Vector2& operator=(const Vector2& Other);
+        Vector2& operator=(const std::list<float>& List);
+        Vector2& operator=(const std::list<int>& List);
         //+=, -=, *=
-        Vector2& operator+=(const Vector2&);
-        Vector2& operator-=(const Vector2&);
-        Vector2& operator*=(const float&);
-        Vector2& operator*=(const Vector2&);
+        Vector2& operator+=(const Vector2& Other);
+        Vector2& operator-=(const Vector2& Other);
+        Vector2& operator*=(const float& Scalar);
+        Vector2& operator*=(const Vector2& Other);
+        Vector2& operator/=(const float& Scalar);
+        Vector2& operator/=(const Vector2& Other);
 
 };  
 

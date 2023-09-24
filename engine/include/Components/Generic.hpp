@@ -25,7 +25,7 @@ class Generic : public Component
         Rectangle& Box;
 
 
-        Generic(GameObject&, std::string);
+        Generic(GameObject& Parent, std::string Name);
         void SetRender(void(*)(Generic*));
         void SetStart(void(*)(Generic*));
         void SetUpdate(void(*)(float, Generic*));
@@ -34,7 +34,7 @@ class Generic : public Component
         std::string GetName();
         void Render();
         void Start();
-        void Update(float);
+        void Update(float Dt);
 
 };
 //Use this class for short-lived and simple Engine objects. For now, only tests!

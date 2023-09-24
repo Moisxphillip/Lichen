@@ -9,8 +9,8 @@ class CameraFollower: public Component
 
     public:
         Vector2 Offset;
-        CameraFollower(GameObject&);
-        void LateUpdate(float);
+        CameraFollower(GameObject& Parent);
+        void LateUpdate(float Dt);
 };
 
 

@@ -35,19 +35,19 @@ class Sprite : public Component
         Timer ToSelfDestruct;
         float LifeTime;
 
-        Sprite(GameObject&, std::string, int, int, int, float, float);
-        Sprite(GameObject&, std::string, int, int, int);
-        Sprite(GameObject&, std::string);
+        Sprite(GameObject& Parent, std::string Path,int FrameCount, int Columns, int Rows, float FrameTime, float LifeTime);
+        Sprite(GameObject& Parent, std::string Path, int FrameCount, int Columns, int Rows);
+        Sprite(GameObject& Parent, std::string Path);
         ~Sprite();
         
-        void Open(std::string);
-        void SetClip(int, int, int, int);
+        void Open(std::string Path);
+        void SetClip(int X, int Y, int W, int H);
         int GetWidth();
         int GetHeight();
-        void SetScale(float, float);
-        void SetScale(Vector2);
+        void SetScale(float ScaleX, float ScaleY);
+        void SetScale(Vector2 Scale);
         Vector2 GetScale();
-        void SetParallax(Vector2);
+        void SetParallax(Vector2 Parallax);
         Vector2 GetParallax();
         bool IsOpen();
 
@@ -56,18 +56,18 @@ class Sprite : public Component
         void SetFrame(int Frame);
         void SetFrameSpan(int Span);
         void SetFrameStart(int Start);
-        void SetColumns(int);
-        void SetRows(int);
-        void SetFrameCount(int);
-        void SetFrameTime(float);
-        void SetFlip(Flip);
+        void SetColumns(int Columns);
+        void SetRows(int Rows);
+        void SetFrameCount(int FrameCount);
+        void SetFrameTime(float FrameTime);
+        void SetFlip(Flip F);
         Flip GetFlip();
 
         void Render();
-        void Render(float, float);
-        void Render(float, float, float);
+        void Render(float X, float Y);
+        void Render(float X, float Y, float Angle);
         void Start();
-        void Update(float);
+        void Update(float Dt);
         Shader& GetShader();
         
 };

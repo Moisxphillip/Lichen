@@ -16,15 +16,15 @@ class Texture
         std::string _Path;
         int _Width, _Height, _BytesPerPixel;
         LoadTexture _LoadMode;
-        void _SurfaceToTexture(SDL_Surface*);
+        void _SurfaceToTexture(SDL_Surface* Surface);
 
     public:
-        Texture(const std::string&, LoadTexture);
+        Texture(const std::string& Path, LoadTexture Mode);
         ~Texture();
 
-        void Bind(unsigned int = 0);
+        void Bind(unsigned int ID = 0);
         void Unbind();
-        void UpdateTexture(SDL_Surface*);
+        void UpdateTexture(SDL_Surface* Surface);
         unsigned int GetTextureID();
         int GetWidth();
         int GetHeight();

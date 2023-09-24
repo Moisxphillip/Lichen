@@ -9,7 +9,7 @@ class Timer
     public:
         Timer();
         float Get();
-        void Update(float);
+        void Update(float Dt);
         void Restart();
 };
 

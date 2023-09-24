@@ -15,13 +15,12 @@ class Color
     public:
         float r, g, b, a;        
         Color();
-        Color(std::string);
-        // Color(uint8_t, uint8_t, uint8_t, uint8_t);
-        // Color(uint8_t, uint8_t, uint8_t);
-        Color(float, float, float);
-        Color(float, float, float, float);
+        Color(std::string HexCode);
 
-        void SetHSV(float, float, float);
+        Color(float R, float G, float B);
+        Color(float R, float G, float B, float A);
+
+        void SetHSV(float H, float S, float V);
 
         friend Color operator+(const Color&, const Color&);
         Color& operator+=(const Color&);
@@ -29,9 +28,9 @@ class Color
         Color& operator-=(const Color&);
         friend bool operator==(const Color&, const Color&);
         friend bool operator!=(const Color&, const Color&);
-        friend std::ostream& operator<<(std::ostream&, const Color&);
+        friend std::ostream& operator<<(std::ostream& Out, const Color& Colour);
 
-        static Color Interpolation(Color& A, Color& B, float F);
+        static Color Interpolation(Color& A, Color& B, float Percent);
 
         SDL_Color ColorSDL();
         uint32_t ColorUint32();

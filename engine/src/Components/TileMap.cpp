@@ -9,7 +9,7 @@
 #include "Core/Engine.hpp"
 #include "Tools/Tools.hpp"
 
-TileMap::TileMap(GameObject& GameObj, std::string File, TileSet* CurrTileSet, bool LoadAsLegacy=false, bool IsZeroEmpty = true)
+TileMap::TileMap(GameObject& GameObj, std::string File, TileSet* CurrTileSet, bool LoadAsLegacy, bool IsZeroEmpty)
 : Component(GameObj)
 {
     _CurrTileSet = nullptr;
@@ -25,7 +25,6 @@ TileMap::TileMap(GameObject& GameObj, std::string File, TileSet* CurrTileSet, bo
     this->SetTileSet(CurrTileSet);
 
     _Type = ComponentType::TileMap;
-    _Parallax = 1;
 }
 
 TileMap::~TileMap()
@@ -122,20 +121,10 @@ int TileMap::GetHeight()
     return _MapHeight;
 }
 
-void TileMap::SetParallax(float New)
-{
-    _Parallax = New;
-}
-
-float TileMap::GetParallax()
-{
-    return _Parallax;
-}
-
 void TileMap::Render()
 {
-    Vector2 Lower = Camera::Position()*_Parallax;
-    Vector2 Upper = (Lower + Engine::Instance().GetRenderSize())*_Parallax;
+    Vector2 Lower = Camera::Position();
+    Vector2 Upper = (Lower + Engine::Instance().GetRenderSize());
     int Lx = floor(Lower.x)/_CurrTileSet->GetTileWidth()-4;//0;//
     int Hx = floor(Upper.x)/_CurrTileSet->GetTileWidth()+4;//MapWidth;//
     int Ly = floor(Lower.y)/_CurrTileSet->GetTileHeight()-4;//0;//
@@ -147,8 +136,8 @@ void TileMap::Render()
         {
             _CurrTileSet->RenderTile(
                 _TileMatrix[y][x],
-                (float)(Parent.Box.x+x)*_CurrTileSet->GetTileWidth()-((_Parallax-1)*(int)Lower.x),
-                (float)(Parent.Box.y+y)*_CurrTileSet->GetTileHeight()-((_Parallax-1)*(int)Lower.y)
+                (float)(Parent.Box.x+x)*_CurrTileSet->GetTileWidth()-((int)Lower.x),
+                (float)(Parent.Box.y+y)*_CurrTileSet->GetTileHeight()-((int)Lower.y)
             );
         }
     }
