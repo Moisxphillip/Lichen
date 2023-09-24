@@ -1,14 +1,15 @@
-#include "../lib/TestScene.hpp"
-#include "../../engine/lib/Engine.hpp"
-#include "../../engine/lib/Sprite.hpp"
-#include "../../engine/lib/Text.hpp"
-#include "../../engine/lib/Input.hpp"
-#include "../../engine/lib/Physics.hpp"
-#include "../../engine/lib/Draw.hpp"
-#include "../../engine/lib/Particles.hpp"
+#include "TestScene.hpp"
 
-#include "../../engine/lib/AACircle.hpp"
-#include "../../engine/lib/AARectangle.hpp"
+#include "Core/Engine.hpp"
+#include "Core/Input.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Text.hpp"
+#include "Graphics/Draw.hpp"
+#include "Math/Physics.hpp"
+#include "Tools/Particles.hpp"
+
+#include "Math/AACircle.hpp"
+#include "Math/AARectangle.hpp"
 
 
 Test01::Test01()

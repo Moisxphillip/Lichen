@@ -15,32 +15,32 @@ project "LichenEngine"
     
     files 
     {
-        "/engine/**.h",
-        "/engine/**.c",
-        "/engine/**.hpp",
-        "/engine/**.cpp",
+        "engine/**.h",
+        "engine/**.c",
+        "engine/**.hpp",
+        "engine/**.cpp",
         
-        "/extlib/**.h",
-        "/engine/**.c",
-        "/engine/**.hpp",
-        "/engine/**.cpp",
+        "extlib/**.h",
+        "engine/**.c",
+        "engine/**.hpp",
+        "engine/**.cpp",
         
-        "/game/**.h",
-        "/game/**.c",
-        "/game/**.hpp",
-        "/game/**.cpp"
+        "game/**.h",
+        "game/**.c",
+        "game/**.hpp",
+        "game/**.cpp"
     }
 
     includedirs
     {
-        "/extlib/include", 
-        "/engine/lib",
-        "/game/lib"
+        "extlib/include", 
+        "engine/include",
+        "game/include"
     }
 
     libdirs
     {
-        "./extlib/lib"
+        "extlib/lib"
     }
 
     links
@@ -62,9 +62,10 @@ project "LichenEngine"
 
     filter "configurations:Debug"
         defines {"DEBUG"}
+        -- buildoptions {"-static"}
         symbols "On"
         
     filter "configurations:Release"
         defines {"NDEBUG"}
-        -- flags {"static"}
+        buildoptions {"-static"}
         optimize "On"

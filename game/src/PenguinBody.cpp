@@ -1,12 +1,12 @@
-#include "../lib/PenguinBody.hpp"
-#include "../lib/PenguinCannon.hpp"
-#include "../lib/Bullet.hpp"
-#include "../lib/Path.hpp"
-#include "../../engine/lib/Engine.hpp"
-#include "../../engine/lib/Input.hpp"
-#include "../../engine/lib/Sprite.hpp"
-#include "../../engine/lib/Sound.hpp"
-#include "../../engine/lib/Collider.hpp"
+#include "PenguinBody.hpp"
+#include "PenguinCannon.hpp"
+#include "Bullet.hpp"
+#include "Path.hpp"
+#include "Core/Engine.hpp"
+#include "Core/Input.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Sound.hpp"
+#include "Components/Collider.hpp"
 
 PenguinBody* PenguinBody::Player;
 

@@ -1,13 +1,13 @@
-#include "../lib/Alien.hpp"
-#include "../lib/Bullet.hpp"
-#include "../lib/Minion.hpp"
-#include "../lib/PenguinBody.hpp"
-#include "../lib/Path.hpp"
+#include "Alien.hpp"
+#include "Bullet.hpp"
+#include "Minion.hpp"
+#include "PenguinBody.hpp"
+#include "Path.hpp"
 
-#include "../../engine/lib/Engine.hpp"
-#include "../../engine/lib/Sprite.hpp"
-#include "../../engine/lib/Sound.hpp"
-#include "../../engine/lib/Collider.hpp"
+#include "Core/Engine.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Sound.hpp"
+#include "Components/Collider.hpp"
 
 int Alien::AlienCount = 0;
 

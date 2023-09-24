@@ -1,7 +1,7 @@
 #define SDL_MAIN_HANDLED //Fix later, find out why it isn't recognizing the written main
-#include "../lib/TitleScene.hpp"
-#include "../lib/TestScene.hpp"
-#include "../../engine/lib/Engine.hpp"
+#include "TitleScene.hpp"
+#include "TestScene.hpp"
+#include "Core/Engine.hpp"
 
 int main (int argc, char** argv) 
 {

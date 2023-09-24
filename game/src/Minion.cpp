@@ -1,10 +1,10 @@
-#include "../lib/Minion.hpp"
-#include "../lib/Bullet.hpp"
-#include "../lib/Path.hpp"
-#include "../../engine/lib/Engine.hpp"
-#include "../../engine/lib/Sprite.hpp"
-#include "../../engine/lib/Collider.hpp"
-#include "../../engine/lib/XRand.hpp"
+#include "Minion.hpp"
+#include "Bullet.hpp"
+#include "Path.hpp"
+#include "Core/Engine.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Collider.hpp"
+#include "Tools/XRand.hpp"
 
 Minion::Minion(GameObject& GameObj, std::weak_ptr<GameObject> AlienCenter, float Arc)
 : Component(GameObj), _AlienCenter(AlienCenter)

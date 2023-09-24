@@ -1,7 +1,7 @@
-#include "../lib/Bullet.hpp"
+#include "Bullet.hpp"
 
-#include "../../engine/lib/Sprite.hpp"
-#include "../../engine/lib/Collider.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Collider.hpp"
 
 Bullet::Bullet(GameObject& GameObj, float Angle, float Speed, int Damage, 
 float MaxDistance, std::string Texture, int Frames, bool Loop, bool TargetsPlayer)

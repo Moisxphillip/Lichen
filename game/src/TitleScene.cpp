@@ -1,11 +1,11 @@
-#include "../lib/TitleScene.hpp"
-#include "../lib/StageScene.hpp"
-#include "../lib/Path.hpp"
+#include "TitleScene.hpp"
+#include "StageScene.hpp"
+#include "Path.hpp"
 
-#include "../../engine/lib/Engine.hpp"
-#include "../../engine/lib/Input.hpp"
-#include "../../engine/lib/Sprite.hpp"
-#include "../../engine/lib/Text.hpp"
+#include "Core/Engine.hpp"
+#include "Core/Input.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Text.hpp"
 
 
 TitleScene::TitleScene()
@@ -18,7 +18,6 @@ TitleScene::TitleScene()
 TitleScene::~TitleScene()
 {
 }
-
 
 void TitleScene::LoadAssets()
 {

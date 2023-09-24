@@ -1,10 +1,10 @@
-#include "../lib/PenguinCannon.hpp"
-#include "../lib/Bullet.hpp"
-#include "../lib/Path.hpp"
-#include "../../engine/lib/Engine.hpp"
-#include "../../engine/lib/Input.hpp"
-#include "../../engine/lib/Sprite.hpp"
-#include "../../engine/lib/Collider.hpp"
+#include "PenguinCannon.hpp"
+#include "Bullet.hpp"
+#include "Path.hpp"
+#include "Core/Engine.hpp"
+#include "Core/Input.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Collider.hpp"
 
 PenguinCannon::PenguinCannon(GameObject& GameObj, std::weak_ptr<GameObject> Body)
 : Component(GameObj)

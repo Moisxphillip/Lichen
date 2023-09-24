@@ -1,10 +1,10 @@
-#include "../lib/EndScene.hpp"
-#include "../lib/Path.hpp"
-#include "../lib/GameStats.hpp"
+#include "EndScene.hpp"
+#include "Path.hpp"
+#include "GameStats.hpp"
 
-#include "../../engine/lib/Sprite.hpp"
-#include "../../engine/lib/Text.hpp"
-#include "../../engine/lib/Input.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Text.hpp"
+#include "Core/Input.hpp"
 
 EndScene::EndScene()
 {
