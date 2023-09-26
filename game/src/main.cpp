@@ -1,12 +1,15 @@
 #define SDL_MAIN_HANDLED //Fix later, find out why it isn't recognizing the written main
-#include "../lib/TitleState.hpp"
-#include "../../engine/lib/Engine.hpp"
+#include "TitleScene.hpp"
+#include "TestScene.hpp"
+#include "Core/Engine.hpp"
+
 
 int main (int argc, char** argv) 
 {
-    TitleState* Begin = new TitleState();
+    // TitleScene* Begin = new TitleScene(); //Penguin
+    Test01* Begin = new Test01();//Tests
     Engine::Instance().Push(Begin);
-    Engine::Instance().Run(); //Create a Engine instance by calling Get.. then run it
+    Engine::Instance().Run();
 
-    return 0;
+    return 0;    
 }

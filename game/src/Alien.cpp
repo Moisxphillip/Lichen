@@ -1,13 +1,13 @@
-#include "../lib/Alien.hpp"
-#include "../lib/Bullet.hpp"
-#include "../lib/Minion.hpp"
-#include "../lib/PenguinBody.hpp"
-#include "../lib/Path.hpp"
+#include "Alien.hpp"
+#include "Bullet.hpp"
+#include "Minion.hpp"
+#include "PenguinBody.hpp"
+#include "Path.hpp"
 
-#include "../../engine/lib/Engine.hpp"
-#include "../../engine/lib/Sprite.hpp"
-#include "../../engine/lib/Sound.hpp"
-#include "../../engine/lib/Collider.hpp"
+#include "Core/Engine.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Sound.hpp"
+#include "Components/Collider.hpp"
 
 int Alien::AlienCount = 0;
 
@@ -16,7 +16,7 @@ Alien::Alien(GameObject& GameObj, int NumMinions)
 {
     _HP = 100;
     _NumMinions = NumMinions;
-    _Speed = Vector2(LICHEN_ALIENSPD,LICHEN_ALIENSPD);
+    _Speed = Vector2(170.0f,170.0f);
     Sprite *SpriteAlien = new Sprite(GameObj, FIMG_ALIEN);
     Parent.Box.h = SpriteAlien->GetHeight();
     Parent.Box.w = SpriteAlien->GetWidth();
@@ -36,9 +36,9 @@ Alien::~Alien()
     AlienCount--;
 }
 
-void Alien::Collided(GameObject& Other)
+void Alien::OnCollision(GameObject& Other)
 {
-    Bullet* Shot = (Bullet*) Other.GetComponent("Bullet");
+    Bullet* Shot = (Bullet*) Other.GetComponent(ComponentType::Type01);
     if(Shot != nullptr)
     {
         if (!Shot->TargetsPlayer)
@@ -55,16 +55,16 @@ void Alien::Start()
     for(int i = 0; i< _NumMinions; i++)
     {
         GameObject* MinionObj = new GameObject(3);
-        Minion* NewMinion = new Minion(*MinionObj, Engine::Instance().CurrentState().GetGameObjPtr(&Parent),(2.0f* M_PI * i)/_NumMinions);
+        Minion* NewMinion = new Minion(*MinionObj, Engine::Instance().CurrentScene().GetGameObjPtr(&Parent),(2.0f* M_PI * i)/_NumMinions);
         MinionObj->AddComponent(NewMinion);
-        _MinionVec.push_back(Engine::Instance().CurrentState().AddGameObj(MinionObj));
+        _MinionVec.push_back(Engine::Instance().CurrentScene().AddGameObj(MinionObj));
     }
 }
 
 void Alien::Update(float Dt)
 {
     //Alien Rotation
-    Parent.Angle -= (ROTFRAC/2)*Dt;
+    Parent.Angle -= ((M_PI/4)/2)*Dt;
 
     if(_CurrState == AlienState::MOVING && PenguinBody::Player!=nullptr)
     {
@@ -91,7 +91,7 @@ void Alien::Update(float Dt)
                     Index = i;
                 }
             }
-            Minion* ChosenToShoot = (Minion*) _MinionVec[Index].lock()->GetComponent("Minion");
+            Minion* ChosenToShoot = (Minion*) _MinionVec[Index].lock()->GetComponent(ComponentType::Type02);
             ChosenToShoot->Shoot(PenguinBody::Player->CurrPosition());
             _ExtraTime = _WaitTime.gen();
         }        
@@ -114,25 +114,25 @@ void Alien::Update(float Dt)
         for(int i = 0; i < _NumMinions; i++)
         {
             GameObject* Death = new GameObject(3);
-            Sprite* AlienDeath = new Sprite(*Death, FIMG_MINIONDEATH, 4, LICHEN_DEATHFRAMETIME, 1);
+            Sprite* AlienDeath = new Sprite(*Death, FIMG_MINIONDEATH, 4,4,1, 0.15f, 1);
             AlienDeath->Loop = false;
             Death->Box.h = AlienDeath->GetHeight();
             Death->Box.w = AlienDeath->GetWidth();
             Death->Box.SetCenter(_MinionVec[i].lock()->Box.Center());
             Death->AddComponent(AlienDeath);
-            Engine::Instance().CurrentState().AddGameObj(Death);
+            Engine::Instance().CurrentScene().AddGameObj(Death);
             _MinionVec[i].lock()->RequestDelete(); //Request delete for minions
         }
 
         GameObject* Death = new GameObject(3);
-        Sprite* AlienDeath = new Sprite(*Death, FIMG_ALIENDEATH, 4, LICHEN_DEATHFRAMETIME, 1);
+        Sprite* AlienDeath = new Sprite(*Death, FIMG_ALIENDEATH, 4, 4, 1, 0.15f, 1);
         
         AlienDeath->Loop = false;
         Death->Box.h = AlienDeath->GetHeight();
         Death->Box.w = AlienDeath->GetWidth();
         Death->Box.SetCenter(Parent.Box.Center());
         Death->AddComponent(AlienDeath);
-        Engine::Instance().CurrentState().AddGameObj(Death);
+        Engine::Instance().CurrentScene().AddGameObj(Death);
         //Audio track is longer than animation, so plays as an external Engine object
         GameObject* DeathSound = new GameObject();
         DeathSound->Box = Death->Box;
@@ -141,7 +141,7 @@ void Alien::Update(float Dt)
         Boom->SelfDestruct = true; 
         Boom->Play(0);
         DeathSound->AddComponent(Boom);
-        Engine::Instance().CurrentState().AddGameObj(DeathSound);
+        Engine::Instance().CurrentScene().AddGameObj(DeathSound);
 
         Parent.RequestDelete(); //Request delete for alien
     }
@@ -149,9 +149,4 @@ void Alien::Update(float Dt)
 
 void Alien::Render()
 {
-}
-
-bool Alien::Is(std::string Type)
-{
-    return (Type == "Alien");
 }

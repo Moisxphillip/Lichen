@@ -1,13 +1,13 @@
-#include "../lib/Bullet.hpp"
+#include "Bullet.hpp"
 
-#include "../../engine/lib/Sprite.hpp"
-#include "../../engine/lib/Collider.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Collider.hpp"
 
 Bullet::Bullet(GameObject& GameObj, float Angle, float Speed, int Damage, 
 float MaxDistance, std::string Texture, int Frames, bool Loop, bool TargetsPlayer)
 : Component(GameObj)
 {
-    Sprite* SpBullet = new Sprite(GameObj, Texture, Frames, 0.1);
+    Sprite* SpBullet = new Sprite(GameObj, Texture, Frames, Frames,1, 0.1, 0);
     SpBullet->Loop = Loop;
     Parent.Box.h = SpBullet->GetHeight();
     Parent.Box.w = SpBullet->GetWidth();
@@ -26,32 +26,12 @@ float MaxDistance, std::string Texture, int Frames, bool Loop, bool TargetsPlaye
     
     _Damage = Damage;
 
+    _Type = ComponentType::Type01;
+
 }
 
-void Bullet::Collided(GameObject& Other)
+void Bullet::OnCollision(GameObject& Other)
 {
-    // Bullet* Shot = (Bullet*) Other.GetComponent("Bullet");
-    // if(Shot == nullptr)
-    // {
-    //     Component* Entity = Other.GetComponent("Alien");
-    //     if(Entity != nullptr && !TargetsPlayer)
-    //     {
-    //         Parent.RequestDelete();
-    //         return;
-    //     }
-
-    //     Entity = Other.GetComponent("PenguinBody");
-    //     if(Entity != nullptr && TargetsPlayer)
-    //     {
-    //         Parent.RequestDelete();
-    //         return;
-    //     }
-    // }
-}
-
-bool Bullet::Is(std::string Type)
-{
-    return (Type == "Bullet");
 }
 
 void Bullet::Render()

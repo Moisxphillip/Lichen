@@ -1,10 +1,10 @@
-#include "../lib/Minion.hpp"
-#include "../lib/Bullet.hpp"
-#include "../lib/Path.hpp"
-#include "../../engine/lib/Engine.hpp"
-#include "../../engine/lib/Sprite.hpp"
-#include "../../engine/lib/Collider.hpp"
-#include "../../engine/lib/XRand.hpp"
+#include "Minion.hpp"
+#include "Bullet.hpp"
+#include "Path.hpp"
+#include "Core/Engine.hpp"
+#include "Components/Sprite.hpp"
+#include "Components/Collider.hpp"
+#include "Tools/XRand.hpp"
 
 Minion::Minion(GameObject& GameObj, std::weak_ptr<GameObject> AlienCenter, float Arc)
 : Component(GameObj), _AlienCenter(AlienCenter)
@@ -23,6 +23,7 @@ Minion::Minion(GameObject& GameObj, std::weak_ptr<GameObject> AlienCenter, float
 	CollideMinion->Box = Parent.Box;
     Parent.AddComponent(Mini);
     Parent.AddComponent(CollideMinion);
+    _Type = ComponentType::Type02;
 }
 
 void Minion::Shoot(Vector2 Target)
@@ -30,16 +31,11 @@ void Minion::Shoot(Vector2 Target)
     //Create gameobject for a projectile
     float Angle = Parent.Box.Center().DistAngle(Target);
     GameObject* GoBullet= new GameObject(4);
-    Bullet* Projectile = new Bullet(*GoBullet, Angle, LICHEN_BULLETSPD,
-             LICHEN_BULLETDMG, LICHEN_BULLETDIST, FIMG_BULLET, 3, true, true);
+    Bullet* Projectile = new Bullet(*GoBullet, Angle, 300.0f,
+             15, 900.0f, FIMG_BULLET, 3, true, true);
     GoBullet->Box.SetCenter(Parent.Box.Center());
     GoBullet->AddComponent(Projectile);
-    Engine::Instance().CurrentState().AddGameObj(GoBullet);
-}
-
-bool Minion::Is(std::string Type)
-{
-    return (Type == "Minion");
+    Engine::Instance().CurrentScene().AddGameObj(GoBullet);
 }
 
 void Minion::Render()
@@ -56,8 +52,8 @@ void Minion::Update(float Dt)
     {
         std::shared_ptr<GameObject> CurrCenter = _AlienCenter.lock();
         Vector2 DistToCenter(180,0);
-        _Arc += ROTFRAC*Dt;
-        Parent.Angle += ROTFRAC*Dt;
+        _Arc += (M_PI/4)*Dt;
+        Parent.Angle += (M_PI/4)*Dt;
 
         DistToCenter.Rotate(_Arc);
         Parent.Box.SetCenter(DistToCenter + CurrCenter->Box.Center());
