@@ -1,4 +1,5 @@
 #include "Dummy.hpp"
+#include "Components/AACircle.hpp"
 
 //Define names for the SMState enums, so it's easier to know which state you're using
 #define DUMMY_IDLE SMState::Type01
@@ -7,6 +8,7 @@
 Dummy::Dummy(GameObject& Parent, std::string Label)
 : StateMachine(Parent, Label)
 {
+    MyCollider = nullptr;
 }
 
 void Dummy::SMStart()
@@ -16,7 +18,10 @@ void Dummy::SMStart()
     Parent.Depth = DepthMode::Foreground;
     Parent.Box.Redimension(Vector2(galo->GetWidth(), galo->GetHeight()));
     AddSprite(galo);
-
+    MyCollider = new AACircle(Parent, ColliderKind::Rigid, Circle(0,0,galo->GetWidth()/4));
+    MyCollider->SetFriction(0.1f);
+    // MyCollider->GetBall().SetCenter(Parent.Box.Center());
+    Parent.AddComponent(MyCollider);
     
     //Create an idle state
     StateInfo SI = {DUMMY_IDLE, 0,1,0,false, true}; //these are for setting up the spritesheet portion on update
@@ -32,7 +37,6 @@ void Dummy::SMStart()
 
 
 //------------------------------IDLE------------------------------
-
 DummyIdle::DummyIdle(const StateInfo& Specs)
 : GenericState(Specs)
 {
@@ -75,6 +79,12 @@ void DummyWalk::PhysicsUpdate(StateMachine& Sm, float Dt)
     {
         x == -1 ? Sm.SetFlip(Flip::N) : Sm.SetFlip(Flip::H);
     }
-    Sm.Parent.Box += Vector2(x,y)*200*Dt;
+
+    // Sm.Parent.Box += Vector2(x,y)*200*Dt;//For moving things that haven't a collider
+
+    Dummy* Dum = reinterpret_cast<Dummy*>(&Sm); //Cast to access child class information
+    // Dum->MyCollider->SetVelocity(Vector2(x,y).Normalized()*200*Dt); //Works but it's way more prone to bugs and glitches
+
+    Dum->MyCollider->ApplyForce(Vector2(x,y).Normalized()*2000); //The best way to move stuff with a collider
 }
 

@@ -65,6 +65,7 @@ class AACollider : public Component
         virtual void SetRay(Ray R);
         virtual void SetRect(Rectangle R);
 
+        virtual void Start();
         virtual void PhysicsUpdate(float Dt);
         virtual void Update(float Dt);
         virtual void Render();

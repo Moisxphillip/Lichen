@@ -1,6 +1,6 @@
 #include "Math/Physics.hpp"
-#include "Math/AARectangle.hpp"
-#include "Math/AACircle.hpp"
+#include "Components/AARectangle.hpp"
+#include "Components/AACircle.hpp"
 
 #include <algorithm>
 #include <cmath>
@@ -203,12 +203,10 @@ void Physics::_RectCircData(Rectangle& A, Circle& B, Manifold& M)
     {
         if(std::abs(RelativeDist.x) > std::abs(RelativeDist.y))
         {
-            // Closest.x = (Closest.x > 0 ? A.x+A.w : A.x);
             Closest.x = (RelativeDist.x > 0 ? A.x+A.w : A.x);
         }
         else
         {
-            // Closest.y = (Closest.y > 0 ? A.y+A.h : A.y);
             Closest.y = (RelativeDist.y > 0 ? A.y+A.h : A.y);
         }
     }

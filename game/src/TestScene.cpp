@@ -7,8 +7,8 @@
 #include "Components/Text.hpp"
 #include "Graphics/Draw.hpp"
 #include "Math/Physics.hpp"
-#include "Math/AACircle.hpp"
-#include "Math/AARectangle.hpp"
+#include "Components/AACircle.hpp"
+#include "Components/AARectangle.hpp"
 #include "Tools/Particles.hpp"
 
 

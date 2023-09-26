@@ -1,4 +1,4 @@
-#include "Math/AARectangle.hpp"
+#include "Components/AARectangle.hpp"
 #include "Math/Physics.hpp"
 #include "Core/Engine.hpp"
 
@@ -20,11 +20,9 @@ void AARectangle::SetRect(Rectangle R)
 
 void AARectangle::PhysicsUpdate(float Dt)
 {
-    Vector2 Rot = Offset.Rotate(Parent.Angle);
-    Position = Parent.Box.Center() + Rot;
     Physics::Integrate(*this, Dt);
     _Rect.SetCenter(Position);
-    Parent.Box.SetCenter(Position - Rot);
+    Parent.Box.SetCenter(Position - Offset);
 }
 
 void AARectangle::Render()

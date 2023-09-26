@@ -1,4 +1,4 @@
-#include "Math/AACollider.hpp"
+#include "Components/AACollider.hpp"
 #include "Math/Physics.hpp"
 
 #include <algorithm>
@@ -97,6 +97,11 @@ void AACollider::SetRect(Rectangle R)
 }
 
 //Inheritance
+void AACollider::Start()
+{
+    Position = Parent.Box.Center() + Offset;
+}
+
 void AACollider::PhysicsUpdate(float Dt)
 {
 }

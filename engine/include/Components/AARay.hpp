@@ -1,7 +1,7 @@
 #ifndef LICHEN_AARAY
 #define LICHEN_AARAY
 
-#include "Math/AACollider.hpp"
+#include "Components/AACollider.hpp"
 
 class AARay : public AACollider
 {

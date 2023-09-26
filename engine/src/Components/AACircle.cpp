@@ -1,4 +1,4 @@
-#include "Math/AACircle.hpp"
+#include "Components/AACircle.hpp"
 #include "Math/Physics.hpp"
 #include "Core/Engine.hpp"
 
@@ -20,11 +20,9 @@ void AACircle::SetBall(Circle B)
 
 void AACircle::PhysicsUpdate(float Dt)
 {
-    Vector2 Rot = Offset.Rotate(Parent.Angle);
-    Position = Parent.Box.Center() + Rot;
     Physics::Integrate(*this, Dt);
     _Ball.SetCenter(Position);
-    Parent.Box.SetCenter(Position - Rot);
+    Parent.Box.SetCenter(Position - Offset);
 }
 
 void AACircle::Render()

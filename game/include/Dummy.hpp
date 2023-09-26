@@ -4,6 +4,7 @@
 #include "Core/Input.hpp"
 #include "Components/StateMachine.hpp"
 #include "Components/Sprite.hpp"
+#include "Components/AACircle.hpp"
 
 //The core entity
 class Dummy : public StateMachine
@@ -11,6 +12,7 @@ class Dummy : public StateMachine
     private:
 
     public:
+        AACircle* MyCollider;
         Dummy(GameObject& Parent, std::string Label = "Dummy");
         void SMStart();
 };

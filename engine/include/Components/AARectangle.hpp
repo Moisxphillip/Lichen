@@ -1,7 +1,7 @@
 #ifndef LICHEN_AARECTANGLE
 #define LICHEN_AARECTANGLE
 
-#include "Math/AACollider.hpp"
+#include "Components/AACollider.hpp"
 
 class AARectangle: public AACollider
 {

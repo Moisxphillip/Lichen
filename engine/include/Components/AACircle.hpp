@@ -1,7 +1,7 @@
 #ifndef LICHEN_AACIRCLE
 #define LICHEN_AACIRCLE
 
-#include "Math/AACollider.hpp"
+#include "Components/AACollider.hpp"
 #include "Math/Circle.hpp"
 
 class AACircle: public AACollider

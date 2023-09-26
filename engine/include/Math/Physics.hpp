@@ -4,8 +4,8 @@
 #include "Math/Rectangle.hpp"
 #include "Math/Circle.hpp"
 #include "Math/Vector2.hpp"
-#include "Math/AACollider.hpp"
-#include "Math/AARay.hpp"
+#include "Components/AACollider.hpp"
+#include "Components/AARay.hpp"
 
 
 class Physics
