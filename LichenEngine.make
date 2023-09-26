@@ -47,8 +47,17 @@ TARGETDIR = bin
 TARGET = $(TARGETDIR)/LichenEngine_release-windows-x86.exe
 OBJDIR = bin/obj/release
 DEFINES += -DNDEBUG
-ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -O2 -static
-ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -O2 -std=c++17 -static
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -flto -O3 -mwindows
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -flto -O3 -std=c++17 -mwindows
+ALL_LDFLAGS += $(LDFLAGS) -Lextlib/lib -L/usr/lib32 -m32 -flto -s
+
+else ifeq ($(config),profiler)
+TARGETDIR = bin
+TARGET = $(TARGETDIR)/LichenEngine_profiler-windows-x86.exe
+OBJDIR = bin/obj/profiler
+DEFINES +=
+ALL_CFLAGS += $(CFLAGS) $(ALL_CPPFLAGS) -m32 -O2
+ALL_CXXFLAGS += $(CXXFLAGS) $(ALL_CPPFLAGS) -m32 -O2 -std=c++17
 ALL_LDFLAGS += $(LDFLAGS) -Lextlib/lib -L/usr/lib32 -m32 -s
 
 endif
@@ -77,6 +86,7 @@ GENERATED += $(OBJDIR)/Collider.o
 GENERATED += $(OBJDIR)/Color.o
 GENERATED += $(OBJDIR)/Component.o
 GENERATED += $(OBJDIR)/Draw.o
+GENERATED += $(OBJDIR)/Dummy.o
 GENERATED += $(OBJDIR)/EndScene.o
 GENERATED += $(OBJDIR)/Engine.o
 GENERATED += $(OBJDIR)/Enum.o
@@ -133,6 +143,7 @@ OBJECTS += $(OBJDIR)/Collider.o
 OBJECTS += $(OBJDIR)/Color.o
 OBJECTS += $(OBJDIR)/Component.o
 OBJECTS += $(OBJDIR)/Draw.o
+OBJECTS += $(OBJDIR)/Dummy.o
 OBJECTS += $(OBJDIR)/EndScene.o
 OBJECTS += $(OBJDIR)/Engine.o
 OBJECTS += $(OBJDIR)/Enum.o
@@ -377,6 +388,9 @@ $(OBJDIR)/Alien.o: game/src/Alien.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Bullet.o: game/src/Bullet.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Dummy.o: game/src/Dummy.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/EndScene.o: game/src/EndScene.cpp

@@ -88,8 +88,8 @@ void Camera::Update(float Dt)
             break;
     }
     _Position-=Engine::Instance().GetRenderSize()*0.5f;
-    _Position.x = std::round(_Position.x);
-    _Position.y = std::round(_Position.y);
+    _Position.x = std::floor(_Position.x);
+    _Position.y = std::floor(_Position.y);
 
     Engine::Instance().GetRenderer().SetViewPosition(_Position*-1);    
 }

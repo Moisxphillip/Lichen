@@ -1,6 +1,6 @@
 workspace "Lichen"
     architecture "x32"
-    configurations { "debug", "release" }
+    configurations { "debug", "release", "profiler" }
 
 project "LichenEngine"
     
@@ -62,10 +62,18 @@ project "LichenEngine"
 
     filter "configurations:Debug"
         defines {"DEBUG"}
-        -- buildoptions {"-static"}
         symbols "On"
+        -- linkoptions {"-static"}
         
-    filter "configurations:Release"
+        filter "configurations:Release"
         defines {"NDEBUG"}
-        buildoptions {"-static"}
+        optimize "Full"
+        flags{"LinkTimeOptimization"}
+        buildoptions {"-mwindows"}
+        -- linkoptions {"-static"}
+        -- StaticRuntime "On"
+        
+        filter "configurations:Profiler"
+        -- defines {"NDEBUG", "TRACY_ENABLE"}
         optimize "On"
+        -- buildoptions {"-static"}

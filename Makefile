@@ -14,6 +14,9 @@ ifeq ($(config),debug)
 else ifeq ($(config),release)
   LichenEngine_config = release
 
+else ifeq ($(config),profiler)
+  LichenEngine_config = profiler
+
 else
   $(error "invalid configuration $(config)")
 endif
@@ -39,6 +42,7 @@ help:
 	@echo "CONFIGURATIONS:"
 	@echo "  debug"
 	@echo "  release"
+	@echo "  profiler"
 	@echo ""
 	@echo "TARGETS:"
 	@echo "   all (default)"

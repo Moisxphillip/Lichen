@@ -46,7 +46,7 @@ void Engine::_InitEngineSystems()
     }
 }
 
-Engine::Engine(std::string Name = "LichenEngine", int Width = 1024, int Height = 600, int InternalWidth, int InternalHeight, bool VSync)
+Engine::Engine(std::string Name, int Width, int Height, int ProjWidth, int ProjHeight, bool VSync)
 {
     _VSync = VSync;
     // _VSync = false;
@@ -59,18 +59,18 @@ Engine::Engine(std::string Name = "LichenEngine", int Width = 1024, int Height =
     else //Register window info
     {
         _GameTitle = Name;
-        _GameWidth = Width;
-        _GameHeight = Height;
+        _WindowWidth = Width;
+        _WindowHeight = Height;
         _MixChannels = SOUNDCHANNELS;
         _GameInstance = this;
     }
 
-    _WindowWidth = _GameWidth;
-    _WindowHeight = _GameHeight;
 
     //Init Engine Resources
     
-    _GameWindow = new Window(Name, Width, Height, InternalWidth, InternalHeight, _VSync);
+    _GameWindow = new Window(Name, Width, Height, ProjWidth, ProjHeight, _VSync);
+    _GameWidth = _GameWindow->GetProjectionWidth();
+    _GameHeight = _GameWindow->GetProjectionHeight();
     _GameRenderer = new Renderer;
     _GameRenderer->SetViewPosition(Vector2(0,0));
     _GameRenderer->SetClearColor(Color("#000000"));
@@ -223,8 +223,8 @@ Engine& Engine::Instance()
 {
     if(_GameInstance == nullptr) //Only creates a new Engine if there's no other instance of the class currently running
     {
-        // _GameInstance = new Engine("Lichen", 1024, 600); //Penguin
-        _GameInstance = new Engine("Lichen", 1280, 720); //Tests
+        // _GameInstance = new Engine("LichenEngine", 1024, 600); //Penguin
+        _GameInstance = new Engine("LichenEngine", 1280, 720); //Tests
     }
     return *_GameInstance;
 }

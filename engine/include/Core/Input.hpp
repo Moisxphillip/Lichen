@@ -34,6 +34,7 @@ class Input
         static std::map<int, Key> _KeyCode;
         static bool _QuitRequested;
         static int _Ctr;
+        static bool _Fullscreen;
 
         // GLFW callbacks for events
         static void KeyCallback(GLFWwindow* GLWindow, int KbKey, int Scancode, int Action, int Mods);

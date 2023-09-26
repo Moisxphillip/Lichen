@@ -35,6 +35,8 @@ class StateMachine: public Component
         void AddState(SMState Id, GenericState* Add);
         void RemoveState(SMState Remove);
         void SetState(SMState Set);
+        void SetFlip(Flip Set);
+        Flip GetFlip();
         bool HasState(SMState Compare);
         bool IsLabelled(std::string Compare);
         SMState GetCurrentState();

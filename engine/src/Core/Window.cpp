@@ -1,6 +1,6 @@
 #include "Core/Window.hpp"
-
-Window::Window(std::string Name, int Width, int Height, int ProjectionWidth, int ProjectionHeight, bool VSync)
+#include <iostream>
+Window::Window(std::string WindowName, int Width, int Height, int ProjWidth, int ProjHeight, bool VSync)
 {
     _Width = Width;
     _Height = Height;
@@ -14,7 +14,7 @@ Window::Window(std::string Name, int Width, int Height, int ProjectionWidth, int
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); //must have a vertex array if using this
 
-    _Window = glfwCreateWindow(Width, Height, Name.c_str(),0,0);
+    _Window = glfwCreateWindow(Width, Height, WindowName.c_str(),0,0);
 
     if(!_Window)
     {
@@ -30,12 +30,13 @@ Window::Window(std::string Name, int Width, int Height, int ProjectionWidth, int
     }
 
     // glEnable(GL_DEPTH_TEST); //For 3D Depth
-    _ProjectionWidth = (ProjectionWidth != 0 ? ProjectionWidth  : Width ); //In case there's internal resolution
-    _ProjectionHeight = (ProjectionHeight != 0 ? ProjectionHeight : Height);
+    _ProjectionWidth = (ProjWidth != 0 ? ProjWidth  : Width ); //In case there's internal resolution
+    _ProjectionHeight = (ProjHeight != 0 ? ProjHeight : Height);
 
-    int x=0,y=0,w=_Width,h=_Height;
-    float DesiredRatio = (float)_ProjectionWidth/_ProjectionHeight;
+    int x=0,y=0, w=_Width, h=_Height;
+    float DesiredRatio = (float)_ProjectionWidth/(float)_ProjectionHeight;
     float AspectRatio = (float)_Width/(float)_Height;
+    std::cout <<'\0';// there's a heisenbug in release mode that is fixed by this line '-'
 
     if(DesiredRatio < AspectRatio)
     {
@@ -48,9 +49,10 @@ Window::Window(std::string Name, int Width, int Height, int ProjectionWidth, int
     {
         int nH = (int)(_Height/DesiredRatio);
         x = 0;
-        y = (_Height-nH)/2;
+        y = (_Height - nH)/2;
         h = nH;
     }
+    
     glViewport(x,y,w,h);
     
     _Projection = new glm::mat4(glm::ortho( //X = ➡, Y = ⬇

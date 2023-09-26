@@ -148,7 +148,7 @@ bool  Input::_ControllerState[static_cast<int>(ControllerButton::LastButton)] = 
 int   Input::_PrevControllerState[static_cast<int>(ControllerButton::LastButton)] = {0};
 float Input::_ControllerAxis[static_cast<int>(ControllerAxis::LastAxis)] = {0.0f};
 float Input::_ControllerDeadzone = 0.2f;
-
+bool  Input::_Fullscreen = false;
 
 Input& Input::Instance()
 {
@@ -233,19 +233,19 @@ void Input::Update()
         }
     }
 
-    //TODO move to appropriate place later.
-    //TODO Store previous dimensions to restore size when window frame is back
-    //TODO and maximize window when setting it to borderless 
     if(KeyJustPressed(Key::F11))
     {
-        glfwSetWindowAttrib(_Window, GLFW_DECORATED, GLFW_FALSE);
-    }
-    
-    if(KeyJustPressed(Key::F10))
-    {
+        if(!_Fullscreen)
+        {
+            glfwSetWindowAttrib(_Window, GLFW_DECORATED, GLFW_FALSE);
+            glfwMaximizeWindow(_Window);
+            _Fullscreen = true;
+            return;
+        }
+        glfwRestoreWindow(_Window);
         glfwSetWindowAttrib(_Window, GLFW_DECORATED, GLFW_TRUE);
+        _Fullscreen = false;
     }
-
 }
 
 // Key functions

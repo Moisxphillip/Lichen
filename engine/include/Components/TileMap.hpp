@@ -17,6 +17,7 @@ class TileMap: public Component
         TileSet *_CurrTileSet;
         int _MapWidth;
         int _MapHeight;
+        float _Parallax;
         int _LowerMarker;
 
         //Collision automation functions
@@ -37,6 +38,8 @@ class TileMap: public Component
         void SetTileSet(TileSet* Tiles);
         int GetWidth();
         int GetHeight();
+        void SetParallax(float);
+        float GetParallax();
         void LoadCollision(std::string FileName);
 
         //inheritance functions

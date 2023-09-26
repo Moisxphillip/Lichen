@@ -68,6 +68,16 @@ void StateMachine::SetState(SMState Set)
     }
 }
 
+void StateMachine::SetFlip(Flip Set)
+{
+    _Flip = Set;
+}
+
+Flip StateMachine::GetFlip()
+{
+    return _Flip;
+}
+
 bool StateMachine::HasState(SMState Compare) 
 {
     return _States.count(Compare);
@@ -99,8 +109,13 @@ void StateMachine::PhysicsUpdate(float Dt)
     {
         return;
     }
+    SMState Now = _CurrState;
     _States[_CurrState].get()->PhysicsUpdate(*this, Dt);
     SMPhysicsUpdate(Dt);
+    if(Now != _CurrState)
+    {
+        PhysicsUpdate(Dt);
+    }
 }
 
 void StateMachine::Update(float Dt)
@@ -109,11 +124,16 @@ void StateMachine::Update(float Dt)
     {
         return;
     }
-    SMUpdate(Dt);
+    SMState Now = _CurrState;
     _States[_CurrState].get()->Update(*this, Dt);
+    SMUpdate(Dt);
     for(int i = 0; i<(int)_Sections.size(); i++)
     {
         _Sections[i].get()->Update(Dt);
+    }
+    if(Now != _CurrState)
+    {
+        Update(Dt);
     }
 }
 
@@ -123,8 +143,13 @@ void StateMachine::LateUpdate(float Dt)
     {
         return;
     }
+    SMState Now = _CurrState;
     _States[_CurrState].get()->LateUpdate(*this, Dt);
     SMLateUpdate(Dt);
+    if(Now != _CurrState)
+    {
+        LateUpdate(Dt);
+    }
 }
 
 void StateMachine::Render()
@@ -135,6 +160,7 @@ void StateMachine::Render()
     }
     for(int i = 0; i<(int)_Sections.size(); i++)
     {
+        _Sections[i].get()->SetFlip(_Flip);
         _Sections[i].get()->Render();
     }
     _States[_CurrState].get()->Render(*this);
@@ -212,68 +238,3 @@ void GenericState::Render(StateMachine& Sm)
 void GenericState::OnCollision(StateMachine& Sm, GameObject& Other)
 {
 }
-
-
-
-    // _SMStates.push_back(Add);
-    // std::sort(_SMStates.begin(), _SMStates.end(),
-    //     [](const StateInfo& A, const StateInfo& B)
-    //     {
-    //         return A.ThisState < B.ThisState;
-    //     });
-
-    // for(int i = 0; i< (int)_SMStates.size();i++)
-    // {
-    //     if(_SMStates[i].ThisState == Remove)
-    //     {
-    //         _SMStates.erase(_SMStates.begin()+i);
-    //         return;
-    //     }
-    // }
-    // Error("StateMachine::RemoveState: Attempted to delete inexistent state");
-
-    // for(int i = 0; i< (int)_SMStates.size();i++)
-    // {
-    //     if(_SMStates[i].ThisState == Set)
-    //     {
-    //         X = _SMStates[i];
-    //     }
-    // }
-    
-    // sprites.resize(SMState::_statesCount);
-    // for(int i=0; i < SMState::_statesCount; i++)
-    //     sprites[i] = nullptr;
-    // Sprite* spriteState = sprites[state].get();
-    // spriteState->textureFlip = textureFlip;
-    // spriteState->Render();
-    // if(sprites[state] == nullptr) {
-    //     SDL_Log("StateMachine::RemoveSMState: SMState");
-    //     return;
-    // } sprites[state].reset();
-// void StateMachine::FlipSprite (Sprite::Axis axis) 
-// {
-//     SDL_RendererFlip flip = (axis == Sprite::HORIZONTAL) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_VERTICAL;
-//     textureFlip = SDL_RendererFlip(textureFlip ^ flip);
-// }
-// bool StateMachine::SpriteIsFlipped () {
-//     return ((textureFlip & SDL_FLIP_HORIZONTAL)? true : false);
-// }
-    // if (state != previousState)
-    //     sprites[state].get()->SetFrame(0);
-    // int directionX = (textureFlip ^ SDL_FLIP_HORIZONTAL)? 0 : 1;
-    // int directionY = (textureFlip ^ SDL_FLIP_VERTICAL)? 0 : 1;
-    // Collider* collider = (Collider*)associated.GetComponent(ComponentType::_Collider);
-    // if (collider != nullptr) {
-    //     if (directionX != lastDirection.x) {
-    //         collider->offset.x = -collider->offset.x;
-    //         associated.box.x -= collider->offset.x * 2.0f;
-    //         lastDirection.x = directionX;
-    //     }
-    //     if (directionY != lastDirection.y) {
-    //         collider->offset.y = -collider->offset.y;
-    //         associated.box.y -= collider->offset.y * 2.0f;
-    //         lastDirection.y = directionY;
-    //     }
-    // }
-    // // melius colliders' pixel correction
-    // associated.pixelColliderFix0 = lastDirection.x;

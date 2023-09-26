@@ -1,4 +1,5 @@
 #include "TestScene.hpp"
+#include "Dummy.hpp"
 
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
@@ -6,10 +7,10 @@
 #include "Components/Text.hpp"
 #include "Graphics/Draw.hpp"
 #include "Math/Physics.hpp"
-#include "Tools/Particles.hpp"
-
 #include "Math/AACircle.hpp"
 #include "Math/AARectangle.hpp"
+#include "Tools/Particles.hpp"
+
 
 
 Test01::Test01()
@@ -30,7 +31,6 @@ Draw *draw = nullptr;
 
 AARectangle* Aa = nullptr;
 // AACircle* Aa = nullptr;
-
 
 ParticleManager* Pm;
 void Test01::LoadAssets()
@@ -134,6 +134,13 @@ void Test01::LoadAssets()
     imgo->AddComponent(text);
     AddGameObj(imgo);
 
+    GameObject* dummyobj = new GameObject(2);
+    Dummy* dummy = new Dummy(*dummyobj);
+    dummyobj->Box.SetCenter(Vector2(640, 150));
+    dummyobj->AddComponent(dummy);
+    AddGameObj(dummyobj);
+    // Cam.Follow(dummyobj);
+
     
 }
 
@@ -204,7 +211,7 @@ void Test01::Update(float Dt)
         text->SetText(std::to_string(1.0f/Dt) + " Fps");
     }
 
-    if(Input::Instance().KeyJustPressed(Key::S))
+    if(Input::Instance().KeyJustPressed(Key::F5))
     {
         Shader& sh = sprite->GetShader();
 

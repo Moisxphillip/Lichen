@@ -39,7 +39,7 @@ class Engine
         bool _ChangeScene();
         
         //Mandatory
-        Engine(std::string Name, int Width, int Height, int ProjWidth=0, int ProjHeight=0, bool VSync=true);
+        Engine(std::string Name = "LichenEngine", int Width = 1280, int Height = 720, int ProjWidth=0, int ProjHeight=0, bool VSync=true);
         static Engine* _GameInstance;
         Window* _GameWindow = nullptr;
         SDL_Window* _SDLWindow = nullptr;
