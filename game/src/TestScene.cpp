@@ -2,6 +2,7 @@
 #include "Dummy.hpp"
 #include "Enemy/Slime.hpp"
 
+#include "EnemyFactory.hpp"
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
 #include "Components/Sprite.hpp"
@@ -135,24 +136,24 @@ void Test01::LoadAssets()
     imgo->AddComponent(text);
     AddGameObj(imgo);
 
-
     GameObject* dummyobj = new GameObject(2);
-    Slime* slime = new Slime(*dummyobj);
-    dummyobj->Represents = CollisionMask::Type01;
-    dummyobj->Interacts = CollisionMask::Type01;
-    dummyobj->Box.SetCenter(Vector2(640, 150));
-    dummyobj->AddComponent(slime);
-    AddGameObj(dummyobj);
-
-
-    dummyobj = new GameObject(2);
     Dummy* dummy = new Dummy(*dummyobj);
-    dummyobj->Box.SetCenter(Vector2(640, 360));
+    dummyobj->Box.SetCenter(Vector2(640, 150));
     dummyobj->AddComponent(dummy);
-    dummyobj->Represents = CollisionMask::Type01;
-    dummyobj->Interacts = CollisionMask::Type01;
     AddGameObj(dummyobj);
-    Cam.Follow(dummyobj);    
+    
+    GameObject* slimeObj = new GameObject(2);
+    Slime* slime = new Slime(*slimeObj);
+    slimeObj->Box.SetCenter(Vector2(640, 150));
+    slimeObj->AddComponent(slime);
+    AddGameObj(slimeObj);
+    Cam.Follow(slimeObj);
+
+    
+    GameObject* enemyObj = new GameObject(2);
+    enemyObj->AddComponent(EnemyFactory::CreateEnemy(*enemyObj, EnemyType::GRUB, Vector2(100, 100)));
+    AddGameObj(enemyObj);
+
 }
 
 Timer alter;

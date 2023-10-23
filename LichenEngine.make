@@ -91,6 +91,9 @@ GENERATED += $(OBJDIR)/Controls.o
 GENERATED += $(OBJDIR)/Draw.o
 GENERATED += $(OBJDIR)/Dummy.o
 GENERATED += $(OBJDIR)/EndScene.o
+GENERATED += $(OBJDIR)/Enemy.o
+GENERATED += $(OBJDIR)/EnemyFactory.o
+GENERATED += $(OBJDIR)/EnemyTest.o
 GENERATED += $(OBJDIR)/Engine.o
 GENERATED += $(OBJDIR)/Enum.o
 GENERATED += $(OBJDIR)/EventChain.o
@@ -153,6 +156,9 @@ OBJECTS += $(OBJDIR)/Controls.o
 OBJECTS += $(OBJDIR)/Draw.o
 OBJECTS += $(OBJDIR)/Dummy.o
 OBJECTS += $(OBJDIR)/EndScene.o
+OBJECTS += $(OBJDIR)/Enemy.o
+OBJECTS += $(OBJDIR)/EnemyFactory.o
+OBJECTS += $(OBJDIR)/EnemyTest.o
 OBJECTS += $(OBJDIR)/Engine.o
 OBJECTS += $(OBJDIR)/Enum.o
 OBJECTS += $(OBJDIR)/EventChain.o
@@ -412,7 +418,16 @@ $(OBJDIR)/Dummy.o: game/src/Dummy.cpp
 $(OBJDIR)/EndScene.o: game/src/EndScene.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Enemy.o: game/src/Enemy.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Slime.o: game/src/Enemy/Slime.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/EnemyFactory.o: game/src/EnemyFactory.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/EnemyTest.o: game/src/EnemyTest.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/GameStats.o: game/src/GameStats.cpp
