@@ -1,5 +1,6 @@
 #include "Dummy.hpp"
-#include "Components/AACircle.hpp"
+#include "Core/Input.hpp"
+#include "Components/Sprite.hpp"
 
 //Define names for the SMState enums, so it's easier to know which state you're using
 #define DUMMY_IDLE SMState::Type01

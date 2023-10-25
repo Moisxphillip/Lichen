@@ -1,5 +1,6 @@
 #include "TestScene.hpp"
 #include "Dummy.hpp"
+#include "Enemy/Slime.hpp"
 
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
@@ -134,12 +135,18 @@ void Test01::LoadAssets()
     imgo->AddComponent(text);
     AddGameObj(imgo);
 
+    // GameObject* dummyobj = new GameObject(2);
+    // Dummy* dummy = new Dummy(*dummyobj);
+    // dummyobj->Box.SetCenter(Vector2(640, 150));
+    // dummyobj->AddComponent(dummy);
+    // AddGameObj(dummyobj);
+    
     GameObject* dummyobj = new GameObject(2);
-    Dummy* dummy = new Dummy(*dummyobj);
+    Slime* dummy = new Slime(*dummyobj);
     dummyobj->Box.SetCenter(Vector2(640, 150));
     dummyobj->AddComponent(dummy);
     AddGameObj(dummyobj);
-    // Cam.Follow(dummyobj);
+    Cam.Follow(dummyobj);
 
     
 }
@@ -148,8 +155,8 @@ Timer alter;
 void Test01::PhysicsUpdate(float Dt)
 {
     Input& input = Input::Instance();
-    if(Aa)
-        Aa->SetVelocity((input.MousePosition()-Aa->Position));
+    // if(Aa)
+    //     Aa->SetVelocity((input.MousePosition()-Aa->Position));
 
     if(input.MousePressedDown(MouseButton::Left))
     {

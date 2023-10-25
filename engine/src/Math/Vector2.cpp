@@ -107,10 +107,11 @@ Vector2 Vector2::MoveTo(const Vector2& Goal, const float& Speed)
     if(Mag <= Speed || Mag == 0)
     {
         *this = Goal;
-        return *this;
+        return Movement;
     }
-    *this += Movement/Mag * Speed;
-    return *this;
+    Movement = Movement/Mag * Speed;
+    *this += Movement;
+    return Movement;
 }
 
 //________________________________________
@@ -196,7 +197,7 @@ Vector2 operator/(const Vector2& V1, const Vector2& V2)
 
 bool operator==(const Vector2& V1, const Vector2& V2)
 {
-    return (((abs(V1.x-V2.x) < 1e-9) && (abs(V1.y-V2.y) < 1e-9)));
+    return (((abs(V1.x-V2.x) < 1e-4) && (abs(V1.y-V2.y) < 1e-4)));
 }
 
 bool operator!=(const Vector2& V1, const Vector2& V2)

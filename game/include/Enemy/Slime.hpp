@@ -1,37 +1,40 @@
-#ifndef LICHEN_DUMMY
-#define LICHEN_DUMMY
+#ifndef GAME_SLIME
+#define GAME_SLIME
 
 #include "Components/StateMachine.hpp"
 #include "Components/AACircle.hpp"
+#include "Math/Vector2.hpp"
 
 //The core entity
-class Dummy : public StateMachine
+class Slime : public StateMachine
 {
     private:
 
     public:
         AACircle* MyCollider;
-        Dummy(GameObject& Parent, std::string Label = "Dummy");
+        Slime(GameObject& Parent, std::string Label = "Slime");
         void SMStart();
+        Vector2 Target;
 };
 
 //Idle state
-class DummyIdle : public GenericState
+class SlimeIdle : public GenericState
 {
     private:
 
     public:
-    DummyIdle(const StateInfo& Specs);
+    SlimeIdle(const StateInfo& Specs);
     void PhysicsUpdate(StateMachine& Sm, float Dt);
 };
 
 //Walk state
-class DummyWalk : public GenericState
+class SlimeWalk : public GenericState
 {
     private:
 
     public:
-    DummyWalk(const StateInfo& Specs);
+    SlimeWalk(const StateInfo& Specs);
     void PhysicsUpdate(StateMachine& Sm, float Dt);
 };
-#endif//LICHEN_DUMMY
+
+#endif//GAME_SLIME

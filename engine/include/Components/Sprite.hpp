@@ -36,6 +36,7 @@ class Sprite : public Component
         float LifeTime;
 
         Sprite(GameObject& Parent, std::string Path,int FrameCount, int Columns, int Rows, float FrameTime, float LifeTime);
+        Sprite(GameObject& Parent, std::string Path,int FrameCount, int Columns, int Rows, float FrameTime);
         Sprite(GameObject& Parent, std::string Path, int FrameCount, int Columns, int Rows);
         Sprite(GameObject& Parent, std::string Path);
         ~Sprite();

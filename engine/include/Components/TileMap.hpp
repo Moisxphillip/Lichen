@@ -13,7 +13,6 @@ struct RectInt
 class TileMap: public Component
 {
     private:
-        std::vector<std::vector<int>> _TileMatrix;
         TileSet *_CurrTileSet;
         int _MapWidth;
         int _MapHeight;
@@ -31,6 +30,7 @@ class TileMap: public Component
         void _CoordOptimizer(std::vector<RectInt>& Coords);
 
     public:
+        std::vector<std::vector<int>> _TileMatrix;
         TileMap(GameObject& Parent, std::string Path, TileSet* Tiles, bool LoadAsLegacy=false, bool IsZeroEmpty=true);
         ~TileMap();
         void Load(std::string Path);

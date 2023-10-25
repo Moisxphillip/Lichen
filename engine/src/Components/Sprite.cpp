@@ -28,6 +28,11 @@ Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount , int Colum
     _Type = ComponentType::Sprite;
 }
 
+Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount, int Columns, int Rows, float FrameTime)
+: Sprite(GameObj, File, FrameCount, Columns, Rows, FrameTime, 0.0f)
+{
+}
+
 Sprite::Sprite(GameObject& GameObj, std::string File, int FrameCount, int Columns, int Rows)
 : Sprite(GameObj, File, FrameCount, Columns, Rows, 0.0f, 0.0f)
 {

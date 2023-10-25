@@ -85,11 +85,13 @@ GENERATED += $(OBJDIR)/Circle.o
 GENERATED += $(OBJDIR)/Collider.o
 GENERATED += $(OBJDIR)/Color.o
 GENERATED += $(OBJDIR)/Component.o
+GENERATED += $(OBJDIR)/Controls.o
 GENERATED += $(OBJDIR)/Draw.o
 GENERATED += $(OBJDIR)/Dummy.o
 GENERATED += $(OBJDIR)/EndScene.o
 GENERATED += $(OBJDIR)/Engine.o
 GENERATED += $(OBJDIR)/Enum.o
+GENERATED += $(OBJDIR)/EventChain.o
 GENERATED += $(OBJDIR)/Fade.o
 GENERATED += $(OBJDIR)/Filter.o
 GENERATED += $(OBJDIR)/FontHandler.o
@@ -110,6 +112,7 @@ GENERATED += $(OBJDIR)/Renderer.o
 GENERATED += $(OBJDIR)/Resources.o
 GENERATED += $(OBJDIR)/Scene.o
 GENERATED += $(OBJDIR)/Shader.o
+GENERATED += $(OBJDIR)/Slime.o
 GENERATED += $(OBJDIR)/Sound.o
 GENERATED += $(OBJDIR)/Sprite.o
 GENERATED += $(OBJDIR)/StageScene.o
@@ -142,11 +145,13 @@ OBJECTS += $(OBJDIR)/Circle.o
 OBJECTS += $(OBJDIR)/Collider.o
 OBJECTS += $(OBJDIR)/Color.o
 OBJECTS += $(OBJDIR)/Component.o
+OBJECTS += $(OBJDIR)/Controls.o
 OBJECTS += $(OBJDIR)/Draw.o
 OBJECTS += $(OBJDIR)/Dummy.o
 OBJECTS += $(OBJDIR)/EndScene.o
 OBJECTS += $(OBJDIR)/Engine.o
 OBJECTS += $(OBJDIR)/Enum.o
+OBJECTS += $(OBJDIR)/EventChain.o
 OBJECTS += $(OBJDIR)/Fade.o
 OBJECTS += $(OBJDIR)/Filter.o
 OBJECTS += $(OBJDIR)/FontHandler.o
@@ -167,6 +172,7 @@ OBJECTS += $(OBJDIR)/Renderer.o
 OBJECTS += $(OBJDIR)/Resources.o
 OBJECTS += $(OBJDIR)/Scene.o
 OBJECTS += $(OBJDIR)/Shader.o
+OBJECTS += $(OBJDIR)/Slime.o
 OBJECTS += $(OBJDIR)/Sound.o
 OBJECTS += $(OBJDIR)/Sprite.o
 OBJECTS += $(OBJDIR)/StageScene.o
@@ -396,6 +402,9 @@ $(OBJDIR)/Dummy.o: game/src/Dummy.cpp
 $(OBJDIR)/EndScene.o: game/src/EndScene.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Slime.o: game/src/Enemy/Slime.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/GameStats.o: game/src/GameStats.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -415,6 +424,12 @@ $(OBJDIR)/TestScene.o: game/src/TestScene.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/TitleScene.o: game/src/TitleScene.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Controls.o: game/src/Tools/Controls.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/EventChain.o: game/src/Tools/EventChain.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/main.o: game/src/main.cpp
