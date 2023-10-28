@@ -7,10 +7,17 @@
 #define DUMMY_IDLE SMState::Type01
 #define DUMMY_WALK SMState::Type02
 
+Dummy* Dummy::Player;
+
 Dummy::Dummy(GameObject& Parent, std::string Label)
 : StateMachine(Parent, Label)
 {
     MyCollider = nullptr;
+    Player = this;
+}
+
+Dummy::~Dummy(){
+    Player = nullptr;
 }
 
 void Dummy::SMStart()
@@ -35,6 +42,8 @@ void Dummy::SMStart()
     SI = {DUMMY_WALK, 0,1,0,false, true};
     DummyWalk* Dum = new DummyWalk(SI);
     AddState(DUMMY_WALK, Dum);
+
+    
 }
 
 

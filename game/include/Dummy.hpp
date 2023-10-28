@@ -8,12 +8,15 @@
 class Dummy : public StateMachine
 {
     private:
+        ~Dummy();
 
     public:
         AACircle* MyCollider;
         Dummy(GameObject& Parent, std::string Label = "Dummy");
         void SMStart();
         void OnCollision(GameObject& Other);
+
+        static Dummy* Player;
 };
 
 //Idle state
