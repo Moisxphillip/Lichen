@@ -78,12 +78,14 @@ GENERATED += $(OBJDIR)/AARay.o
 GENERATED += $(OBJDIR)/AARectangle.o
 GENERATED += $(OBJDIR)/AStar.o
 GENERATED += $(OBJDIR)/Alien.o
+GENERATED += $(OBJDIR)/Attack.o
 GENERATED += $(OBJDIR)/Bullet.o
 GENERATED += $(OBJDIR)/Camera.o
 GENERATED += $(OBJDIR)/CameraFollower.o
 GENERATED += $(OBJDIR)/Circle.o
 GENERATED += $(OBJDIR)/Collider.o
 GENERATED += $(OBJDIR)/Color.o
+GENERATED += $(OBJDIR)/Combat.o
 GENERATED += $(OBJDIR)/Component.o
 GENERATED += $(OBJDIR)/Controls.o
 GENERATED += $(OBJDIR)/Draw.o
@@ -138,12 +140,14 @@ OBJECTS += $(OBJDIR)/AARay.o
 OBJECTS += $(OBJDIR)/AARectangle.o
 OBJECTS += $(OBJDIR)/AStar.o
 OBJECTS += $(OBJDIR)/Alien.o
+OBJECTS += $(OBJDIR)/Attack.o
 OBJECTS += $(OBJDIR)/Bullet.o
 OBJECTS += $(OBJDIR)/Camera.o
 OBJECTS += $(OBJDIR)/CameraFollower.o
 OBJECTS += $(OBJDIR)/Circle.o
 OBJECTS += $(OBJDIR)/Collider.o
 OBJECTS += $(OBJDIR)/Color.o
+OBJECTS += $(OBJDIR)/Combat.o
 OBJECTS += $(OBJDIR)/Component.o
 OBJECTS += $(OBJDIR)/Controls.o
 OBJECTS += $(OBJDIR)/Draw.o
@@ -393,7 +397,13 @@ $(OBJDIR)/Xrand.o: engine/src/Tools/Xrand.cpp
 $(OBJDIR)/Alien.o: game/src/Alien.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Attack.o: game/src/Attack.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Bullet.o: game/src/Bullet.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Combat.o: game/src/Combat.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Dummy.o: game/src/Dummy.cpp

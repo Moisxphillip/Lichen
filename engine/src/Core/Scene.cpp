@@ -114,6 +114,19 @@ void Scene::SceneLateUpdate(float Dt)
 
 void Scene::SceneRender()
 {
+	std::stable_sort(SceneGameObjects.begin(), SceneGameObjects.end(), [](const std::shared_ptr<GameObject> A, const std::shared_ptr<GameObject> B) 
+	{
+		if (A->Depth < B->Depth)
+        	return true;
+		if (A->Depth > B->Depth)
+			return false;
+		if (A->Depth == DepthMode::Dynamic && B->Depth == DepthMode::Dynamic)
+		{
+			return A->Box.y + A->Box.h < B->Box.y + B->Box.h;
+		}
+		return A->GetLayer() < B->GetLayer();
+	});
+
     for(int i = 0; i< (int)(SceneGameObjects.size()); i++)
 	{
 		SceneGameObjects[i]->Render(); //Calls render procedure for each existing GameObject

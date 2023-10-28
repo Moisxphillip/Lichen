@@ -1,6 +1,7 @@
 #include "Dummy.hpp"
 #include "Core/Input.hpp"
 #include "Components/Sprite.hpp"
+#include "Combat.hpp"
 
 //Define names for the SMState enums, so it's easier to know which state you're using
 #define DUMMY_IDLE SMState::Type01
@@ -16,12 +17,12 @@ void Dummy::SMStart()
 {
     //Add the spritesheet(s) with all states and frames
     Sprite* galo = new Sprite(Parent, "./res/galor.png");
-    Parent.Depth = DepthMode::Foreground;
+    Parent.Depth = DepthMode::Dynamic;
     Parent.Box.Redimension(Vector2(galo->GetWidth(), galo->GetHeight()));
     AddSprite(galo);
-    MyCollider = new AACircle(Parent, ColliderKind::Rigid, Circle(0,0,galo->GetWidth()/4));
+    MyCollider = new AACircle(Parent, ColliderKind::Rigid, Circle(0,0,galo->GetWidth()/6));
     MyCollider->SetFriction(0.1f);
-    // MyCollider->GetBall().SetCenter(Parent.Box.Center());
+    MyCollider->GetBall().SetCenter(Parent.Box.Center());
     Parent.AddComponent(MyCollider);
     
     //Create an idle state
@@ -36,6 +37,18 @@ void Dummy::SMStart()
     AddState(DUMMY_WALK, Dum);
 }
 
+
+// #include <iostream>
+// Stats Def{50, 50, 1, 0, 15, 0, 0, 0};
+void Dummy::OnCollision(GameObject& Other)
+{
+    //Leftovers from combat tests. Far from ideal implementation, but gives an idea on how it should work
+    // Stats Atk{50, 50, 1, 0, 0, 25, 25, 0};
+    // AttackData Dta{5, (ScalingStats)(ScalingStats::Strength | ScalingStats::Dexterity)};
+    // std::cout << Def << '\n';
+    // int x =  Combat::Calculate(Atk, Dta, Def);
+    // std::cout <<"This round damage: " << x << "\n\n";
+}
 
 //------------------------------IDLE------------------------------
 DummyIdle::DummyIdle(const StateInfo& Specs)

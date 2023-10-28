@@ -1,8 +1,9 @@
 #include "Tools/Timer.hpp"
 
-Timer::Timer()
+Timer::Timer(float TimeLimit)
+: _Limit(TimeLimit)
 {
-    _Time = 0;
+    _Time = 0.0f;
 }
 
 float Timer::Get()
@@ -18,4 +19,14 @@ void Timer::Restart()
 void Timer::Update(float Dt)
 {
     _Time += Dt;
+}
+
+bool Timer::Finished()
+{
+    return _Time > _Limit;
+}
+
+void Timer::SetLimit(float TimeLimit)
+{
+    _Limit = TimeLimit;
 }

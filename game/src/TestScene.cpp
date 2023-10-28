@@ -135,20 +135,24 @@ void Test01::LoadAssets()
     imgo->AddComponent(text);
     AddGameObj(imgo);
 
-    // GameObject* dummyobj = new GameObject(2);
-    // Dummy* dummy = new Dummy(*dummyobj);
-    // dummyobj->Box.SetCenter(Vector2(640, 150));
-    // dummyobj->AddComponent(dummy);
-    // AddGameObj(dummyobj);
-    
-    GameObject* dummyobj = new GameObject(2);
-    Slime* dummy = new Slime(*dummyobj);
-    dummyobj->Box.SetCenter(Vector2(640, 150));
-    dummyobj->AddComponent(dummy);
-    AddGameObj(dummyobj);
-    Cam.Follow(dummyobj);
 
-    
+    GameObject* dummyobj = new GameObject(2);
+    Slime* slime = new Slime(*dummyobj);
+    dummyobj->Represents = CollisionMask::Type01;
+    dummyobj->Interacts = CollisionMask::Type01;
+    dummyobj->Box.SetCenter(Vector2(640, 150));
+    dummyobj->AddComponent(slime);
+    AddGameObj(dummyobj);
+
+
+    dummyobj = new GameObject(2);
+    Dummy* dummy = new Dummy(*dummyobj);
+    dummyobj->Box.SetCenter(Vector2(640, 360));
+    dummyobj->AddComponent(dummy);
+    dummyobj->Represents = CollisionMask::Type01;
+    dummyobj->Interacts = CollisionMask::Type01;
+    AddGameObj(dummyobj);
+    Cam.Follow(dummyobj);    
 }
 
 Timer alter;
@@ -166,7 +170,7 @@ void Test01::PhysicsUpdate(float Dt)
         z.Velocity =  Vector2(50,0);
         z.Acceleration =  Vector2(0,300);
         z.Angle = 0;
-        z.Spread = 3.1415f;
+        z.Spread = 3.1415f/2.0f;
         z.Duration = 2.0f;
         z.Windswept = true;
         z.ColorInterpolation = true;
@@ -187,7 +191,7 @@ void Test01::PhysicsUpdate(float Dt)
 		for(int j = i+1; j < (int)SceneGameObjects.size(); j++)
 		{
 			if(!SceneGameObjects[j]->Contains(ComponentType::AACollider)  
-				/* ||(((SceneGameObjects[i]->Represents & SceneGameObjects[j]->Interacts) //Activate once object masks are being used
+				 /*||(((SceneGameObjects[i]->Represents & SceneGameObjects[j]->Interacts) //Activate once object masks are being used
 				| (SceneGameObjects[j]->Represents & SceneGameObjects[i]->Interacts)) == CollisionMask::None) */
                 )
 			{
@@ -298,33 +302,3 @@ void Test01::Resume()
 	// 	glm::mat4 Proj =  glm::perspective(glm::radians(45.0f), (float)X.GetWidth()/(float)X.GetHeight(), -1000.0f, 1000.0f);
 	// 	X.SetProjection(Proj);
 	// }
-
-//Optimized
-// bool SortLayers(GameObject A, GameObject B)
-// {
-//     if(A.Depth < B.Depth)
-//         return true;
-//     if(A.Depth > B.Depth)
-//         return false;
-//     if (A.Depth == DepthMode::Dynamic)
-//         return A.Box.y+A.Box.h < B.Box.y+B.Box.h;
-//     return A.GetLayer() < B.GetLayer(); 
-// }
-    //Unoptimized:
-    // if(A.Depth == DepthMode::Background)
-    // {
-    //     if(B.Depth == DepthMode::Background)
-    //         return A.GetLayer() < B.GetLayer();
-    //     return true;
-    // } 
-    // else if (A.Depth == DepthMode::Dynamic)
-    // {
-    //     if(B.Depth == DepthMode::Background)
-    //         return false;
-    //     if(B.Depth == DepthMode::Dynamic)
-    //         return A.Box.y+A.Box.h < B.Box.y+B.Box.h;
-    //     return true;
-    // }
-    // if(B.Depth == DepthMode::Foreground)
-    //     return A.GetLayer() < B.GetLayer();
-    // return false;

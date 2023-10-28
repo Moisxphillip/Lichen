@@ -13,6 +13,7 @@ class Dummy : public StateMachine
         AACircle* MyCollider;
         Dummy(GameObject& Parent, std::string Label = "Dummy");
         void SMStart();
+        void OnCollision(GameObject& Other);
 };
 
 //Idle state

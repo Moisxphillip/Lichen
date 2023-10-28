@@ -16,12 +16,12 @@ void Slime::SMStart()
 {
     //Add the spritesheet(s) with all states and frames
     Sprite* slime = new Sprite(Parent, "./res/img/slime.png", 12, 6, 2, 0.2f);
-    Parent.Depth = DepthMode::Foreground;
+    Parent.Depth = DepthMode::Dynamic;
     Parent.Box.Redimension(Vector2(slime->GetWidth(), slime->GetHeight()));
     AddSprite(slime);
     MyCollider = new AACircle(Parent, ColliderKind::Rigid, Circle(0,0,slime->GetWidth()/2));
     MyCollider->SetFriction(0.1f);
-    // MyCollider->GetBall().SetCenter(Parent.Box.Center());
+    MyCollider->GetBall().SetCenter(Parent.Box.Center());
     Parent.AddComponent(MyCollider);
     
     //Create an idle state
