@@ -4,14 +4,16 @@
 #include "Core/Engine.hpp"
 #include <iostream>
 
+#include "TestScene.hpp"
+
 // TODO delete this once TileSet grid is settled
 const std::vector<std::vector<int>> Grid = {
         {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0} , {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0} , {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0}
     };
-int GridWidth = 4;
-int GridHeight = 4;
-int GridWidthSize = Engine::Instance().GetWindowSize().x/GridWidth;
-int GridHeightSize = Engine::Instance().GetWindowSize().y/GridHeight;
+// int GridWidth = 4;
+// int GridHeight = 4;
+int GridWidthSize = 64;
+int GridHeightSize = 64;
 
 
 Enemy::Enemy(GameObject& Parent, std::string Label): 
@@ -230,15 +232,23 @@ void EnemyPursuit::PhysicsUpdate(StateMachine& Sm, float Dt){
         return;
     }
     
-    if(Engine::Instance().GetPing()){
-            std::vector<Point> path = AStar::Search(Grid, {(int)Sm.Parent.Box.Center().x/GridWidthSize, 
-                                                (int)Sm.Parent.Box.Center().y/GridHeightSize}, 
-                                                {Dummy::Player->Parent.Box.Center().x/GridWidthSize, Dummy::Player->Parent.Box.Center().y/GridHeightSize} 
-                                                );
-            for(auto p : path)
-                EnemyPath.emplace(Vector2(p.x*GridWidthSize+(GridWidthSize/2),p.y*GridHeightSize+(GridHeightSize/2)));
-            
+    if(Engine::Instance().GetPing() && Test01::CollisionMap != nullptr)
+    {
+        std::vector<Point> path = AStar::Search(*Test01::CollisionMap, {(int)Sm.Parent.Box.Center().x/GridWidthSize, 
+                                            (int)Sm.Parent.Box.Center().y/GridHeightSize}, 
+                                            {(int)Dummy::Player->Parent.Box.Center().x/GridWidthSize, (int)Dummy::Player->Parent.Box.Center().y/GridHeightSize} 
+                                            );
+        for(auto p : path)
+        {
+            // std::cout  << p.x  << ' ' << p.y << '\n';//TODO REMOVE
+            EnemyPath.emplace(Vector2(p.x*GridWidthSize+(GridWidthSize/2),p.y*GridHeightSize+(GridHeightSize/2)));
+        }
+        // std::cout <<path.size()<< '\n';//TODO REMOVE
+
+        if(path.size() > 0) //shouldn't follow if there's no valid path
+        {
             EnemyPath.emplace(Dummy::Player->Parent.Box.Center());
+        }    
     };  
 
     if(EnemyPath.empty())

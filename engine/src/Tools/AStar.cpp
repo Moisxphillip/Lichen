@@ -38,7 +38,7 @@ std::vector<Point> AStar::Search(const std::vector<std::vector<int>>& Grid, cons
             int NextX = CurrentPoint.x + _dx[i];
             int NextY = CurrentPoint.y + _dy[i];
 
-            if (_IsValid(NextX, NextY, Rows, Columns) && !ClosedList[NextY][NextX] && Grid[NextY][NextX] == 0 )
+            if (_IsValid(NextX, NextY, Rows, Columns) && !ClosedList[NextY][NextX] && Grid[NextY][NextX] < 0 )
             {
                 float NewCost = CurrentNode.Cost + 1;
 
@@ -71,8 +71,8 @@ bool AStar::_HasObstacle(const std::vector<std::vector<int>>& Grid, const Point&
 {
     int x1 = To.x - From.x;
     int y1 = To.y - From.y;
-    if((_IsValid (From.x+x1,From.y, Grid.size(), Grid[0].size()) && Grid[From.y][From.x+x1] != 0) 
-        && (_IsValid (From.x,From.y+y1, Grid.size(), Grid[0].size()) && Grid[From.y+y1][From.x] != 0))
+    if((_IsValid (From.x+x1,From.y, Grid.size(), Grid[0].size()) && Grid[From.y][From.x+x1] != -1) 
+        && (_IsValid (From.x,From.y+y1, Grid.size(), Grid[0].size()) && Grid[From.y+y1][From.x] != -1))
     {
         return true;
     }

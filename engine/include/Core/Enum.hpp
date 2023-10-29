@@ -338,7 +338,7 @@ enum class CollisionMask : unsigned long long int
     Type29 = 1 << 28,
     Type30 = 1 << 29,
     Type31 = 1 << 30,
-    Type32 =1U << 31,
+    Terrain =1U << 31,
 };
 
 CollisionMask operator|(CollisionMask A, CollisionMask B);

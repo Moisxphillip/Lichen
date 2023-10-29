@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include "Components/TileMap.hpp"
-#include "Components/Collider.hpp"
+#include "Components/AARectangle.hpp"
 #include "Core/GameObject.hpp"
 #include "Core/Engine.hpp"
 #include "Tools/Tools.hpp"
@@ -238,14 +238,14 @@ void TileMap::_BorderMarking(std::vector<std::vector<int>> &Map)
     int Index = 1;
     for(int i = 0; i < (int)Map.size(); i++) 
     {
-        for(int j = 0; j < (int)Map[i].size()-1; j++) 
+        for(int j = 0; j < (int)Map[i].size(); j++) 
         {
             if(Map[i][j] > 0) 
             {
-                if((j > 0 and Map[i][j-1] == 0)
-                or (j < (int)Map[i].size()-1 and Map[i][j+1] == 0)
-                or (i > 0 and Map[i-1][j] == 0)
-                or (i < (int)Map.size()-1 and Map[i+1][j] == 0))
+                if((j > 0 and Map[i][j-1] == -1)
+                or (j < (int)Map[i].size()-1 and Map[i][j+1] == -1)
+                or (i > 0 and Map[i-1][j] == -1)
+                or (i < (int)Map.size()-1 and Map[i+1][j] == -1))
                 {
                     Map[i][j] = Index;
                     Index++;
@@ -265,7 +265,7 @@ void TileMap::_FindX(std::vector<std::vector<int>>& Map)
     int Index = 1;
     for(int i = 0; i < (int)Map.size(); i++) 
     {
-        for(int j = 0; j < (int)Map[i].size()-1; j++) 
+        for(int j = 0; j < (int)Map[i].size(); j++) 
         {
             if(Map[i][j] > 0)
             {
@@ -289,7 +289,7 @@ std::vector<RectInt> TileMap::_MapToCoord(std::vector<std::vector<int>>& Map)
     std::vector<RectInt> Coords;
     for(int i = 0; i < (int)Map.size(); i++)
     {
-        for(int j = 0; j < (int)Map[i].size()-1; j++)
+        for(int j = 0; j < (int)Map[i].size(); j++)
         {
             if(Map[i][j] > 0)
             {
@@ -350,9 +350,10 @@ void TileMap::LoadCollision(std::string fileName)
     for(int i = 0; i < (int)Block.size(); i++) 
     {
         GameObject *ColliderObj = new GameObject();
-        Collider *TileCollider = new Collider(*ColliderObj);
+        AARectangle *TileCollider = new AARectangle(*ColliderObj, ColliderKind::Stationary, Rectangle(Block[i].x*_CurrTileSet->GetTileWidth(), Block[i].y*_CurrTileSet->GetTileHeight(),
+            Block[i].w*_CurrTileSet->GetTileWidth(), Block[i].h*_CurrTileSet->GetTileHeight()));
         ColliderObj->AddComponent(TileCollider);
-        // ColliderObj->SignalTerrain();// Add terrain flags around here
+        ColliderObj->Represents = CollisionMask::Terrain;
         ColliderObj->Box = Rectangle(Block[i].x*_CurrTileSet->GetTileWidth(), Block[i].y*_CurrTileSet->GetTileHeight(),
             Block[i].w*_CurrTileSet->GetTileWidth(), Block[i].h*_CurrTileSet->GetTileHeight());
         Engine::Instance().CurrentScene().AddGameObj(ColliderObj);

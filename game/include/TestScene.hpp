@@ -5,6 +5,8 @@
 #include "Tools/Timer.hpp"
 #include "Tools/Color.hpp"
 
+#include <vector>
+
 
 class Test01 : public Scene
 {
@@ -13,6 +15,7 @@ class Test01 : public Scene
         Color TextColor;
         
     public:
+        static std::vector<std::vector<int>>* CollisionMap;
         Test01();
         ~Test01();
 

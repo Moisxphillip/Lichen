@@ -10,7 +10,7 @@ Enemy* EnemyFactory::CreateEnemy(GameObject& Parent, EnemyType Type){
 
             return Enemy::Builder(Parent, "Grub")
                 .AddSprite(GrubSprite)
-                .SetCollider(new AARectangle(Parent, ColliderKind::Rigid, Rectangle(0,0,GrubSprite->GetWidth(),GrubSprite->GetHeight())))
+                .SetCollider(new AARectangle(Parent, ColliderKind::Rigid, Rectangle(0,0,GrubSprite->GetWidth()/2,GrubSprite->GetHeight()/2)))
                 .AddState(ENEMY_IDLE, new EnemyIdle({ENEMY_IDLE, 0, 1, 0, false, true}))
                 .AddState(ENEMY_WALK, new EnemyWalk({ENEMY_WALK, 0, 4, .2, true, true}))
                 .AddState(ENEMY_PURSUIT, new EnemyPursuit({ENEMY_PURSUIT, 0, 4, .2, true, true}))
@@ -22,7 +22,7 @@ Enemy* EnemyFactory::CreateEnemy(GameObject& Parent, EnemyType Type){
         default:
         break;
     }
-        
+    return nullptr; //to avoid the warning
 }
 
 Enemy* EnemyFactory::CreateEnemy(GameObject& Parent, EnemyType Type, Vector2 Position){

@@ -18,5 +18,5 @@ profile:
     ./bin/LichenEngine_profiler-windows-x86.exe
 
 #Updates makefiles
-premake:
-    premake5 gmake2
+#premake:
+#    premake5 gmake2

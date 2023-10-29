@@ -35,4 +35,8 @@
 extlib
 obj
 .vscode
-# res
+
+# resources
+#these are generated on the run, keeping them on the repo may allow bad behavior
+*-hash.txt 
+*-rect.txt

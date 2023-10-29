@@ -1,8 +1,8 @@
 #include "TestScene.hpp"
 #include "Dummy.hpp"
 #include "Enemy/Slime.hpp"
-
 #include "EnemyFactory.hpp"
+
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
 #include "Components/Sprite.hpp"
@@ -12,14 +12,17 @@
 #include "Components/AACircle.hpp"
 #include "Components/AARectangle.hpp"
 #include "Tools/Particles.hpp"
+#include "Components/TileMap.hpp"
+#include "Components/CameraFollower.hpp"
 
-
+std::vector<std::vector<int>>* Test01::CollisionMap = nullptr;
 
 Test01::Test01()
 {
     _QuitRequested = false; //Allows loop until quit is requested
 	_PopRequested = false;
 	_Started = false;
+    
 }
 
 Test01::~Test01()
@@ -32,7 +35,6 @@ bool shading = false;
 Draw *draw = nullptr;
 
 AARectangle* Aa = nullptr;
-// AACircle* Aa = nullptr;
 
 ParticleManager* Pm;
 void Test01::LoadAssets()
@@ -40,40 +42,41 @@ void Test01::LoadAssets()
     draw = new Draw();
     Pm = new ParticleManager;
 
-    GameObject* ColObj = new GameObject();
-    AARectangle* rect = new AARectangle(*ColObj, ColliderKind::Rigid, Rectangle(100,100, 100, 50));
-    Aa = rect;
-    ColObj->AddComponent(rect);
-    ColObj->Box.SetPosition(rect->GetRect().Position());
-    AddGameObj(ColObj);
+    // GameObject* ColObj = new GameObject();
+    // ColObj->Depth = DepthMode::Foreground;
+    // AARectangle* rect = new AARectangle(*ColObj, ColliderKind::Rigid, Rectangle(100,100, 100, 50));
+    // Aa = rect;
+    // ColObj->AddComponent(rect);
+    // ColObj->Box.SetPosition(rect->GetRect().Position());
+    // AddGameObj(ColObj);
 
-    ColObj = new GameObject();
-    AACircle* circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(800,360, 50));
-    // Aa = circle;
-    ColObj->AddComponent(circle);
-    ColObj->Box.SetCenter(circle->GetBall().Center());
-    AddGameObj(ColObj);
+    // ColObj = new GameObject();
+    // ColObj->Depth = DepthMode::Foreground;
+    // AACircle* circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(800,360, 50));
+    // ColObj->AddComponent(circle);
+    // ColObj->Box.SetCenter(circle->GetBall().Center());
+    // AddGameObj(ColObj);
 
-    ColObj = new GameObject();
-    circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(800,500, 70));
-    // Aa = circle;
-    ColObj->AddComponent(circle);
-    ColObj->Box.SetCenter(circle->GetBall().Center());
-    AddGameObj(ColObj);
+    // ColObj = new GameObject();
+    // ColObj->Depth = DepthMode::Foreground;
+    // circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(800,500, 70));
+    // ColObj->AddComponent(circle);
+    // ColObj->Box.SetCenter(circle->GetBall().Center());
+    // AddGameObj(ColObj);
 
-    ColObj = new GameObject();
-    circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(200,360, 30));
-    // Aa = circle;
-    ColObj->AddComponent(circle);
-    ColObj->Box.SetCenter(circle->GetBall().Center());
-    AddGameObj(ColObj);
+    // ColObj = new GameObject();
+    // ColObj->Depth = DepthMode::Foreground;
+    // circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(200,360, 30));
+    // ColObj->AddComponent(circle);
+    // ColObj->Box.SetCenter(circle->GetBall().Center());
+    // AddGameObj(ColObj);
     
-    ColObj = new GameObject();
-    circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(400,600, 30));
-    // Aa = circle;
-    ColObj->AddComponent(circle);
-    ColObj->Box.SetCenter(circle->GetBall().Center());
-    AddGameObj(ColObj);
+    // ColObj = new GameObject();
+    // ColObj->Depth = DepthMode::Foreground;
+    // circle = new AACircle(*ColObj, ColliderKind::Rigid, Circle(400,600, 30));
+    // ColObj->AddComponent(circle);
+    // ColObj->Box.SetCenter(circle->GetBall().Center());
+    // AddGameObj(ColObj);
 
     // ColObj = new GameObject();
     // rect = new AARectangle(*ColObj, ColliderKind::Rigid, Rectangle(30,41, 20, 600));
@@ -81,59 +84,62 @@ void Test01::LoadAssets()
     // ColObj->Box = rect->GetRect();
     // AddGameObj(ColObj);
 
-    ColObj = new GameObject();
-    rect = new AARectangle(*ColObj, ColliderKind::Rigid, Rectangle(640,360, 100, 50));
-    ColObj->AddComponent(rect);
-    ColObj->Box.SetPosition(rect->GetRect().Position());
-    AddGameObj(ColObj);
+    // ColObj = new GameObject();
+    // ColObj->Depth = DepthMode::Foreground;
+    // rect = new AARectangle(*ColObj, ColliderKind::Rigid, Rectangle(640,360, 100, 50));
+    // ColObj->AddComponent(rect);
+    // ColObj->Box.SetPosition(rect->GetRect().Position());
+    // AddGameObj(ColObj);
 
-    ColObj = new GameObject();
-    rect = new AARectangle(*ColObj, ColliderKind::Rigid, Rectangle(800,70, 90, 90));
-    ColObj->AddComponent(rect);
-    ColObj->Box.SetPosition(rect->GetRect().Position());
-    AddGameObj(ColObj);
+    // ColObj = new GameObject();
+    // ColObj->Depth = DepthMode::Foreground;
+    // rect = new AARectangle(*ColObj, ColliderKind::Rigid, Rectangle(800,70, 90, 90));
+    // ColObj->AddComponent(rect);
+    // ColObj->Box.SetPosition(rect->GetRect().Position());
+    // AddGameObj(ColObj);
 
 //Boundaries
-    ColObj = new GameObject();
-    rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(0,0, 1280, 20));
-    ColObj->AddComponent(rect);
-    ColObj->Box = rect->GetRect();
-    AddGameObj(ColObj);
+    // ColObj = new GameObject();
+    // rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(0,0, 1280, 20));
+    // ColObj->AddComponent(rect);
+    // ColObj->Box = rect->GetRect();
+    // AddGameObj(ColObj);
 
-    ColObj = new GameObject();
-    rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(0,21, 20, 679));
-    ColObj->AddComponent(rect);
-    ColObj->Box = rect->GetRect();
-    AddGameObj(ColObj);
+    // ColObj = new GameObject();
+    // rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(0,21, 20, 679));
+    // ColObj->AddComponent(rect);
+    // ColObj->Box = rect->GetRect();
+    // AddGameObj(ColObj);
     
-    ColObj = new GameObject();
-    rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(0, 700, 1280, 19));
-    ColObj->AddComponent(rect);
-    ColObj->Box = rect->GetRect();
-    AddGameObj(ColObj);
+    // ColObj = new GameObject();
+    // rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(0, 700, 1280, 19));
+    // ColObj->AddComponent(rect);
+    // ColObj->Box = rect->GetRect();
+    // AddGameObj(ColObj);
 
-    ColObj = new GameObject();
-    rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(1260,21, 20, 679));
-    ColObj->AddComponent(rect);
-    ColObj->Box = rect->GetRect();
-    AddGameObj(ColObj);
+    // ColObj = new GameObject();
+    // rect = new AARectangle(*ColObj, ColliderKind::Stationary, Rectangle(1260,21, 20, 679));
+    // ColObj->AddComponent(rect);
+    // ColObj->Box = rect->GetRect();
+    // AddGameObj(ColObj);
     
     Engine::Instance().GetRenderer().SetClearColor((std::string)"#4c0317");
 
     GameObject* imgo = new GameObject();
-    sprite = new Sprite(*imgo, "./res/img/elf2.png");
-    // sprite->SetScale(Vector2(0.5,0.5));
-    imgo->Box.Redimension(Vector2(sprite->GetWidth(), sprite->GetHeight()));
-    imgo->Box.SetCenter(Vector2(640,360));
-    imgo->AddComponent(sprite);
-    AddGameObj(imgo);
+    // sprite = new Sprite(*imgo, "./res/img/elf2.png");
+    // // sprite->SetScale(Vector2(0.5,0.5));
+    // imgo->Box.Redimension(Vector2(sprite->GetWidth(), sprite->GetHeight()));
+    // imgo->Box.SetCenter(Vector2(640,360));
+    // imgo->AddComponent(sprite);
+    // AddGameObj(imgo);
 
-    imgo = new GameObject();
+    // imgo = new GameObject();
     imgo->Depth = DepthMode::Foreground;
     text = new Text(*imgo, "./res/ttf/Caviar.ttf", 20, TextStyle::BLENDED, ".", Color("#ffffff"));
     imgo->Box.x = 0;
     imgo->Box.y = 0;
     imgo->AddComponent(text);
+    imgo->AddComponent(new CameraFollower(*imgo));
     AddGameObj(imgo);
 
     GameObject* dummyobj = new GameObject(2);
@@ -141,18 +147,34 @@ void Test01::LoadAssets()
     dummyobj->Box.SetCenter(Vector2(640, 150));
     dummyobj->AddComponent(dummy);
     AddGameObj(dummyobj);
+    Cam.Follow(dummyobj);
     
     GameObject* slimeObj = new GameObject(2);
     Slime* slime = new Slime(*slimeObj);
     slimeObj->Box.SetCenter(Vector2(640, 150));
     slimeObj->AddComponent(slime);
     AddGameObj(slimeObj);
-    Cam.Follow(slimeObj);
-
     
     GameObject* enemyObj = new GameObject(2);
     enemyObj->AddComponent(EnemyFactory::CreateEnemy(*enemyObj, EnemyType::GRUB, Vector2(100, 100)));
     AddGameObj(enemyObj);
+
+    //Testing map
+    GameObject* Tiles = new GameObject();
+    Tiles->Depth = DepthMode::Background;
+    TileSet* Tset = new TileSet(64,64, "./res/img/testSet.png");
+    TileMap* Map = new TileMap(*Tiles, "./res/map/Test_Floor",Tset);
+    Tiles->AddComponent(Map);
+    AddGameObj(Tiles);
+
+    Tiles = new GameObject(1);
+    Tiles->Depth = DepthMode::Background;
+    Tset = new TileSet(64,64, "./res/img/testSet.png");
+    Map = new TileMap(*Tiles, "./res/map/Test_Rocks",Tset);
+    Map->LoadCollision("./res/map/Test_Rocks");
+    CollisionMap = &(Map->_TileMatrix);
+    Tiles->AddComponent(Map);
+    AddGameObj(Tiles);
 
 }
 

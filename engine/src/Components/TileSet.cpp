@@ -33,11 +33,11 @@ TileSet::~TileSet()
 }
 void TileSet::RenderTile(int Index, float x, float y)
 {
-    if(Index <= 0)
+    if(Index < 0)
     {
         return;
     } 
-    Index-=1;
+    // Index-=1;
     _Set->SetFrame(Index);
     _Set->Render(x,y);
 }
