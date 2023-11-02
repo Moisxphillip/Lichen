@@ -1,19 +1,20 @@
-#include "PenguinBody.hpp"
-#include "PenguinCannon.hpp"
-#include "Bullet.hpp"
-#include "Path.hpp"
+#include "Legacy/PenguinBody.hpp"
+#include "Legacy/PenguinCannon.hpp"
+#include "Legacy/Bullet.hpp"
+#include "Legacy/Path.hpp"
+
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
 #include "Components/Sprite.hpp"
 #include "Components/Sound.hpp"
 #include "Components/Collider.hpp"
 
-PenguinBody* PenguinBody::Player;
+PenguinBody* PenguinBody::Self;
 
 PenguinBody::PenguinBody(GameObject& GameObj)
 : Component(GameObj)
 {
-    Player = this;
+    Self = this;
     _Speed = Vector2(0,0);
     _HP = 100;
     Parent.Angle = 0;
@@ -29,7 +30,7 @@ PenguinBody::PenguinBody(GameObject& GameObj)
 
 PenguinBody::~PenguinBody()
 {
-    Player = nullptr;
+    Self = nullptr;
 }
 
 Vector2 PenguinBody::CurrPosition()

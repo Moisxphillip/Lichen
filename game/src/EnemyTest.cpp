@@ -60,7 +60,7 @@
 
 // void EnemyTestIdle::Update(StateMachine& Sm, float Dt){
 //     EnemyTest* EnemyTestSM = reinterpret_cast<EnemyTest*>(&Sm);
-//     if(Dummy::Player->Parent.Box.DistCenters(Sm.Parent.Box) <= EnemyTestSM->GetDetectionDistance()){
+//     if(Dummy::Self->Parent.Box.DistCenters(Sm.Parent.Box) <= EnemyTestSM->GetDetectionDistance()){
 //         Sm.SetState(EnemyTest_WALK);
 //     }
 // }
@@ -71,7 +71,7 @@
 
 // void EnemyTestWalk::PhysicsUpdate(StateMachine& Sm, float Dt){
 //     EnemyTest* EnemyTestSM = reinterpret_cast<EnemyTest*>(&Sm);
-//     if(Dummy::Player->Parent.Box.DistCenters(Sm.Parent.Box) >= EnemyTestSM->GetDetectionDistance()){
+//     if(Dummy::Self->Parent.Box.DistCenters(Sm.Parent.Box) >= EnemyTestSM->GetDetectionDistance()){
 //         Sm.SetState(EnemyTest_IDLE);
 //     }
 
@@ -85,14 +85,14 @@
 //     int GridWidthSize = Engine::Instance().GetWindowSize().x/GridWidth;
 //     int GridHeightSize = Engine::Instance().GetWindowSize().y/GridHeight;
 
-//     if(EnemyTestSM->LastPlayerQuadrant != Vector2(Dummy::Player->Parent.Box.Center().x/GridWidthSize, Dummy::Player->Parent.Box.Center().y/GridHeightSize)){
+//     if(EnemyTestSM->LastPlayerQuadrant != Vector2(Dummy::Self->Parent.Box.Center().x/GridWidthSize, Dummy::Self->Parent.Box.Center().y/GridHeightSize)){
 //             std::vector<Point> path = AStar::Search(Grid, {(int)Sm.Parent.Box.Center().x/GridWidthSize, 
 //                                                 (int)Sm.Parent.Box.Center().y/GridHeightSize}, 
-//                                                 {Dummy::Player->Parent.Box.Center().x/GridWidthSize, Dummy::Player->Parent.Box.Center().y/GridHeightSize}
+//                                                 {Dummy::Self->Parent.Box.Center().x/GridWidthSize, Dummy::Self->Parent.Box.Center().y/GridHeightSize}
 //                                                 );
 //             std::queue<Point> q(std::deque<Point>(path.begin(), path.end()));
 //             EnemyTestSM->EnemyTestPath = q;
-//             EnemyTestSM->LastPlayerQuadrant = Vector2(Dummy::Player->Parent.Box.Center().x/GridWidthSize, Dummy::Player->Parent.Box.Center().y/GridHeightSize);
+//             EnemyTestSM->LastPlayerQuadrant = Vector2(Dummy::Self->Parent.Box.Center().x/GridWidthSize, Dummy::Self->Parent.Box.Center().y/GridHeightSize);
 //     };  
 
 //     Point p = EnemyTestSM->EnemyTestPath.front();
@@ -124,7 +124,7 @@
 
 //     _AttackCooldownTimer.Update(Dt);
 
-//     if(EnemyTestSM->Parent.Box.Center().Distance(Dummy::Player->Parent.Box.Center()) >=  EnemyTestSM->GetAttackDistance()){
+//     if(EnemyTestSM->Parent.Box.Center().Distance(Dummy::Self->Parent.Box.Center()) >=  EnemyTestSM->GetAttackDistance()){
 //         Sm.SetState(EnemyTest_ATTACK);
 //         return;
 //     }
@@ -133,7 +133,7 @@
 
 //     if(_AttackCooldownTimer.Get() >= EnemyTestSM->GetAttackCooldown()){
 //         std::cout<<"Pimba"<<std::endl;
-//         Dummy::Player->MyCollider->ApplyForce((Dummy::Player->Parent.Box.Center()-EnemyTestSM->Parent.Box.Center()).Normalized()*30000);
+//         Dummy::Self->MyCollider->ApplyForce((Dummy::Self->Parent.Box.Center()-EnemyTestSM->Parent.Box.Center()).Normalized()*30000);
 //         _AttackCooldownTimer.Restart();
 //     }
 

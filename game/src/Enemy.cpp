@@ -189,7 +189,7 @@ void EnemyIdle::PhysicsUpdate(StateMachine& Sm, float Dt){
     Enemy* EnemySM = reinterpret_cast<Enemy*>(&Sm);
     _WanderingTimer.Update(Dt);
 
-    if(Dummy::Player->Parent.Box.DistCenters(Sm.Parent.Box) <= EnemySM->GetDetectionRange()){
+    if(Dummy::Self != nullptr && Dummy::Self->Parent.Box.DistCenters(Sm.Parent.Box) <= EnemySM->GetDetectionRange()){
         _WanderingTimer.Restart();
         Sm.SetState(ENEMY_PURSUIT);
     }
@@ -216,7 +216,7 @@ EnemyPursuit::EnemyPursuit(const StateInfo& Specs):GenericState(Specs){}
 void EnemyPursuit::PhysicsUpdate(StateMachine& Sm, float Dt){
     Enemy* EnemySM = reinterpret_cast<Enemy*>(&Sm);
 
-    float distanceToPlayer = Dummy::Player->Parent.Box.DistCenters(Sm.Parent.Box);
+    float distanceToPlayer = Dummy::Self != nullptr ? Dummy::Self->Parent.Box.DistCenters(Sm.Parent.Box) : 1000;
 
     if(distanceToPlayer >= EnemySM->GetDetectionRange()){
         std::queue<Vector2> empty;
@@ -232,11 +232,11 @@ void EnemyPursuit::PhysicsUpdate(StateMachine& Sm, float Dt){
         return;
     }
     
-    if(Engine::Instance().GetPing() && Test01::CollisionMap != nullptr)
+    if(Dummy::Self != nullptr && Engine::Instance().GetPing() && Test01::CollisionMap != nullptr)
     {
         std::vector<Point> path = AStar::Search(*Test01::CollisionMap, {(int)Sm.Parent.Box.Center().x/GridWidthSize, 
                                             (int)Sm.Parent.Box.Center().y/GridHeightSize}, 
-                                            {(int)Dummy::Player->Parent.Box.Center().x/GridWidthSize, (int)Dummy::Player->Parent.Box.Center().y/GridHeightSize} 
+                                            {(int)Dummy::Self->Parent.Box.Center().x/GridWidthSize, (int)Dummy::Self->Parent.Box.Center().y/GridHeightSize} 
                                             );
         for(auto p : path)
         {
@@ -245,9 +245,9 @@ void EnemyPursuit::PhysicsUpdate(StateMachine& Sm, float Dt){
         }
         // std::cout <<path.size()<< '\n';//TODO REMOVE
 
-        if(path.size() > 0) //shouldn't follow if there's no valid path
+        if(Dummy::Self != nullptr && path.size() > 0) //shouldn't follow if there's no valid path
         {
-            EnemyPath.emplace(Dummy::Player->Parent.Box.Center());
+            EnemyPath.emplace(Dummy::Self->Parent.Box.Center());
         }    
     };  
 
@@ -275,7 +275,7 @@ void EnemyFighting::Update(StateMachine& Sm, float Dt){
 
     _AttackCooldownTimer.Update(Dt);
 
-    if(EnemySM->Parent.Box.Center().Distance(Dummy::Player->Parent.Box.Center()) >=  EnemySM->GetAttackRange()){
+    if(Dummy::Self != nullptr && EnemySM->Parent.Box.Center().Distance(Dummy::Self->Parent.Box.Center()) >=  EnemySM->GetAttackRange()){
         Sm.SetState(ENEMY_IDLE);
         return;
     }
@@ -302,6 +302,9 @@ void EnemyAttack::PhysicsUpdate(StateMachine& Sm, float Dt){
         _AttackTimer.Restart();
     }
 
-    Dummy::Player->MyCollider->ApplyForce((Dummy::Player->Parent.Box.Center()-EnemySM->Parent.Box.Center()).Normalized()*DEFAULT_KNOCKBACK_FORCE);
+    if(Dummy::Self != nullptr)
+    {
+        Dummy::Self->MyCollider->ApplyForce((Dummy::Self->Parent.Box.Center()-EnemySM->Parent.Box.Center()).Normalized()*DEFAULT_KNOCKBACK_FORCE);
+    }
 }
 

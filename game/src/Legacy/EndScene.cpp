@@ -1,6 +1,6 @@
-#include "EndScene.hpp"
-#include "Path.hpp"
-#include "GameStats.hpp"
+#include "Legacy/EndScene.hpp"
+#include "Legacy/Path.hpp"
+#include "Legacy/GameStats.hpp"
 
 #include "Components/Sprite.hpp"
 #include "Components/Text.hpp"

@@ -1,9 +1,9 @@
-#include "StageScene.hpp"
-#include "EndScene.hpp"
-#include "GameStats.hpp"
-#include "PenguinBody.hpp"
-#include "Alien.hpp"
-#include "Path.hpp"
+#include "Legacy/StageScene.hpp"
+#include "Legacy/EndScene.hpp"
+#include "Legacy/GameStats.hpp"
+#include "Legacy/PenguinBody.hpp"
+#include "Legacy/Alien.hpp"
+#include "Legacy/Path.hpp"
 
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
@@ -117,7 +117,7 @@ void StageScene::Update(float Dt)
 
 	if(_QuitFade && !Mix_PlayingMusic())//Ensures fadeout finishes before closing
 	{
-		if(Alien::AlienCount == 0 || PenguinBody::Player == nullptr)
+		if(Alien::AlienCount == 0 || PenguinBody::Self == nullptr)
 		{
 			EndScene* Ended = new EndScene();
 			Engine::Instance().Push(Ended);
@@ -150,7 +150,7 @@ void StageScene::Update(float Dt)
 		GameStats::PlayerVictory = true;
 		_QuitFade = true;
 	}
-	else if(PenguinBody::Player == nullptr && !_QuitFade)
+	else if(PenguinBody::Self == nullptr && !_QuitFade)
 	{
 		_SceneMusic->Stop(1000);
 		GameStats::PlayerVictory = false;

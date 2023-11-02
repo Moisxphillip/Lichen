@@ -1,7 +1,4 @@
 #include "TestScene.hpp"
-#include "Dummy.hpp"
-#include "Enemy/Slime.hpp"
-#include "EnemyFactory.hpp"
 
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
@@ -14,6 +11,11 @@
 #include "Tools/Particles.hpp"
 #include "Components/TileMap.hpp"
 #include "Components/CameraFollower.hpp"
+
+#include "Dummy.hpp"
+#include "Enemy/Slime.hpp"
+#include "EnemyFactory.hpp"
+#include "Character/Player.hpp"
 
 std::vector<std::vector<int>>* Test01::CollisionMap = nullptr;
 
@@ -142,12 +144,19 @@ void Test01::LoadAssets()
     imgo->AddComponent(new CameraFollower(*imgo));
     AddGameObj(imgo);
 
-    GameObject* dummyobj = new GameObject(2);
-    Dummy* dummy = new Dummy(*dummyobj);
-    dummyobj->Box.SetCenter(Vector2(640, 150));
-    dummyobj->AddComponent(dummy);
-    AddGameObj(dummyobj);
-    Cam.Follow(dummyobj);
+    // GameObject* dummyobj = new GameObject(2);
+    // Dummy* dummy = new Dummy(*dummyobj);
+    // dummyobj->Box.SetCenter(Vector2(640, 150));
+    // dummyobj->AddComponent(dummy);
+    // AddGameObj(dummyobj);
+    // Cam.Follow(dummyobj);
+
+    GameObject* playerObj = new GameObject();
+    Player* player = new Player(*playerObj);
+    playerObj->Box.SetCenter(Vector2(640, 150));
+    playerObj->AddComponent(player);
+    AddGameObj(playerObj);
+    Cam.Follow(playerObj);
     
     GameObject* slimeObj = new GameObject(2);
     Slime* slime = new Slime(*slimeObj);

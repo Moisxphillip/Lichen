@@ -126,6 +126,11 @@ void Sprite::SetFrame(int Frame)
     float Height = _SpriteHeight / _YFrames;
     
     SetClip(Column * Width, Row * Height, Width, Height);
+    
+    if(_FrameTime > 0.0f)
+    {
+        _TimeElapsed = 0;
+    }
 }
 
 void Sprite::SetFrameCount(int FrameCount)
@@ -227,7 +232,6 @@ void Sprite::Update(float Dt)
                 ++_CurrFrame%=_FrameSpan /*_FrameCount*/;
                 SetFrame(_FrameStart+_CurrFrame);
             }    
-            _TimeElapsed = 0;
         }
     }
 }

@@ -1,6 +1,6 @@
-#include "TitleScene.hpp"
-#include "StageScene.hpp"
-#include "Path.hpp"
+#include "Legacy/TitleScene.hpp"
+#include "Legacy/StageScene.hpp"
+#include "Legacy/Path.hpp"
 
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"

@@ -16,7 +16,7 @@ class Dummy : public StateMachine
         void SMStart();
         void OnCollision(GameObject& Other);
 
-        static Dummy* Player;
+        static Dummy* Self;
 };
 
 //Idle state

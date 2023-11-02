@@ -1,8 +1,8 @@
-#include "Alien.hpp"
-#include "Bullet.hpp"
-#include "Minion.hpp"
-#include "PenguinBody.hpp"
-#include "Path.hpp"
+#include "Legacy/Alien.hpp"
+#include "Legacy/Bullet.hpp"
+#include "Legacy/Minion.hpp"
+#include "Legacy/PenguinBody.hpp"
+#include "Legacy/Path.hpp"
 
 #include "Core/Engine.hpp"
 #include "Components/Sprite.hpp"
@@ -66,7 +66,7 @@ void Alien::Update(float Dt)
     //Alien Rotation
     Parent.Angle -= ((M_PI/4)/2)*Dt;
 
-    if(_CurrState == AlienState::MOVING && PenguinBody::Player!=nullptr)
+    if(_CurrState == AlienState::MOVING && PenguinBody::Self!=nullptr)
     {
         Vector2 Distance = Parent.Box.Center() - Destination;
     
@@ -84,7 +84,7 @@ void Alien::Update(float Dt)
             for(int i = 0; i < _NumMinions; i++)
             {
                 //Gets the center of a minion, then the distance between it and the penguin
-                float Dist = _MinionVec[i].lock()->Box.Center().Distance(PenguinBody::Player->CurrPosition());
+                float Dist = _MinionVec[i].lock()->Box.Center().Distance(PenguinBody::Self->CurrPosition());
                 if(Dist < Closest)
                 {
                     Closest = Dist;
@@ -92,7 +92,7 @@ void Alien::Update(float Dt)
                 }
             }
             Minion* ChosenToShoot = (Minion*) _MinionVec[Index].lock()->GetComponent(ComponentType::Type02);
-            ChosenToShoot->Shoot(PenguinBody::Player->CurrPosition());
+            ChosenToShoot->Shoot(PenguinBody::Self->CurrPosition());
             _ExtraTime = _WaitTime.gen();
         }        
     }
@@ -101,9 +101,9 @@ void Alien::Update(float Dt)
         _Rest.Update(Dt);
         if(_Rest.Get() >= 1+_ExtraTime)
         {
-            if(PenguinBody::Player!=nullptr)
+            if(PenguinBody::Self!=nullptr)
             {
-                Destination = PenguinBody::Player->CurrPosition();
+                Destination = PenguinBody::Self->CurrPosition();
             }
             _CurrState = AlienState::MOVING;
         }        

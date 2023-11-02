@@ -1,4 +1,4 @@
-#include "Bullet.hpp"
+#include "Legacy/Bullet.hpp"
 
 #include "Components/Sprite.hpp"
 #include "Components/Collider.hpp"

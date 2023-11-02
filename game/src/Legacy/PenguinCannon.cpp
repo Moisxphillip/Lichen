@@ -1,6 +1,7 @@
-#include "PenguinCannon.hpp"
-#include "Bullet.hpp"
-#include "Path.hpp"
+#include "Legacy/PenguinCannon.hpp"
+#include "Legacy/Bullet.hpp"
+#include "Legacy/Path.hpp"
+
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
 #include "Components/Sprite.hpp"

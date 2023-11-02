@@ -1,5 +1,5 @@
 #define SDL_MAIN_HANDLED //Fix later, find out why it isn't recognizing the written main
-#include "TitleScene.hpp"
+#include "Legacy/TitleScene.hpp"
 #include "TestScene.hpp"
 #include "Core/Engine.hpp"
 

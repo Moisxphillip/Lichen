@@ -25,10 +25,11 @@ class StateMachine: public Component
         std::vector<std::unique_ptr<Sprite>> _Sections; //For having body parts separated, but composing a full body at the end
         std::map<SMState, std::unique_ptr<GenericState>> _States;
         Flip _Flip;
-        Vector2 _LastDirection;
         std::string _Label;
 
     public:
+        Vector2 LastDirection;
+        
         StateMachine(GameObject& GameObjAssoc, const std::string& Label);
         ~StateMachine();
         void AddSprite(Sprite* Sheet);
@@ -59,7 +60,6 @@ class StateMachine: public Component
         virtual void SMUpdate(float Dt);
         virtual void SMLateUpdate(float Dt);
         virtual void SMRender();
-
 
 };
 

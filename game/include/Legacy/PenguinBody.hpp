@@ -12,7 +12,7 @@ class PenguinBody : public Component
         int _HP;
 
     public:
-        static PenguinBody* Player;
+        static PenguinBody* Self;
 
         PenguinBody(GameObject&);
         ~PenguinBody();

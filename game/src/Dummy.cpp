@@ -7,17 +7,17 @@
 #define DUMMY_IDLE SMState::Type01
 #define DUMMY_WALK SMState::Type02
 
-Dummy* Dummy::Player;
+Dummy* Dummy::Self;
 
 Dummy::Dummy(GameObject& Parent, std::string Label)
 : StateMachine(Parent, Label)
 {
     MyCollider = nullptr;
-    Player = this;
+    Self = this;
 }
 
 Dummy::~Dummy(){
-    Player = nullptr;
+    Self = nullptr;
 }
 
 void Dummy::SMStart()

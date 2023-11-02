@@ -57,6 +57,7 @@ void StateMachine::SetState(SMState Set)
     for(int i = 0; i< (int)_Sections.size();i++)
     {
         _Sections[i].get()->SetFrameStart(X.FrameStart);
+        _Sections[i].get()->SetFrame(X.FrameStart);
         _Sections[i].get()->SetFrameSpan(X.FrameSpan);
         _Sections[i].get()->SetFrameTime(X.FrameTime);
         _Sections[i].get()->Loop = X.Loop;
@@ -112,10 +113,10 @@ void StateMachine::PhysicsUpdate(float Dt)
     SMState Now = _CurrState;
     _States[_CurrState].get()->PhysicsUpdate(*this, Dt);
     SMPhysicsUpdate(Dt);
-    if(Now != _CurrState)
-    {
-        PhysicsUpdate(Dt);
-    }
+    // if(Now != _CurrState)
+    // {
+    //     PhysicsUpdate(Dt);
+    // }
 }
 
 void StateMachine::Update(float Dt)
@@ -131,10 +132,10 @@ void StateMachine::Update(float Dt)
     {
         _Sections[i].get()->Update(Dt);
     }
-    if(Now != _CurrState)
-    {
-        Update(Dt);
-    }
+    // if(Now != _CurrState)
+    // {
+    //     Update(Dt);
+    // }
 }
 
 void StateMachine::LateUpdate(float Dt)
@@ -146,10 +147,10 @@ void StateMachine::LateUpdate(float Dt)
     SMState Now = _CurrState;
     _States[_CurrState].get()->LateUpdate(*this, Dt);
     SMLateUpdate(Dt);
-    if(Now != _CurrState)
-    {
-        LateUpdate(Dt);
-    }
+    // if(Now != _CurrState)
+    // {
+    //     LateUpdate(Dt);
+    // }
 }
 
 void StateMachine::Render()

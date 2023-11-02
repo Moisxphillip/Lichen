@@ -1,6 +1,7 @@
-#include "Minion.hpp"
-#include "Bullet.hpp"
-#include "Path.hpp"
+#include "Legacy/Minion.hpp"
+#include "Legacy/Bullet.hpp"
+#include "Legacy/Path.hpp"
+
 #include "Core/Engine.hpp"
 #include "Components/Sprite.hpp"
 #include "Components/Collider.hpp"
