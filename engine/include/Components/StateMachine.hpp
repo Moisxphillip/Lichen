@@ -57,6 +57,7 @@ class StateMachine: public Component
         //preserving the StateMachine core management
         virtual void SMStart();
         virtual void SMPhysicsUpdate(float Dt);
+        virtual void SMOnCollision(GameObject& Other);
         virtual void SMUpdate(float Dt);
         virtual void SMLateUpdate(float Dt);
         virtual void SMRender();

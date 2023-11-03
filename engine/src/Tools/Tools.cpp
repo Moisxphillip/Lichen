@@ -17,33 +17,65 @@ int Fps(int Rate) //Takes intended frames per second and returns approximated ti
     return 1000/Rate;
 }
 
-double WrapMax(double Val, double Max)
+template <typename T>
+T WrapMax(T Value, T Max)
 {
-    return fmod(Max + fmod(Val, Max), Max);
+    return std::fmod(Max + std::fmod(Value, Max), Max);
 }
+template float WrapMax(float Value, float Max);
+template double WrapMax(double Value, double Max);
 
-//Val -> [Min,Max)
-double WrapMinMax(double Val, double Min, double Max)
-{
-    return Min + WrapMax(Val - Min, Max - Min);
-}
 
-double Clamp(double x) 
+template <typename T>
+T WrapMinMax(T Value, T Min, T Max)
 {
-    return (x<0?0:(x>1?1:x));
+    return Min + WrapMax(Value - Min, Max - Min);
 }
+template float WrapMinMax(float Value, float Min, float Max);
+template double WrapMinMax(double Value, double Min, double Max);
 
-double SmootherStep (double LowerBound, double HigherBound, double x) 
+template <typename T>
+T Clamp(T Value)
 {
-    x = Clamp((x - LowerBound) / (HigherBound - LowerBound));
-    return x * x * x * (x * (x * 6 - 15) + 10);
+    return (Value < T(0) ? T(0) : (Value > T(1) ? T(1) : Value));
 }
+template float Clamp(float Value);
+template double Clamp(double Value);
 
-double SmoothStep (double LowerBound, double HigherBound, double x) 
+template <typename T>
+T SmootherStep(T Value, T LowerBound, T HigherBound)
 {
-    x = Clamp((x - LowerBound) / (HigherBound - LowerBound));
-    return x * x * (3 - 2 * x);
+    T ClampedValue = Clamp((Value - LowerBound) / (HigherBound - LowerBound));
+    return ClampedValue * ClampedValue * ClampedValue * (ClampedValue * (ClampedValue * (T(6) * ClampedValue - T(15)) + T(10)));
 }
+template float SmootherStep(float Value, float Min, float Max);
+template double SmootherStep(double Value, double Min, double Max);
+
+template <typename T>
+T SmoothStep(T Value, T LowerBound, T HigherBound)
+{
+    T ClampedValue = Clamp((Value - LowerBound) / (HigherBound - LowerBound));
+    return ClampedValue * ClampedValue * (T(3) - T(2) * ClampedValue);
+}
+template float SmoothStep(float Value, float Min, float Max);
+template double SmoothStep(double Value, double Min, double Max);
+
+template <typename T>
+T Attenuation(T Value, T GrowthEnd, T DecreasePoint)
+{
+    T ClampedValue = Clamp(Value);
+    if(ClampedValue < GrowthEnd)
+    {
+        return SmoothStep(ClampedValue, T(0.0), GrowthEnd);
+    }
+    else if(ClampedValue > DecreasePoint)
+    {
+        return SmoothStep(ClampedValue, T(1.0), DecreasePoint);
+    }
+    return T(1.0);
+}
+template float Attenuation(float Value, float GrowthEnd, float DecreasePoint);
+template double Attenuation(double Value, double GrowthEnd, double DecreasePoint);
 
 template <typename T>
 T Lerp(const T& Start, const T& End, float F) 

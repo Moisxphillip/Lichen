@@ -48,6 +48,7 @@ class Camera
         void SetCircleBounds(Circle Bounds);
         void Update(float Dt);
         void UpdateLazy(float Dt, Vector2& Position);
+        void UpdateAhead(float Dt, Vector2& Position);
 
 };
 

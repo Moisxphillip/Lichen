@@ -66,6 +66,8 @@ void Camera::SetCircleBounds(Circle Base)
     _CircBounds = Base;
 }
 
+// Vector2 Offset(0.0f,0.0f);
+
 void Camera::Update(float Dt)
 {
     if(_Focus == nullptr)
@@ -73,6 +75,7 @@ void Camera::Update(float Dt)
         return;
     }
     //TODO implement camera modes
+    // _Position -= Offset;
     Vector2 Target = _Focus->Box.Center();
     switch(_CurrentMode)
     {
@@ -84,10 +87,17 @@ void Camera::Update(float Dt)
             _Position+=Engine::Instance().GetRenderSize()*0.5f;
             UpdateLazy(Dt, Target);
             break;
+
+        case CameraMode::Ahead:
+            _Position+=Engine::Instance().GetRenderSize()*0.5f;
+            UpdateAhead(Dt, Target);
+            break;
+
         default:
             break;
     }
     _Position-=Engine::Instance().GetRenderSize()*0.5f;
+    // _Position += Offset;
     _Position.x = std::floor(_Position.x);
     _Position.y = std::floor(_Position.y);
 
@@ -97,4 +107,29 @@ void Camera::Update(float Dt)
 void Camera::UpdateLazy(float Dt, Vector2& Target)
 {
     
+}
+
+// #include <iostream>
+// Vector2 MaxOffset(64, 64);
+// Vector2 Accumulator(0, 0);
+//Works like crap :/ fix this later
+void Camera::UpdateAhead(float Dt, Vector2& Target)
+{
+    // Vector2 Variation = Target - _Position;
+    // Accumulator += Variation;
+
+    // Accumulator.x = std::clamp(Accumulator.x, -MaxOffset.x, MaxOffset.x);
+    // Accumulator.y = std::clamp(Accumulator.y, -MaxOffset.y, MaxOffset.y);
+
+    // Offset = Accumulator - Variation;
+    // // Offset.x = std::clamp(Accumulator.x, -MaxOffset.x, MaxOffset.x);
+    // // Offset.y = std::clamp(Accumulator.y, -MaxOffset.y, MaxOffset.y);
+    
+    // _Position = Target;
+
+    // Variation.Normalize();
+    // std::cout << Variation << '\n';
+    // return;
+    // if(Variation.MagnitudeSquared() > 0.2f && Variation.MagnitudeSquared() < 21568.0f)
+    // _Position = Target;
 }

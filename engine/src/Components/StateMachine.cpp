@@ -175,6 +175,7 @@ void StateMachine::OnCollision(GameObject& Other)
         return;
     }
     _States[_CurrState].get()->OnCollision(*this, Other);
+    SMOnCollision(Other);
 }
 
 //Child Inheritance Interface Functions
@@ -183,6 +184,10 @@ void StateMachine::SMStart()
 }
 
 void StateMachine::SMPhysicsUpdate(float Dt)
+{
+}
+
+void StateMachine::SMOnCollision(GameObject& Other)
 {
 }
 

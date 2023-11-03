@@ -66,9 +66,9 @@ void GameObject::LateUpdate(float Dt)
         _GameObjComponents[i]->LateUpdate(Dt);//Calls update from each component belonging to this GameObject
     }
 
-    if(Angle< -M_PI || Angle >M_PI)//Wrapper for avoiding unlimited growth
+    if(Angle< -M_PI || Angle >float(M_PI))//Wrapper for avoiding unlimited growth
     {
-        Angle = WrapMinMax(Angle, -M_PI, M_PI);
+        Angle = WrapMinMax(Angle, float(-M_PI), float(M_PI));
     }
 }
 

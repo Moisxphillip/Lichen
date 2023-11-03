@@ -7,10 +7,11 @@
 #define PLAYER_IDLE SMState::Type01
 #define PLAYER_WALK SMState::Type02
 #define PLAYER_DASH SMState::Type03
+#define PLAYER_ATTACK SMState::Type04
 
 
 //Player specific defines
-
+#define PLAYER_DEFAULT_FRICTION 0.1f
 
 Player* Player::Self;
 
@@ -35,24 +36,30 @@ void Player::SMStart()
     AddSprite(Sheet);
     MyCollider = new AACircle(Parent, ColliderKind::Rigid, Circle(0,0,Sheet->GetWidth()/5));
     MyCollider->Offset.y = 32;
-    MyCollider->SetFriction(0.1f);
+    MyCollider->SetFriction(PLAYER_DEFAULT_FRICTION);
     MyCollider->GetBall().SetCenter(Parent.Box.Center());
     Parent.AddComponent(MyCollider);
     
     //Create an idle state
-    StateInfo SI = {PLAYER_IDLE, 0, 5, 0.5, true, true}; //these are for setting up the spritesheet portion on update
+    StateInfo SI = {PLAYER_IDLE, 0, 5, 0.3, true, true}; //these are for setting up the spritesheet portion on update
     PlayerIdle* player = new PlayerIdle(SI);
     AddState(PLAYER_IDLE, player);
     SetState(PLAYER_IDLE);
 
     //Create a walk state
-    SI = {PLAYER_WALK, 5, 5, 0.5, true, true};
+    SI = {PLAYER_WALK, 5, 5, 0.3, true, true};
     PlayerWalk* walk = new PlayerWalk(SI);
     AddState(PLAYER_WALK, walk);
     
-    SI = {PLAYER_DASH, 10, 5, 0.5, true, true};
+    //Dash
+    SI = {PLAYER_DASH, 10, 5, 0.3, true, true};
     PlayerDash* dash = new PlayerDash(SI);
     AddState(PLAYER_DASH, dash);
+    
+    //Attack
+    SI = {PLAYER_ATTACK, 15, 5, 0.3, true, true};
+    PlayerAttack* atk = new PlayerAttack(SI);
+    AddState(PLAYER_ATTACK, atk);
     
 }
 
@@ -66,12 +73,11 @@ void Player::SMUpdate(float Dt)
     
 }
 
-
 // #include <iostream>
 // Stats Def{50, 50, 1, 0, 15, 0, 0, 0};
-void Player::OnCollision(GameObject& Other)
+void Player::SMOnCollision(GameObject& Other)
 {
-    //Leftovers from combat tests. Far from ideal implementation, but gives an idea on how it should work
+        //Leftovers from combat tests. Far from ideal implementation, but gives an idea on how it should work
     // Stats Atk{50, 50, 1, 0, 0, 25, 25, 0};
     // AttackData Dta{5, (ScalingStats)(ScalingStats::Strength | ScalingStats::Dexterity)};
     // std::cout << Def << '\n';
@@ -89,6 +95,11 @@ void PlayerIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
 {
     Input& Ip = Input::Instance();
 
+    if(Ip.MouseJustPressed(MouseButton::Left))
+    {
+        Sm.SetState(PLAYER_ATTACK);
+    }
+
     int x = Ip.KeyPressedDown(Key::D) - Ip.KeyPressedDown(Key::A);
     int y = Ip.KeyPressedDown(Key::S) - Ip.KeyPressedDown(Key::W);
 
@@ -96,6 +107,11 @@ void PlayerIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
     {
         Sm.SetState(PLAYER_WALK);
         return;
+    }
+
+    if(Ip.KeyJustPressed(Key::Space))
+    {
+        Sm.SetState(PLAYER_DASH);
     }
 }
 
@@ -121,6 +137,7 @@ void PlayerWalk::PhysicsUpdate(StateMachine& Sm, float Dt)
         return;
     }
     
+    Sm.LastDirection = Vector2(x,y).Normalized();
     //Change direction
     if(x!=0)
     {
@@ -130,7 +147,7 @@ void PlayerWalk::PhysicsUpdate(StateMachine& Sm, float Dt)
     //Go to dash
     if(Ip.KeyJustPressed(Key::Space))
     {
-        Sm.LastDirection = Vector2(x, y).Normalized();
+        // Sm.LastDirection = Vector2(x, y).Normalized();
         Sm.SetState(PLAYER_DASH);
     }
 
@@ -138,12 +155,13 @@ void PlayerWalk::PhysicsUpdate(StateMachine& Sm, float Dt)
     //Walk mechanic
     Player* Plr = reinterpret_cast<Player*>(&Sm); //Cast to access child class information
 
-    Plr->MyCollider->ApplyForce(Vector2(x,y).Normalized()*WALK_FORCE);
+    Plr->MyCollider->ApplyForce(Sm.LastDirection*WALK_FORCE);
 }
 
 //------------------------------DASH------------------------------
-#define DASH_FORCE 6000
-#define DASH_TIME 0.7f
+#define DASH_FORCE 2000
+#define DASH_TIME 0.5f
+#define DASH_FRICTION 0.01f
 
 PlayerDash::PlayerDash(const StateInfo& Specs)
 : GenericState(Specs)
@@ -165,6 +183,7 @@ void PlayerDash::OnCollision(StateMachine& Sm, GameObject& Other)
     }
 }
 
+#include "Tools/Tools.hpp"
 void PlayerDash::PhysicsUpdate(StateMachine& Sm, float Dt)
 {
     if(_DashForce == 0)
@@ -173,7 +192,8 @@ void PlayerDash::PhysicsUpdate(StateMachine& Sm, float Dt)
     }
 
     Player* Plr = reinterpret_cast<Player*>(&Sm); //Cast to access child class information
-    Plr->MyCollider->ApplyForce(Sm.LastDirection*_DashForce);
+    Plr->MyCollider->SetFriction(DASH_FRICTION);
+    Plr->MyCollider->ApplyForce(Sm.LastDirection*_DashForce*Attenuation(_DashTime.Get()/DASH_TIME, 0.05f, 0.5f));
 }
 
 void PlayerDash::Update(StateMachine& Sm, float Dt)
@@ -181,7 +201,49 @@ void PlayerDash::Update(StateMachine& Sm, float Dt)
     _DashTime.Update(Dt);
     if(_DashTime.Finished())
     {
+        Player* Plr = reinterpret_cast<Player*>(&Sm); //Cast to access child class information
+        Plr->MyCollider->SetFriction(PLAYER_DEFAULT_FRICTION);
         Sm.SetState(PLAYER_IDLE);
+    }
+}
+
+//------------------------------ATTACK------------------------------
+#define ATTACK_TIME 0.7f
+
+PlayerAttack::PlayerAttack(const StateInfo& Specs)
+: GenericState(Specs)
+{
+    _AttackTime.SetLimit(ATTACK_TIME);
+}
+
+void PlayerAttack::Start()
+{
+    _AttackTime.Restart();
+}
+
+void PlayerAttack::OnCollision(StateMachine& Sm, GameObject& Other)
+{
+    // if(_DashForce != 0 && (Other.Represents & CollisionMask::Terrain) != CollisionMask::None)
+    // {
+    // }
+}
+
+#include "Tools/Tools.hpp"
+void PlayerAttack::PhysicsUpdate(StateMachine& Sm, float Dt)
+{
+    // Player* Plr = reinterpret_cast<Player*>(&Sm); //Cast to access child class information
+    // // Plr->MyCollider->SetFriction(DASH_FRICTION);
+    // // Plr->MyCollider->ApplyForce(Sm.LastDirection*_DashForce*Attenuation(_DashTime.Get()/DASH_TIME));
+}
+
+void PlayerAttack::Update(StateMachine& Sm, float Dt)
+{
+    _AttackTime.Update(Dt);
+    if(_AttackTime.Finished())
+    {
+        Sm.SetState(PLAYER_IDLE);
+        // Player* Plr = reinterpret_cast<Player*>(&Sm); //Cast to access child class information
+        // Plr->MyCollider->SetFriction(PLAYER_DEFAULT_FRICTION);
     }
 }
 

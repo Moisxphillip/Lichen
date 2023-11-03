@@ -20,7 +20,7 @@ class Player : public StateMachine
         void SMStart();
         void SMPhysicsUpdate(float Dt);
         void SMUpdate(float Dt);
-        void OnCollision(GameObject& Other);        
+        void SMOnCollision(GameObject& Other);        
 };
 
 //-------------------------------------------States----------------------------------------------
@@ -31,8 +31,8 @@ class PlayerIdle : public GenericState
     private:
 
     public:
-    PlayerIdle(const StateInfo& Specs);
-    void PhysicsUpdate(StateMachine& Sm, float Dt);
+        PlayerIdle(const StateInfo& Specs);
+        void PhysicsUpdate(StateMachine& Sm, float Dt);
 };
 
 //Walk
@@ -41,23 +41,37 @@ class PlayerWalk : public GenericState
     private:
 
     public:
-    PlayerWalk(const StateInfo& Specs);
-    void PhysicsUpdate(StateMachine& Sm, float Dt);
+        PlayerWalk(const StateInfo& Specs);
+        void PhysicsUpdate(StateMachine& Sm, float Dt);
 };
 
-//Walk
+//Dash
 class PlayerDash : public GenericState
 {
     private:
-    int _DashForce;
-    Timer _DashTime;
+        int _DashForce;
+        Timer _DashTime;
 
     public:
-    PlayerDash(const StateInfo& Specs);
-    void Start();
-    void OnCollision(StateMachine& Sm, GameObject& Other);
-    void PhysicsUpdate(StateMachine& Sm, float Dt);
-    void Update(StateMachine& Sm, float Dt);
+        PlayerDash(const StateInfo& Specs);
+        void Start();
+        void OnCollision(StateMachine& Sm, GameObject& Other);
+        void PhysicsUpdate(StateMachine& Sm, float Dt);
+        void Update(StateMachine& Sm, float Dt);
+};
+
+//Attack
+class PlayerAttack : public GenericState
+{
+    private:
+        Timer _AttackTime;
+
+    public:
+        PlayerAttack(const StateInfo& Specs);
+        void Start();
+        void OnCollision(StateMachine& Sm, GameObject& Other);
+        void PhysicsUpdate(StateMachine& Sm, float Dt);
+        void Update(StateMachine& Sm, float Dt);
 };
 
 #endif//GAME_PLAYER
