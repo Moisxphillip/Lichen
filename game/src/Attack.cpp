@@ -1,8 +1,10 @@
 #include "Attack.hpp"
+#include "Definitions.hpp"
 
 Attack::Attack(GameObject& Parent, Stats& Attacker, AttackData Data, CollisionMask Target, float LifeTime, float AfterHitLifeTime)
 : Component(Parent), Attacker(Attacker), Data(Data), _LifeTime(LifeTime), _AfterHitLifeTime(AfterHitLifeTime)
 {
+    _Type = COMPONENT_ATTACK;
     Parent.Interacts = Parent.Interacts | Target;
     LifeTime == 0.0f ? _SelfDestruct = false : _SelfDestruct = true;
     AfterHitLifeTime == 0.0f ? _HitDestruct = false : _HitDestruct = true;

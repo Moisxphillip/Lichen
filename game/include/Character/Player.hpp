@@ -5,14 +5,17 @@
 #include "Components/AACircle.hpp"
 #include "Tools/Timer.hpp"
 
+#include "Combat.hpp"
 #include "Attack.hpp"
 
 class Player : public StateMachine
 {
     private:
         Timer _HitCooldown;
+        Stats _MyStats;
 
     public:
+        
         AACircle* MyCollider;
         static Player* Self;
         Player(GameObject& Parent, std::string Label = "Player");
@@ -21,6 +24,9 @@ class Player : public StateMachine
         void SMPhysicsUpdate(float Dt);
         void SMUpdate(float Dt);
         void SMOnCollision(GameObject& Other);        
+
+        void AddExperience(int Exp);
+        Stats& GetStats();
 };
 
 //-------------------------------------------States----------------------------------------------
@@ -68,6 +74,34 @@ class PlayerAttack : public GenericState
 
     public:
         PlayerAttack(const StateInfo& Specs);
+        void Start();
+        void OnCollision(StateMachine& Sm, GameObject& Other);
+        void PhysicsUpdate(StateMachine& Sm, float Dt);
+        void Update(StateMachine& Sm, float Dt);
+};
+
+//Special
+class PlayerSpecial : public GenericState
+{
+    private:
+        Timer _SpecialTime;
+
+    public:
+        PlayerSpecial(const StateInfo& Specs);
+        void Start();
+        void OnCollision(StateMachine& Sm, GameObject& Other);
+        void PhysicsUpdate(StateMachine& Sm, float Dt);
+        void Update(StateMachine& Sm, float Dt);
+};
+
+//Hurt
+class PlayerHurt : public GenericState
+{
+    private:
+        Timer _HurtTime;
+
+    public:
+        PlayerHurt(const StateInfo& Specs);
         void Start();
         void OnCollision(StateMachine& Sm, GameObject& Other);
         void PhysicsUpdate(StateMachine& Sm, float Dt);

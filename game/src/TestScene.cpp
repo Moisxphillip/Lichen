@@ -172,14 +172,14 @@ void Test01::LoadAssets()
     GameObject* Tiles = new GameObject();
     Tiles->Depth = DepthMode::Background;
     TileSet* Tset = new TileSet(64,64, "./res/img/testSet.png");
-    TileMap* Map = new TileMap(*Tiles, "./res/map/Test_Floor",Tset);
+    TileMap* Map = new TileMap(*Tiles, "./res/map/Tests_Floor",Tset);
     Tiles->AddComponent(Map);
     AddGameObj(Tiles);
 
     Tiles = new GameObject(1);
     Tiles->Depth = DepthMode::Background;
     Tset = new TileSet(64,64, "./res/img/testSet.png");
-    Map = new TileMap(*Tiles, "./res/map/Test_Rocks",Tset);
+    Map = new TileMap(*Tiles, "./res/map/Tests_Rocks",Tset);
     Map->LoadCollision("./res/map/Test_Rocks");
     CollisionMap = &(Map->_TileMatrix);
     Tiles->AddComponent(Map);

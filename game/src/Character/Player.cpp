@@ -1,13 +1,20 @@
 #include "Character/Player.hpp"
+
+#include "Core/Engine.hpp"
 #include "Core/Input.hpp"
 #include "Components/Sprite.hpp"
+
 #include "Combat.hpp"
+#include "Definitions.hpp"
+#include "Npc/Critter.hpp"
 
 //Define names for the SMState enums, so it's easier to know which state you're using
 #define PLAYER_IDLE SMState::Type01
 #define PLAYER_WALK SMState::Type02
 #define PLAYER_DASH SMState::Type03
 #define PLAYER_ATTACK SMState::Type04
+#define PLAYER_SPECIAL SMState::Type05
+#define PLAYER_HURT SMState::Type06
 
 
 //Player specific defines
@@ -18,6 +25,9 @@ Player* Player::Self;
 Player::Player(GameObject& Parent, std::string Label)
 : StateMachine(Parent, Label)
 {
+    Parent.Represents = PLAYER_MASK;
+    Parent.Interacts = ENEMY_ATK_MASK;
+    _MyStats = Stats{100, 100, 1, 0, 5, 5, 5, 5};
     MyCollider = nullptr;
     Self = this;
 }
@@ -42,24 +52,28 @@ void Player::SMStart()
     
     //Create an idle state
     StateInfo SI = {PLAYER_IDLE, 0, 5, 0.3, true, true}; //these are for setting up the spritesheet portion on update
-    PlayerIdle* player = new PlayerIdle(SI);
-    AddState(PLAYER_IDLE, player);
+    AddState(PLAYER_IDLE, new PlayerIdle(SI));
     SetState(PLAYER_IDLE);
 
     //Create a walk state
     SI = {PLAYER_WALK, 5, 5, 0.3, true, true};
-    PlayerWalk* walk = new PlayerWalk(SI);
-    AddState(PLAYER_WALK, walk);
+    AddState(PLAYER_WALK, new PlayerWalk(SI));
     
     //Dash
     SI = {PLAYER_DASH, 10, 5, 0.3, true, true};
-    PlayerDash* dash = new PlayerDash(SI);
-    AddState(PLAYER_DASH, dash);
+    AddState(PLAYER_DASH, new PlayerDash(SI));
     
     //Attack
     SI = {PLAYER_ATTACK, 15, 5, 0.3, true, true};
-    PlayerAttack* atk = new PlayerAttack(SI);
-    AddState(PLAYER_ATTACK, atk);
+    AddState(PLAYER_ATTACK, new PlayerAttack(SI));
+    
+    //Special
+    SI = {PLAYER_SPECIAL, 14, 2, 0.1, true, true};
+    AddState(PLAYER_SPECIAL, new PlayerSpecial(SI));
+    
+    //Hurt
+    SI = {PLAYER_HURT, 9, 2, 0.1, true, true};
+    AddState(PLAYER_HURT, new PlayerHurt(SI));
     
 }
 
@@ -69,7 +83,15 @@ void Player::SMPhysicsUpdate(float Dt)
 }
 
 void Player::SMUpdate(float Dt)
-{
+{   
+    Input& Ip = Input::Instance();
+    if(Ip.MouseJustPressed(MouseButton::Middle))
+    {
+        GameObject* birb = new GameObject();
+        birb->AddComponent(new Bird(*birb));
+        birb->Box.SetCenter(Ip.MousePosition());
+        Engine::Instance().CurrentScene().AddGameObj(birb);
+    }
     
 }
 
@@ -77,6 +99,11 @@ void Player::SMUpdate(float Dt)
 // Stats Def{50, 50, 1, 0, 15, 0, 0, 0};
 void Player::SMOnCollision(GameObject& Other)
 {
+    if(Other.Contains(COMPONENT_ATTACK) && static_cast<bool>(Other.Represents & ENEMY_ATK_MASK))
+    {
+        Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
+        int Dmg = Combat::Calculate(Atk->Attacker, Atk->Data, _MyStats);
+    }
         //Leftovers from combat tests. Far from ideal implementation, but gives an idea on how it should work
     // Stats Atk{50, 50, 1, 0, 0, 25, 25, 0};
     // AttackData Dta{5, (ScalingStats)(ScalingStats::Strength | ScalingStats::Dexterity)};
@@ -84,6 +111,19 @@ void Player::SMOnCollision(GameObject& Other)
     // int x =  Combat::Calculate(Atk, Dta, Def);
     // std::cout <<"This round damage: " << x << "\n\n";
 }
+
+void Player::AddExperience(int Exp)
+{
+    _MyStats.Exp +=Exp; 
+    //TODO Add level up structure and function around here
+}
+
+Stats& Player::GetStats()
+{
+    return _MyStats;
+}
+
+
 
 //------------------------------IDLE------------------------------
 PlayerIdle::PlayerIdle(const StateInfo& Specs)
@@ -97,7 +137,30 @@ void PlayerIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
 
     if(Ip.MouseJustPressed(MouseButton::Left))
     {
+        GameObject* Atk = new GameObject;
+        Vector2 Direction = Sm.Parent.Box.Center().DistVector2(Ip.MousePosition()).Normalized();
+        Atk->Box.SetCenter(Sm.Parent.Box.Center()+ Direction*100);
+
+        Player* Plr = reinterpret_cast<Player*>(&Sm);
+        
+        Atk->AddComponent(new Attack(*Atk, Plr->GetStats(), {10, ScalingStats::Strength}, Plr->Parent.Interacts, 0.3));
+        AACircle* Ball = new AACircle(*Atk, ColliderKind::Trigger, Circle(0,0,12));
+        Ball->SetFriction(0.0f);
+        Ball->SetVelocity(Direction*7);
+        Atk->AddComponent(Ball);
+
+        Engine::Instance().CurrentScene().AddGameObj(Atk);
         Sm.SetState(PLAYER_ATTACK);
+    }
+
+    if(Ip.MouseJustPressed(MouseButton::Right))
+    {
+        Sm.SetState(PLAYER_SPECIAL);
+    }
+    
+    if(Ip.MouseJustPressed(MouseButton::Middle))
+    {
+        Sm.SetState(PLAYER_HURT);
     }
 
     int x = Ip.KeyPressedDown(Key::D) - Ip.KeyPressedDown(Key::A);
@@ -162,6 +225,7 @@ void PlayerWalk::PhysicsUpdate(StateMachine& Sm, float Dt)
 #define DASH_FORCE 2000
 #define DASH_TIME 0.5f
 #define DASH_FRICTION 0.01f
+#include "Tools/Tools.hpp"
 
 PlayerDash::PlayerDash(const StateInfo& Specs)
 : GenericState(Specs)
@@ -183,7 +247,6 @@ void PlayerDash::OnCollision(StateMachine& Sm, GameObject& Other)
     }
 }
 
-#include "Tools/Tools.hpp"
 void PlayerDash::PhysicsUpdate(StateMachine& Sm, float Dt)
 {
     if(_DashForce == 0)
@@ -228,12 +291,8 @@ void PlayerAttack::OnCollision(StateMachine& Sm, GameObject& Other)
     // }
 }
 
-#include "Tools/Tools.hpp"
 void PlayerAttack::PhysicsUpdate(StateMachine& Sm, float Dt)
 {
-    // Player* Plr = reinterpret_cast<Player*>(&Sm); //Cast to access child class information
-    // // Plr->MyCollider->SetFriction(DASH_FRICTION);
-    // // Plr->MyCollider->ApplyForce(Sm.LastDirection*_DashForce*Attenuation(_DashTime.Get()/DASH_TIME));
 }
 
 void PlayerAttack::Update(StateMachine& Sm, float Dt)
@@ -242,8 +301,69 @@ void PlayerAttack::Update(StateMachine& Sm, float Dt)
     if(_AttackTime.Finished())
     {
         Sm.SetState(PLAYER_IDLE);
-        // Player* Plr = reinterpret_cast<Player*>(&Sm); //Cast to access child class information
-        // Plr->MyCollider->SetFriction(PLAYER_DEFAULT_FRICTION);
+    }
+}
+
+//------------------------------SPECIAL------------------------------
+#define SPECIAL_TIME 0.7f
+
+PlayerSpecial::PlayerSpecial(const StateInfo& Specs)
+: GenericState(Specs)
+{
+    _SpecialTime.SetLimit(ATTACK_TIME);
+}
+
+void PlayerSpecial::Start()
+{
+    _SpecialTime.Restart();
+}
+
+void PlayerSpecial::OnCollision(StateMachine& Sm, GameObject& Other)
+{
+}
+
+void PlayerSpecial::PhysicsUpdate(StateMachine& Sm, float Dt)
+{
+}
+
+void PlayerSpecial::Update(StateMachine& Sm, float Dt)
+{
+    _SpecialTime.Update(Dt);
+    if(_SpecialTime.Finished())
+    {
+        Sm.SetState(PLAYER_IDLE);   
+    }
+}
+
+//------------------------------HURT------------------------------
+#define HURT_TIME 0.7f
+
+PlayerHurt::PlayerHurt(const StateInfo& Specs)
+: GenericState(Specs)
+{
+    _HurtTime.SetLimit(ATTACK_TIME);
+}
+
+void PlayerHurt::Start()
+{
+    _HurtTime.Restart();
+}
+
+void PlayerHurt::OnCollision(StateMachine& Sm, GameObject& Other)
+{
+
+}
+
+void PlayerHurt::PhysicsUpdate(StateMachine& Sm, float Dt)
+{
+}
+
+void PlayerHurt::Update(StateMachine& Sm, float Dt)
+{
+    _HurtTime.Update(Dt);
+    if(_HurtTime.Finished())
+    {
+        Sm.SetState(PLAYER_IDLE);
     }
 }
 

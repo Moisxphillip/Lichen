@@ -5,6 +5,8 @@
 #include "Components/AACircle.hpp"
 #include "Math/Vector2.hpp"
 
+#include <queue>
+
 //The core entity
 class Slime : public StateMachine
 {
@@ -13,6 +15,7 @@ class Slime : public StateMachine
     public:
         AACircle* MyCollider;
         Slime(GameObject& Parent, std::string Label = "Slime");
+        void MoveTo(Vector2 Destiny, float Dt);
         void SMStart();
         Vector2 Target;
 };
@@ -31,10 +34,11 @@ class SlimeIdle : public GenericState
 class SlimeWalk : public GenericState
 {
     private:
-
+        std::queue<Vector2> Path;
     public:
-    SlimeWalk(const StateInfo& Specs);
-    void PhysicsUpdate(StateMachine& Sm, float Dt);
+        SlimeWalk(const StateInfo& Specs);
+        void Start();
+        void PhysicsUpdate(StateMachine& Sm, float Dt);
 };
 
 #endif//GAME_SLIME

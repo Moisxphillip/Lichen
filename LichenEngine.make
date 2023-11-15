@@ -88,6 +88,7 @@ GENERATED += $(OBJDIR)/Color.o
 GENERATED += $(OBJDIR)/Combat.o
 GENERATED += $(OBJDIR)/Component.o
 GENERATED += $(OBJDIR)/Controls.o
+GENERATED += $(OBJDIR)/Critter.o
 GENERATED += $(OBJDIR)/Draw.o
 GENERATED += $(OBJDIR)/Dummy.o
 GENERATED += $(OBJDIR)/EndScene.o
@@ -154,6 +155,7 @@ OBJECTS += $(OBJDIR)/Color.o
 OBJECTS += $(OBJDIR)/Combat.o
 OBJECTS += $(OBJDIR)/Component.o
 OBJECTS += $(OBJDIR)/Controls.o
+OBJECTS += $(OBJDIR)/Critter.o
 OBJECTS += $(OBJDIR)/Draw.o
 OBJECTS += $(OBJDIR)/Dummy.o
 OBJECTS += $(OBJDIR)/EndScene.o
@@ -451,6 +453,9 @@ $(OBJDIR)/StageScene.o: game/src/Legacy/StageScene.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/TitleScene.o: game/src/Legacy/TitleScene.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Critter.o: game/src/Npc/Critter.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/TestScene.o: game/src/TestScene.cpp

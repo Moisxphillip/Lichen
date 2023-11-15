@@ -16,9 +16,14 @@ class Attack: public Component
     public:
         Stats& Attacker;
         AttackData Data;
-        Attack(GameObject& Parent, Stats& Attacker, AttackData Data, CollisionMask Target, float LifeTime=0.0f, float AfterHitLifeTime=0.0f);
+        Attack(GameObject& Parent, 
+            Stats& Attacker, 
+            AttackData Data, 
+            CollisionMask Target, 
+            float LifeTime=0.0f, 
+            float AfterHitLifeTime=0.0f);
+            
         void Update(float Dt);
-        bool Is(ComponentType Type);
         void OnCollision(GameObject& Other);    
 };
 
