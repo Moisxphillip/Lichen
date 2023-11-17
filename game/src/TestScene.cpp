@@ -271,6 +271,14 @@ void Test01::Update(float Dt)
             alter.Restart();
         }
     }
+    if(Input::Instance().KeyJustPressed(Key::Number1))
+    {
+        GameObject* slimeObj = new GameObject();
+        Slime* slime = new Slime(*slimeObj);
+        slimeObj->Box.SetCenter(Input::Instance().MousePosition());
+        slimeObj->AddComponent(slime);
+        AddGameObj(slimeObj);
+    }
     Pm->Update(Dt);
     if((Input::Instance().KeyPressedDown(Key::Escape) || Input::Instance().QuitRequested())) 
 	{

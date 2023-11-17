@@ -120,10 +120,10 @@ void Physics::ResolveCollision(AACollider& A, AACollider& B)
     Vector2 RelVelocity = B.Velocity-A.Velocity; //Relative Velocity of A and B
 
     float VelAlongNormal = RelVelocity.Dot(M.Normal);
-    if(VelAlongNormal > 0) //Optimization for when things are moving apart
-    {
-        return;
-    }
+    // if(VelAlongNormal > 0) //Optimization for when things are moving apart, disabled for now
+    // {
+    //     return;
+    // }
     float e = std::min(A.GetRestitution(), B.GetRestitution()); //Restitutes for the smaller restitution in the interaction
     float j = -(1.0f + e) * VelAlongNormal;// Impulse scalar (j)
     j /= (A.GetInvMass() + B.GetInvMass());
@@ -137,6 +137,7 @@ void Physics::ResolveCollision(AACollider& A, AACollider& B)
 
 void Physics::_LinearProjection(AACollider& A, AACollider& B, Manifold& M)
 {
+    //TODO turn normal axis aligned for circles in circle x rectangle to solve speed up and weird corner forces
     Vector2 Correction = M.Normal * (std::max(M.Penetration - _CorrectionSlop, 0.0f)
         /(A.GetInvMass() + B.GetInvMass()) * _CorrectionPercent);
     A.Position -= Correction * A.GetInvMass();

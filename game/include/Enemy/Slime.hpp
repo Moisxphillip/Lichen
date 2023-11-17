@@ -15,8 +15,10 @@ class Slime : public StateMachine
     public:
         AACircle* MyCollider;
         Slime(GameObject& Parent, std::string Label = "Slime");
+        ~Slime();
         void MoveTo(Vector2 Destiny, float Dt);
         void SMStart();
+        void SMOnCollision(GameObject& Other);
         Vector2 Target;
 };
 

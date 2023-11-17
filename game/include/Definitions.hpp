@@ -8,6 +8,8 @@
 //Custom defines for componentTypes, allowing requests for components outside of engine
 
 #define COMPONENT_ATTACK ComponentType::Type01
+#define COMPONENT_PLAYER ComponentType::Type02
+#define COMPONENT_EQUIP ComponentType::Type03
 
 
 //Defining Collision Masks to turn them usable between multiple files, making it
@@ -19,6 +21,8 @@
 
 #define ENEMY_MASK      CollisionMask::Type03
 #define ENEMY_ATK_MASK  CollisionMask::Type04
+
+#define INTERACT_MASK   CollisionMask::Type05
 
 
 

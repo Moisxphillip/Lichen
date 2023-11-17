@@ -97,6 +97,7 @@ GENERATED += $(OBJDIR)/EnemyFactory.o
 GENERATED += $(OBJDIR)/EnemyTest.o
 GENERATED += $(OBJDIR)/Engine.o
 GENERATED += $(OBJDIR)/Enum.o
+GENERATED += $(OBJDIR)/Equipment.o
 GENERATED += $(OBJDIR)/EventChain.o
 GENERATED += $(OBJDIR)/Fade.o
 GENERATED += $(OBJDIR)/Filter.o
@@ -164,6 +165,7 @@ OBJECTS += $(OBJDIR)/EnemyFactory.o
 OBJECTS += $(OBJDIR)/EnemyTest.o
 OBJECTS += $(OBJDIR)/Engine.o
 OBJECTS += $(OBJDIR)/Enum.o
+OBJECTS += $(OBJDIR)/Equipment.o
 OBJECTS += $(OBJDIR)/EventChain.o
 OBJECTS += $(OBJDIR)/Fade.o
 OBJECTS += $(OBJDIR)/Filter.o
@@ -404,13 +406,7 @@ $(OBJDIR)/Tools.o: engine/src/Tools/Tools.cpp
 $(OBJDIR)/Xrand.o: engine/src/Tools/Xrand.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Attack.o: game/src/Attack.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Player.o: game/src/Character/Player.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Combat.o: game/src/Combat.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Dummy.o: game/src/Dummy.cpp
@@ -453,6 +449,15 @@ $(OBJDIR)/StageScene.o: game/src/Legacy/StageScene.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/TitleScene.o: game/src/Legacy/TitleScene.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Attack.o: game/src/Mechanics/Attack.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Combat.o: game/src/Mechanics/Combat.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Equipment.o: game/src/Mechanics/Equipment.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Critter.o: game/src/Npc/Critter.cpp

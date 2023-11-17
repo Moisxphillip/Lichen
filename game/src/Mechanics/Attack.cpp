@@ -1,4 +1,4 @@
-#include "Attack.hpp"
+#include "Mechanics/Attack.hpp"
 #include "Definitions.hpp"
 
 Attack::Attack(GameObject& Parent, Stats& Attacker, AttackData Data, CollisionMask Target, float LifeTime, float AfterHitLifeTime)

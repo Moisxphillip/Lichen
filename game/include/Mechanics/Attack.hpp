@@ -3,7 +3,7 @@
 
 #include "Components/Component.hpp"
 #include "Tools/Timer.hpp"
-#include "Combat.hpp"
+#include "Mechanics/Combat.hpp"
 
 class Attack: public Component
 {

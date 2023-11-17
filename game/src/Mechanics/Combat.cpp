@@ -1,4 +1,4 @@
-#include "Combat.hpp"
+#include "Mechanics/Combat.hpp"
 
 XrandU64 Combat::Dice;
 

@@ -1,7 +1,7 @@
 #include "Dummy.hpp"
 #include "Core/Input.hpp"
 #include "Components/Sprite.hpp"
-#include "Combat.hpp"
+#include "Mechanics/Combat.hpp"
 
 //Define names for the SMState enums, so it's easier to know which state you're using
 #define DUMMY_IDLE SMState::Type01

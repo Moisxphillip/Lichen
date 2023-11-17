@@ -5,8 +5,8 @@
 #include "Components/AACircle.hpp"
 #include "Tools/Timer.hpp"
 
-#include "Combat.hpp"
-#include "Attack.hpp"
+#include "Mechanics/Combat.hpp"
+#include "Mechanics/Attack.hpp"
 
 class Player : public StateMachine
 {

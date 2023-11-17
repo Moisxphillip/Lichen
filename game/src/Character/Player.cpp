@@ -4,7 +4,7 @@
 #include "Core/Input.hpp"
 #include "Components/Sprite.hpp"
 
-#include "Combat.hpp"
+#include "Mechanics/Combat.hpp"
 #include "Definitions.hpp"
 #include "Npc/Critter.hpp"
 
@@ -25,8 +25,9 @@ Player* Player::Self;
 Player::Player(GameObject& Parent, std::string Label)
 : StateMachine(Parent, Label)
 {
+    _Type = COMPONENT_PLAYER;
     Parent.Represents = PLAYER_MASK;
-    Parent.Interacts = ENEMY_ATK_MASK;
+    Parent.Interacts = ENEMY_ATK_MASK | INTERACT_MASK;
     _MyStats = Stats{100, 100, 1, 0, 5, 5, 5, 5};
     MyCollider = nullptr;
     Self = this;
@@ -97,12 +98,23 @@ void Player::SMUpdate(float Dt)
 
 // #include <iostream>
 // Stats Def{50, 50, 1, 0, 15, 0, 0, 0};
+#include "Mechanics/Equipment.hpp"
 void Player::SMOnCollision(GameObject& Other)
 {
     if(Other.Contains(COMPONENT_ATTACK) && static_cast<bool>(Other.Represents & ENEMY_ATK_MASK))
     {
         Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
         int Dmg = Combat::Calculate(Atk->Attacker, Atk->Data, _MyStats);
+    }
+    else if(Other.Contains(COMPONENT_EQUIP) && Input::Instance().KeyJustPressed(Key::F))
+    {
+        Equipment* Equip = (Equipment*)Other.GetComponent(COMPONENT_EQUIP);
+        std::cout 
+            << "Equipment Data:\nVit: " << Equip->Attributes.Vit
+            << "\nStr: " << Equip->Attributes.Str
+            << "\nDex: " << Equip->Attributes.Dex
+            << "\nInt: " << Equip->Attributes.Int << '\n';
+        //TODO Register once and ignore after, because an OnCollision can run more than once each loop
     }
         //Leftovers from combat tests. Far from ideal implementation, but gives an idea on how it should work
     // Stats Atk{50, 50, 1, 0, 0, 25, 25, 0};
@@ -138,6 +150,7 @@ void PlayerIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
     if(Ip.MouseJustPressed(MouseButton::Left))
     {
         GameObject* Atk = new GameObject;
+        Atk->Represents = PLAYER_ATK_MASK;
         Vector2 Direction = Sm.Parent.Box.Center().DistVector2(Ip.MousePosition()).Normalized();
         Atk->Box.SetCenter(Sm.Parent.Box.Center()+ Direction*100);
 

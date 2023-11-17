@@ -5,6 +5,10 @@ int AStar::_dy[8] = {0, 0, 1, -1, 1, -1, 1, -1};
 
 std::vector<Point> AStar::Search(const std::vector<std::vector<int>>& Grid, const Point& Start, const Point& Goal) 
 {
+    // if(Grid[Start.y][Start.x] == -1 || Grid[Goal.y][Goal.x] == -1)
+    // {
+    //     return std::vector<Point>();
+    // }
     int Rows = Grid.size();
     int Columns = Grid[0].size();
     std::vector<Point> Path;
@@ -71,8 +75,9 @@ bool AStar::_HasObstacle(const std::vector<std::vector<int>>& Grid, const Point&
 {
     int x1 = To.x - From.x;
     int y1 = To.y - From.y;
-    if((_IsValid (From.x+x1,From.y, Grid.size(), Grid[0].size()) && Grid[From.y][From.x+x1] != -1) 
-        && (_IsValid (From.x,From.y+y1, Grid.size(), Grid[0].size()) && Grid[From.y+y1][From.x] != -1))
+    if((_IsValid(From.x + x1, From.y, Grid.size(), Grid[0].size()) && Grid[From.y][From.x + x1] != -1) 
+        && (_IsValid(From.x, From.y + y1, Grid.size(), Grid[0].size()) && Grid[From.y + y1][From.x] != -1)
+        && (_IsValid(From.x + x1, From.y + y1, Grid.size(), Grid[0].size()) && Grid[From.y + y1][From.x + x1] != -1))
     {
         return true;
     }

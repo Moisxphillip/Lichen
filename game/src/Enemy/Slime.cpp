@@ -18,6 +18,11 @@ Slime::Slime(GameObject& Parent, std::string Label)
     MyCollider = nullptr;
 }
 
+#include "Mechanics/Equipment.hpp"
+Slime::~Slime()
+{
+}
+
 void Slime::SMStart()
 {
     //Add the spritesheet(s) with all states and frames
@@ -41,9 +46,21 @@ void Slime::SMStart()
     SlimeWalk* Dum = new SlimeWalk(SI);
     AddState(SLIME_WALK, Dum);
 }
+#include "Definitions.hpp"
+void Slime::SMOnCollision(GameObject& Other)
+{
+    if(!Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) && static_cast<bool>(Other.Represents & PLAYER_ATK_MASK))
+    {
+        GameObject* Drop = new GameObject();
+        Drop->Depth = DepthMode::Dynamic;
+        Drop->AddComponent(new Equipment(*Drop));
+        Drop->Box.SetCenter(Parent.Box.Center());
+        Engine::Instance().CurrentScene().AddGameObj(Drop);
+        Parent.RequestDelete();
+    }
+}
 
-
-#define MOVE_SPD 100
+#define MOVE_SPD 1000
 
 void Slime::MoveTo(Vector2 Destiny, float Dt)
 {
@@ -54,12 +71,12 @@ void Slime::MoveTo(Vector2 Destiny, float Dt)
     {
         Parent.Box.SetCenter(Destiny);
     }
-    MyCollider->SetVelocity(Distance.Normalized()*MOVE_SPD*Dt); 
+    MyCollider->ApplyForce(Distance.Normalized()*MOVE_SPD); 
 }
 
 
 //------------------------------IDLE------------------------------
-#define DETECTION_RANGE 300*300
+#define DETECTION_RANGE 400*400
 
 SlimeIdle::SlimeIdle(const StateInfo& Specs)
 : GenericState(Specs)
@@ -91,7 +108,7 @@ SlimeWalk::SlimeWalk(const StateInfo& Specs)
 {
 }
 
-#define FOLLOW_RANGE 80*80
+#define FOLLOW_RANGE 70*70
 
 void SlimeWalk::Start()
 {
@@ -115,19 +132,37 @@ void SlimeWalk::PhysicsUpdate(StateMachine& Sm, float Dt)
 
     if(DistSq < FOLLOW_RANGE)
     {
-        reinterpret_cast<Slime*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center(), Dt);
+        Path = std::queue<Vector2>();
+        reinterpret_cast<Slime*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt);
         return;
     }
     
-    if(Player::Self != nullptr && Engine::Instance().GetPing() && Test01::CollisionMap != nullptr)
+    if(Player::Self != nullptr && Engine::Instance().GetPing() && Test01::CollisionMap != nullptr && Path.size()< 4)
     {
         Path = std::queue<Vector2>();//to empty old Path values
 
-        std::vector<Point> path = AStar::Search(*Test01::CollisionMap,
+        // int MinX = (int)Sm.Parent.Box.Center().x/64, MaxX = (int)Player::Self->Parent.Box.Center().x/64;
+        // int MinY = (int)Sm.Parent.Box.Center().y/64, MaxY = (int)(Player::Self->Parent.Box.Center().y+32/*offset*/)/64;
+        
+        // if(MinX > MaxX)
+        // {
+        //     std::swap(MinX, MaxX);
+        // }
+        // if(MinY > MaxY)
+        // {
+        //     std::swap(MinY, MaxY);
+        // }
+        // MinX-=3;
+        // MinY-=3;
+        // MaxX+=3;
+        // MaxY+=3;
+        
+        std::vector<Point> path = AStar::Search(
+            /*AStar::TrimSubgrid(*/*Test01::CollisionMap/*, MinY, MinX, MaxY-MinY, MaxX-MinX)*/,
             {(int)Sm.Parent.Box.Center().x/64, 
             (int)Sm.Parent.Box.Center().y/64}, 
             {(int)Player::Self->Parent.Box.Center().x/64,
-            (int)Player::Self->Parent.Box.Center().y/64});
+            (int)(Player::Self->Parent.Box.Center().y+32)/64});
 
         for(int i = 1; i < (int)path.size(); i++)
         {
@@ -142,7 +177,7 @@ void SlimeWalk::PhysicsUpdate(StateMachine& Sm, float Dt)
 
     Vector2 NextPoint = Path.front();
 
-    if(Sm.Parent.Box.Center().DistanceSquared(NextPoint) <  32*32)
+    if(Sm.Parent.Box.Center().DistanceSquared(NextPoint) <  16*16)
     {
         Path.pop();
         if(Path.empty())
