@@ -1,5 +1,8 @@
 #include "TestScene.hpp"
-
+#include "Dummy.hpp"
+#include "Enemy/Slime.hpp"
+#include "Dialogue.hpp"
+#include "EnemyFactory.hpp"
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
 #include "Graphics/Draw.hpp"
@@ -56,6 +59,20 @@ void Test01::LoadAssets()
     playerObj->Box.SetCenter(Vector2(640, 750));
     playerObj->AddComponent(player);
     AddGameObj(playerObj);
+    Cam.Follow(playerObj);
+    
+    GameObject* slimeObj = new GameObject(2);
+    Slime* slime = new Slime(*slimeObj);
+    slimeObj->Box.SetCenter(Vector2(640, 150));
+    slimeObj->AddComponent(slime);
+    AddGameObj(slimeObj);
+    Cam.Follow(slimeObj);
+
+    GameObject* dialeobj = new GameObject(3);
+    slimeObj->AddComponent(new DialogueManager(*dialeobj, "ala.json"));
+    AddGameObj(dialeobj);
+    // Dialogueobj->Box.SetCenter(Vector2(640, 150));
+
     
     GameObject* enemyObj = new GameObject(2);
     enemyObj->AddComponent(EnemyFactory::CreateEnemy(*enemyObj, EnemyType::GRUB, Vector2(100, 100)));
