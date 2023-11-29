@@ -1,7 +1,7 @@
 #include "TestScene.hpp"
 #include "Dummy.hpp"
 #include "Enemy/Slime.hpp"
-
+#include "Dialogue.hpp"
 #include "EnemyFactory.hpp"
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
@@ -12,7 +12,6 @@
 #include "Components/AACircle.hpp"
 #include "Components/AARectangle.hpp"
 #include "Tools/Particles.hpp"
-
 
 
 Test01::Test01()
@@ -148,6 +147,11 @@ void Test01::LoadAssets()
     slimeObj->AddComponent(slime);
     AddGameObj(slimeObj);
     Cam.Follow(slimeObj);
+
+    GameObject* dialeobj = new GameObject(3);
+    slimeObj->AddComponent(new DialogueManager(*dialeobj, "ala.json"));
+    AddGameObj(dialeobj);
+    // Dialogueobj->Box.SetCenter(Vector2(640, 150));
 
     
     GameObject* enemyObj = new GameObject(2);
