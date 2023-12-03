@@ -75,6 +75,11 @@ int Sprite::GetHeight()
     return (_SpriteHeight/_YFrames * _Scale.y);
 }
 
+int Sprite::GetCurrentFrame()
+{
+    return _CurrFrame;
+}
+
 void Sprite::SetScale(float ScaleX, float ScaleY)
 {
     _Scale = Vector2(ScaleX, ScaleY);
@@ -110,6 +115,11 @@ void Sprite::SetColor(Color New)
     _SpriteImage->SetColor(New);
 }
 
+void Sprite::SetAddColor(Color New)
+{
+    _SpriteImage->GetShader().SetColor("U_AddColor", New);
+}
+
 Color Sprite::GetColor()
 {
     return _SpriteImage->GetColor();
@@ -131,6 +141,7 @@ void Sprite::SetFrame(int Frame)
     {
         _TimeElapsed = 0;
     }
+    _CurrFrame = Frame;
 }
 
 void Sprite::SetFrameCount(int FrameCount)
@@ -157,6 +168,7 @@ void Sprite::SetFrameStart(int Start)
     }
     _FrameStart = Start;
     _CurrFrame = Start;
+    SetFrame(Start);
 }
 
 void Sprite::SetColumns(int Columns)

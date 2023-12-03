@@ -4,6 +4,7 @@
 #include "Components/StateMachine.hpp"
 #include "Components/AACircle.hpp"
 #include "Math/Vector2.hpp"
+#include "Mechanics/Attack.hpp"
 
 #include <queue>
 
@@ -13,6 +14,7 @@ class Slime : public StateMachine
     private:
 
     public:
+        Stats MyStats;
         AACircle* MyCollider;
         Slime(GameObject& Parent, std::string Label = "Slime");
         ~Slime();
@@ -43,4 +45,14 @@ class SlimeWalk : public GenericState
         void PhysicsUpdate(StateMachine& Sm, float Dt);
 };
 
+//Hurt state
+class SlimeHurt : public GenericState
+{
+    private:
+        Timer _HurtTime;
+    public:
+        SlimeHurt(const StateInfo& Specs);
+        void Start();
+        void Update(StateMachine& Sm, float Dt);
+};
 #endif//GAME_SLIME

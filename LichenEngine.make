@@ -91,6 +91,7 @@ GENERATED += $(OBJDIR)/Controls.o
 GENERATED += $(OBJDIR)/Critter.o
 GENERATED += $(OBJDIR)/Draw.o
 GENERATED += $(OBJDIR)/Dummy.o
+GENERATED += $(OBJDIR)/ElementLoader.o
 GENERATED += $(OBJDIR)/EndScene.o
 GENERATED += $(OBJDIR)/Enemy.o
 GENERATED += $(OBJDIR)/EnemyFactory.o
@@ -108,6 +109,7 @@ GENERATED += $(OBJDIR)/Generic.o
 GENERATED += $(OBJDIR)/Image.o
 GENERATED += $(OBJDIR)/IndexBuffer.o
 GENERATED += $(OBJDIR)/Input.o
+GENERATED += $(OBJDIR)/LoopSprite.o
 GENERATED += $(OBJDIR)/Minion.o
 GENERATED += $(OBJDIR)/Music.o
 GENERATED += $(OBJDIR)/Particles.o
@@ -159,6 +161,7 @@ OBJECTS += $(OBJDIR)/Controls.o
 OBJECTS += $(OBJDIR)/Critter.o
 OBJECTS += $(OBJDIR)/Draw.o
 OBJECTS += $(OBJDIR)/Dummy.o
+OBJECTS += $(OBJDIR)/ElementLoader.o
 OBJECTS += $(OBJDIR)/EndScene.o
 OBJECTS += $(OBJDIR)/Enemy.o
 OBJECTS += $(OBJDIR)/EnemyFactory.o
@@ -176,6 +179,7 @@ OBJECTS += $(OBJDIR)/Generic.o
 OBJECTS += $(OBJDIR)/Image.o
 OBJECTS += $(OBJDIR)/IndexBuffer.o
 OBJECTS += $(OBJDIR)/Input.o
+OBJECTS += $(OBJDIR)/LoopSprite.o
 OBJECTS += $(OBJDIR)/Minion.o
 OBJECTS += $(OBJDIR)/Music.o
 OBJECTS += $(OBJDIR)/Particles.o
@@ -469,7 +473,13 @@ $(OBJDIR)/TestScene.o: game/src/TestScene.cpp
 $(OBJDIR)/Controls.o: game/src/Tools/Controls.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/ElementLoader.o: game/src/Tools/ElementLoader.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/EventChain.o: game/src/Tools/EventChain.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/LoopSprite.o: game/src/Tools/LoopSprite.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/main.o: game/src/main.cpp

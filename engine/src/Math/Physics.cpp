@@ -124,7 +124,7 @@ void Physics::ResolveCollision(AACollider& A, AACollider& B)
     // {
     //     return;
     // }
-    float e = std::min(A.GetRestitution(), B.GetRestitution()); //Restitutes for the smaller restitution in the interaction
+    float e = (A.GetRestitution()+ B.GetRestitution())/2; //Restitutes for the smaller restitution in the interaction
     float j = -(1.0f + e) * VelAlongNormal;// Impulse scalar (j)
     j /= (A.GetInvMass() + B.GetInvMass());
     
@@ -198,27 +198,39 @@ void Physics::_RectCircData(Rectangle& A, Circle& B, Manifold& M)
 {
     Vector2 RelativeDist = B.Center() - A.Center();
     Vector2 Closest(std::max(A.x, std::min(B.x, A.x + A.w)), std::max(A.y, std::min(B.y, A.y + A.h))); 
-
+    
     bool Inserted = A.Contains(B.Center());
     if (Inserted)
     {
-        if(std::abs(RelativeDist.x) > std::abs(RelativeDist.y))
+        if(std::abs(RelativeDist.x/A.w) > std::abs(RelativeDist.y/A.h))
         {
-            Closest.x = (RelativeDist.x > 0 ? A.x+A.w : A.x);
+            Closest.x = (RelativeDist.x/A.w > 0 ? A.x+A.w : A.x);
         }
         else
         {
-            Closest.y = (RelativeDist.y > 0 ? A.y+A.h : A.y);
+            Closest.y = (RelativeDist.y/A.h > 0 ? A.y+A.h : A.y);
         }
     }
+    else if (B.x > A.x && B.x < A.x + A.w)
+    {
+        M.Normal = Vector2(0.0f, RelativeDist.y).Normalized();
+        M.Penetration = (A.h/2 + B.r) - abs(RelativeDist.y);
+        return;
+    }
+    else if (B.y > A.y && B.y < A.y + A.h)
+    {
+        M.Normal = Vector2(RelativeDist.x, 0.0f).Normalized();
+        M.Penetration = (A.w/2 + B.r) - abs(RelativeDist.x);
+        return;
+    }
+   
 
     //if center is inserted in the other form, must be repelled outwards
-    M.Normal = (Inserted ? RelativeDist*-1.0f : RelativeDist).Normalized();   
+    M.Normal = (/*Inserted ? RelativeDist*-1.0f : */RelativeDist).Normalized();   
     M.Normal *= Vector2(A.h/A.w, A.w/A.h);//Fixes the exaggerated displacement when hitting wide rectangles
     M.Normal = M.Normal.Normalized();
-
-    float Dist = (B.Center()-Closest).Magnitude();
-    M.Penetration = B.r - Dist;
+    
+    M.Penetration = Inserted ? (A.Center()-Closest).Magnitude() : B.r - (B.Center()-Closest).Magnitude();
 }
 
 void Physics::Integrate(AACollider& A, float Dt)

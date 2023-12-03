@@ -1,0 +1,5 @@
+#ifndef GAME_ENDSCREEN
+#define GAME_ENDSCREEN
+
+
+#endif//GAME_ENDSCREEN

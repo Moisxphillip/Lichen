@@ -33,6 +33,10 @@ _Index{0,1,2,2,3,0}
     _LastDst = Rectangle(-99999, -99999,-99999, -99999);
     _LastFlip = Flip::N;
     _LastColor = Color("#ffaafa");
+
+    //Init AddColor
+    Color Tmp("#000000");
+    _Shader->SetColor("U_AddColor", Tmp);
 }
 
 FontHandler::~FontHandler()

@@ -6,6 +6,8 @@
 #define PI_DEG 0.0174532925199432957692f
 #define DEG_PI 57.295779513082320876798f
 
+const Vector2 Vector2::ZERO(0.0f,0.0f);
+
 Vector2::Vector2(float x, float y)
 : x(x), y(y)
 {

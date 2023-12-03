@@ -2,11 +2,14 @@
 #include "Core/Resources.hpp"
 #include "Core/Input.hpp"
 #include "Tools/Tools.hpp"
+#include <ctime>
 
 #define SOUNDCHANNELS 32
 
 //Set value for singleton class
 Engine* Engine::_GameInstance = nullptr;
+XrandF32 Engine::_F32;
+XrandU64 Engine::_U64;
 
 void Engine::_InitEngineSystems()
 {
@@ -48,6 +51,9 @@ void Engine::_InitEngineSystems()
 
 Engine::Engine(std::string Name, int Width, int Height, int ProjWidth, int ProjHeight, bool VSync)
 {
+    _F32.seed(static_cast<unsigned long long int>(std::time(nullptr)));
+    _U64.seed(static_cast<unsigned long long int>(std::time(nullptr)));
+
     _VSync = VSync;
     // _VSync = false;
 
@@ -219,12 +225,12 @@ void Engine::Push(Scene* NewScene)
     _GameScene = NewScene;
 }
 
-Engine& Engine::Instance()
+Engine& Engine::Instance(std::string Name, int Width, int Height, int ProjWidth, int ProjHeight, bool VSync)
 {
     if(_GameInstance == nullptr) //Only creates a new Engine if there's no other instance of the class currently running
     {
         // _GameInstance = new Engine("LichenEngine", 1024, 600); //Penguin
-        _GameInstance = new Engine("LichenEngine", 1280, 720); //Tests
+        _GameInstance = new Engine(Name, Width, Height, ProjWidth, ProjHeight, VSync); //Tests
     }
     return *_GameInstance;
 }
@@ -259,4 +265,14 @@ Vector2 Engine::GetRenderSize()
 int Engine::GetSoundChannels()
 {
     return _MixChannels;
+}
+
+unsigned int Engine::RandomUint()
+{
+    return _U64.gen();
+}
+
+float Engine::RandomFloat()
+{
+    return _F32.gen();
 }

@@ -144,7 +144,7 @@ void Color::SetHSV(float H, float S, float V)
 uint32_t Color::ColorUint32()
 {
     SDL_Color ThisOne = ColorSDL();
-	return (uint32_t)((uint8_t)((ThisOne.r*255) << 16) + (ThisOne.g << 8) + (ThisOne.b << 0));
+	return (uint32_t)((uint8_t)((ThisOne.a*255) << 24) + (uint8_t)((ThisOne.r*255) << 16) + (uint8_t)(((ThisOne.g*255) << 8)) + (uint8_t)(((ThisOne.b*255) << 0)));
 }
 
 Color Color::Interpolation(Color& A, Color& B, float F)

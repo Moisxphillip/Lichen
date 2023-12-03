@@ -30,6 +30,7 @@ class TileMap: public Component
         void _CoordOptimizer(std::vector<RectInt>& Coords);
 
     public:
+        bool Enabled;
         std::vector<std::vector<int>> _TileMatrix;
         TileMap(GameObject& Parent, std::string Path, TileSet* Tiles, bool LoadAsLegacy=false, bool IsZeroEmpty=true);
         ~TileMap();

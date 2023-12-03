@@ -26,6 +26,7 @@ class Player : public StateMachine
         void SMOnCollision(GameObject& Other);        
 
         void AddExperience(int Exp);
+        void DoAttack();
         Stats& GetStats();
 };
 
@@ -105,6 +106,18 @@ class PlayerHurt : public GenericState
         void Start();
         void OnCollision(StateMachine& Sm, GameObject& Other);
         void PhysicsUpdate(StateMachine& Sm, float Dt);
+        void Update(StateMachine& Sm, float Dt);
+};
+
+//Death
+class PlayerDeath : public GenericState
+{
+    private:
+        Timer _DeathTime;
+
+    public:
+        PlayerDeath(const StateInfo& Specs);
+        void Start();
         void Update(StateMachine& Sm, float Dt);
 };
 

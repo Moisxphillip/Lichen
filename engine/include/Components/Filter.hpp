@@ -12,7 +12,7 @@ class Filter : public Component
     private:
         SDL_Surface* _FilterSurface;
         FontHandler* _Canvas;
-
+        Vector2 _Dimensions;
     public:
         Color FilterColor;
         Filter(GameObject& Parent, Color Colour);

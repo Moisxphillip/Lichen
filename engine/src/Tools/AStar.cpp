@@ -5,10 +5,12 @@ int AStar::_dy[8] = {0, 0, 1, -1, 1, -1, 1, -1};
 
 std::vector<Point> AStar::Search(const std::vector<std::vector<int>>& Grid, const Point& Start, const Point& Goal) 
 {
-    // if(Grid[Start.y][Start.x] == -1 || Grid[Goal.y][Goal.x] == -1)
-    // {
-    //     return std::vector<Point>();
-    // }
+    if(Grid[Start.y][Start.x] != -1 || Grid[Goal.y][Goal.x] != -1
+        || Start.y >= Grid.size() || Start.x >= Grid[0].size()
+        || Goal.y >= Grid.size() || Goal.x >= Grid[0].size())
+    {
+        return std::vector<Point>();
+    }
     int Rows = Grid.size();
     int Columns = Grid[0].size();
     std::vector<Point> Path;

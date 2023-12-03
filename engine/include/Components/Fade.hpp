@@ -8,22 +8,17 @@ class Fade : public Component
 {
     private:
         Filter _FadeFilter;
-        bool _FadeIn;
-        bool _Finished;
-        float _StartPercent;
-        float _FinishPercent;
-        float _CurrPercent;
-        float _Step;
-        float _Time;
+        Color _Start;
+        Color _Finish;
+        Timer _FadeStep;
+        float _Limit;
 
     public:
-        Timer FadeStep;
 
-        Fade(GameObject& Parent, Color Colour, float StartPercent, float FinishPercent, float TimeSpan);
+        Fade(GameObject& Parent, Color StartColour, Color FinishColour, float TimeSpan);
         ~Fade();
-        void RedirectFade(float FinishPercent);
-        void SetTime(float TimeSpan);
-        void SetColor(Color Colour);
+        void SetSpan(float TimeSpan);
+        void SetFinishColor(Color Colour);
         Color GetColor();
 
         void Render();

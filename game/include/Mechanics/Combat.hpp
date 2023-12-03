@@ -23,6 +23,7 @@ enum ScalingStats
 struct AttackData
 {
     int BaseDamage;
+    unsigned int Knockback = 1;
     ScalingStats Scaled = ScalingStats::NoStats;
 };
 
@@ -30,11 +31,13 @@ class Combat
 {
     private:
         static XrandU64 Dice;
+        static int _DamagePenalty(int AttackerLevel, int TargetLevel, float Damage);
 
     public:
         Combat();
-        static int Calculate(Stats& Attacker, AttackData& AtkData, Stats& Defender);
-
+        static int CalculateDamage(Stats& Attacker, AttackData& AtkData, Stats& Defender);
+        static int DeathExp(int CurrentLevel);
+        static int LevelUpExp(int CurrentLevel);
 };
 
 #endif//GAME_COMBAT

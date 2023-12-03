@@ -1,0 +1,5 @@
+#ifndef GAME_MAINGAME
+#define GAME_MAINGAME
+
+
+#endif//GAME_MAINGAME

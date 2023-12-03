@@ -20,7 +20,8 @@ class Vector2
         {
             float y, b, h;
         };
-        
+
+        static const Vector2 ZERO;        
 
         //Vector special operations
         float MagnitudeSquared();

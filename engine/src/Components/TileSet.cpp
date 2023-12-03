@@ -24,6 +24,7 @@ TileSet::TileSet(int TileWidth, int TileHeight, std::string File)
     _Set->SetColumns(_Columns);
     _MaxTiles = _Rows*_Columns;
     _Set->SetFrameCount(_MaxTiles);
+
 }
 
 TileSet::~TileSet()

@@ -45,6 +45,7 @@ class Sprite : public Component
         void SetClip(int X, int Y, int W, int H);
         int GetWidth();
         int GetHeight();
+        int GetCurrentFrame();
         void SetScale(float ScaleX, float ScaleY);
         void SetScale(Vector2 Scale);
         Vector2 GetScale();
@@ -53,6 +54,7 @@ class Sprite : public Component
         bool IsOpen();
 
         void SetColor(Color Colour);
+        void SetAddColor(Color Colour);
         Color GetColor();
         void SetFrame(int Frame);
         void SetFrameSpan(int Span);

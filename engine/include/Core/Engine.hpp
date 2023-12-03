@@ -21,6 +21,7 @@
 #include "Math/Vector2.hpp"
 #include "Core/Window.hpp"
 #include "Core/Renderer.hpp"
+#include "Tools/Xrand.hpp"
 
 class Engine
 {
@@ -39,10 +40,9 @@ class Engine
         bool _ChangeScene();
         
         //Mandatory
-        Engine(std::string Name = "LichenEngine", int Width = 1280, int Height = 720, int ProjWidth=0, int ProjHeight=0, bool VSync=true);
+        Engine(std::string Name, int Width, int Height, int ProjWidth, int ProjHeight, bool VSync);
         static Engine* _GameInstance;
         Window* _GameWindow = nullptr;
-        SDL_Window* _SDLWindow = nullptr;
         Renderer* _GameRenderer = nullptr;
         
         Scene* _GameScene = nullptr;
@@ -53,9 +53,12 @@ class Engine
         double _FrameStart;
         float _Dt;
         void _CalculateDt();
+        static XrandF32 _F32;
+        static XrandU64 _U64;
 
 
     public:
+
         //Copy prevention
         Engine(const Engine& Instance) = delete;
         void operator=(Engine &Engine)= delete;
@@ -72,9 +75,13 @@ class Engine
         int GetSoundChannels();
 
         Scene& CurrentScene();
-        static Engine& Instance();
+        static Engine& Instance(std::string Name = "LichenEngine", int Width = 1280, int Height = 720,
+            int ProjWidth=0, int ProjHeight=0, bool VSync=true);
         float GetDt();
         bool GetPing();
+
+        static float RandomFloat();
+        static unsigned int RandomUint();
 
 };
 

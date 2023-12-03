@@ -26,6 +26,7 @@ TileMap::TileMap(GameObject& GameObj, std::string File, TileSet* CurrTileSet, bo
 
     _Type = ComponentType::TileMap;
     _Parallax = 1;
+    Enabled = true;
 }
 
 TileMap::~TileMap()
@@ -134,24 +135,58 @@ float TileMap::GetParallax()
 
 void TileMap::Render()
 {
-    Vector2 Lower = Camera::Position()*_Parallax;
-    Vector2 Upper = (Lower + Engine::Instance().GetRenderSize())*_Parallax;
-    int Lx = floor(Lower.x)/_CurrTileSet->GetTileWidth()-4;//0;//
-    int Hx = floor(Upper.x)/_CurrTileSet->GetTileWidth()+4;//MapWidth;//
-    int Ly = floor(Lower.y)/_CurrTileSet->GetTileHeight()-4;//0;//
-    int Hy = floor(Upper.y)/_CurrTileSet->GetTileHeight()+4;//MapHeight;//
-
-    for (int y = std::max(Ly, 0); y < std::min(Hy, _MapHeight); y++)
+    if(!Enabled)
     {
-        for (int x = std::max(Lx, 0); x < std::min(Hx, _MapWidth); x++) 
+        return;
+    }
+
+    int MinX = int(Camera::Position().x)/_CurrTileSet->GetTileWidth();
+    int MinY = int(Camera::Position().y)/_CurrTileSet->GetTileHeight();
+    
+    int MaxX = (int(Camera::Position().x)%_CurrTileSet->GetTileWidth() + Engine::Instance().GetWindow().GetProjectionWidth()) /_CurrTileSet->GetTileWidth() +1;
+    int MaxY = (int(Camera::Position().y)%_CurrTileSet->GetTileHeight()+ Engine::Instance().GetWindow().GetProjectionHeight())/_CurrTileSet->GetTileHeight()+1;
+
+    // MinX*=_CurrTileSet->GetTileWidth();
+    // MinY*=_CurrTileSet->GetTileHeight();
+
+    MinX = std::min(std::max(MinX, 0), _MapWidth);
+    MinY = std::min(std::max(MinY, 0), _MapHeight);
+    for(int i = MinX; i < std::min(MinX+MaxX, _MapWidth); i++)
+    {
+        for(int j = MinY; j < std::min(MinY+MaxY, _MapHeight); j++)
         {
+            
+            // _Sprite->Render(MinX+_Sprite->GetWidth()*i, MinY + _Sprite->GetHeight()*j);
             _CurrTileSet->RenderTile(
-                _TileMatrix[y][x],
-                (float)(Parent.Box.x+x)*_CurrTileSet->GetTileWidth()-((_Parallax-1)*(int)Lower.x),
-                (float)(Parent.Box.y+y)*_CurrTileSet->GetTileHeight()-((_Parallax-1)*(int)Lower.y)
+                _TileMatrix[j][i],
+                (float)(Parent.Box.x+i)*_CurrTileSet->GetTileWidth(),
+                (float)(Parent.Box.y+j)*_CurrTileSet->GetTileHeight()
             );
+            //Warning: Parallax not in use for the current game.
         }
     }
+
+
+
+    //Old optimization, not so good
+    // Vector2 Lower = Camera::Position()*_Parallax;
+    // Vector2 Upper = (Lower + Engine::Instance().GetRenderSize())*_Parallax;
+    // int Lx = floor(Lower.x)/_CurrTileSet->GetTileWidth()-4;//0;//
+    // int Hx = floor(Upper.x)/_CurrTileSet->GetTileWidth()+4;//MapWidth;//
+    // int Ly = floor(Lower.y)/_CurrTileSet->GetTileHeight()-4;//0;//
+    // int Hy = floor(Upper.y)/_CurrTileSet->GetTileHeight()+4;//MapHeight;//
+
+    // for (int y = std::max(Ly, 0); y < std::min(Hy, _MapHeight); y++)
+    // {
+    //     for (int x = std::max(Lx, 0); x < std::min(Hx, _MapWidth); x++) 
+    //     {
+    //         _CurrTileSet->RenderTile(
+    //             _TileMatrix[y][x],
+    //             (float)(Parent.Box.x+x)*_CurrTileSet->GetTileWidth()-((_Parallax-1)*(int)Lower.x),
+    //             (float)(Parent.Box.y+y)*_CurrTileSet->GetTileHeight()-((_Parallax-1)*(int)Lower.y)
+    //         );
+    //     }
+    // }
 }
 
 //__________________________________
@@ -242,17 +277,17 @@ void TileMap::_BorderMarking(std::vector<std::vector<int>> &Map)
         {
             if(Map[i][j] > 0) 
             {
-                if((j > 0 and Map[i][j-1] == -1)
-                or (j < (int)Map[i].size()-1 and Map[i][j+1] == -1)
-                or (i > 0 and Map[i-1][j] == -1)
-                or (i < (int)Map.size()-1 and Map[i+1][j] == -1))
+                if((j > 0 and Map[i][j-1] == -1 || Map[i][j-1] != -2)
+                or (j < (int)Map[i].size()-1 and Map[i][j+1] == -1 || Map[i][j+1] != -2)
+                or (i > 0 and Map[i-1][j] == -1 || Map[i-1][j] != -2)
+                or (i < (int)Map.size()-1 and Map[i+1][j] == -1 || Map[i+1][j] != -2))
                 {
                     Map[i][j] = Index;
                     Index++;
                 } 
                 else 
                 {
-                    Map[i][j] = -1;
+                    Map[i][j] = -2;
                 }
             }
         }
@@ -349,7 +384,8 @@ void TileMap::LoadCollision(std::string fileName)
 
     for(int i = 0; i < (int)Block.size(); i++) 
     {
-        GameObject *ColliderObj = new GameObject();
+        GameObject *ColliderObj = new GameObject(Parent.GetLayer());
+        ColliderObj->Depth = Parent.Depth;
         AARectangle *TileCollider = new AARectangle(*ColliderObj, ColliderKind::Stationary, Rectangle(Block[i].x*_CurrTileSet->GetTileWidth(), Block[i].y*_CurrTileSet->GetTileHeight(),
             Block[i].w*_CurrTileSet->GetTileWidth(), Block[i].h*_CurrTileSet->GetTileHeight()));
         ColliderObj->AddComponent(TileCollider);

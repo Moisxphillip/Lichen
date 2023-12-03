@@ -12,9 +12,15 @@ class Sound : public Component
         int _SoundChannel;
         int _SoundVolume;
         void _SoundPosition();
+        static float _EarDistance;
+        static float _LMinRadius;
+        static float _LMaxRadius;
+        static float _MinRadius;
+        static float _MaxRadius;
     
     public:    
         bool Pan;
+        bool Linear;
         bool SelfDestruct;
         Sound(GameObject& Parent);
         Sound(GameObject& Parent, std::string Path);
@@ -26,6 +32,7 @@ class Sound : public Component
         void Open(std::string Path);
         bool IsOpen();
         bool IsPlaying();
+        void SetVolume(int Volume = 255);
         
         //Inheritance Functions
         void Update(float Dt);

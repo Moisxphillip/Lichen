@@ -79,6 +79,10 @@ _Index{0,1,2,2,3,0}
     _LastFlip = Flip::N;
     _LastColor =  Color("#FFF00FFF");//won't alter base color with shader at first
     _NextColor = Color("#FFFFFFFF");;
+    
+    //Init AddColor
+    Color Tmp("#000000");
+    _Shader->SetColor("U_AddColor", Tmp);
 }
 
 Image::~Image()
