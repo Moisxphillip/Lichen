@@ -95,6 +95,7 @@ GENERATED += $(OBJDIR)/Draw.o
 GENERATED += $(OBJDIR)/Dummy.o
 GENERATED += $(OBJDIR)/ElementLoader.o
 GENERATED += $(OBJDIR)/EndScene.o
+GENERATED += $(OBJDIR)/EndScreen.o
 GENERATED += $(OBJDIR)/Enemy.o
 GENERATED += $(OBJDIR)/EnemyFactory.o
 GENERATED += $(OBJDIR)/EnemyTest.o
@@ -111,11 +112,10 @@ GENERATED += $(OBJDIR)/Generic.o
 GENERATED += $(OBJDIR)/Image.o
 GENERATED += $(OBJDIR)/IndexBuffer.o
 GENERATED += $(OBJDIR)/Input.o
-<<<<<<< HEAD
-GENERATED += $(OBJDIR)/LoopSprite.o
-=======
 GENERATED += $(OBJDIR)/JsonParser.o
->>>>>>> 9cc285a (Add: dialogue system and WIP: UI)
+GENERATED += $(OBJDIR)/LoopSprite.o
+GENERATED += $(OBJDIR)/MainGame.o
+GENERATED += $(OBJDIR)/MainMenu.o
 GENERATED += $(OBJDIR)/Minion.o
 GENERATED += $(OBJDIR)/Music.o
 GENERATED += $(OBJDIR)/Particles.o
@@ -176,6 +176,7 @@ OBJECTS += $(OBJDIR)/Draw.o
 OBJECTS += $(OBJDIR)/Dummy.o
 OBJECTS += $(OBJDIR)/ElementLoader.o
 OBJECTS += $(OBJDIR)/EndScene.o
+OBJECTS += $(OBJDIR)/EndScreen.o
 OBJECTS += $(OBJDIR)/Enemy.o
 OBJECTS += $(OBJDIR)/EnemyFactory.o
 OBJECTS += $(OBJDIR)/EnemyTest.o
@@ -192,11 +193,10 @@ OBJECTS += $(OBJDIR)/Generic.o
 OBJECTS += $(OBJDIR)/Image.o
 OBJECTS += $(OBJDIR)/IndexBuffer.o
 OBJECTS += $(OBJDIR)/Input.o
-<<<<<<< HEAD
-OBJECTS += $(OBJDIR)/LoopSprite.o
-=======
 OBJECTS += $(OBJDIR)/JsonParser.o
->>>>>>> 9cc285a (Add: dialogue system and WIP: UI)
+OBJECTS += $(OBJDIR)/LoopSprite.o
+OBJECTS += $(OBJDIR)/MainGame.o
+OBJECTS += $(OBJDIR)/MainMenu.o
 OBJECTS += $(OBJDIR)/Minion.o
 OBJECTS += $(OBJDIR)/Music.o
 OBJECTS += $(OBJDIR)/Particles.o
@@ -495,6 +495,15 @@ $(OBJDIR)/Equipment.o: game/src/Mechanics/Equipment.cpp
 $(OBJDIR)/Critter.o: game/src/Npc/Critter.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/EndScreen.o: game/src/Scene/EndScreen.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/MainGame.o: game/src/Scene/MainGame.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/MainMenu.o: game/src/Scene/MainMenu.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/TestScene.o: game/src/TestScene.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -507,11 +516,10 @@ $(OBJDIR)/ElementLoader.o: game/src/Tools/ElementLoader.cpp
 $(OBJDIR)/EventChain.o: game/src/Tools/EventChain.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-<<<<<<< HEAD
-$(OBJDIR)/LoopSprite.o: game/src/Tools/LoopSprite.cpp
-=======
 $(OBJDIR)/JsonParser.o: game/src/Tools/JsonParser.cpp
->>>>>>> 9cc285a (Add: dialogue system and WIP: UI)
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/LoopSprite.o: game/src/Tools/LoopSprite.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/UIBagMenu.o: game/src/UserInterface/UIBagMenu.cpp

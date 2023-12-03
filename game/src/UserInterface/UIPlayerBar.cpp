@@ -58,7 +58,6 @@ void UIStaminaBar::Render()
 {
     if(UISprite)
     {
-        std::cout<<_CurrentStamina<<std::endl;
         UISprite->SetClip(0,0,_CurrentStamina*UISprite->GetWidth(),UISprite->GetHeight());
         UISprite->Render(AbsolutePosition.x, AbsolutePosition.y);
     }
