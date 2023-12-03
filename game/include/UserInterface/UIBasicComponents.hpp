@@ -9,7 +9,9 @@ private:
     std::weak_ptr<UIComponent> UIToMove;
 
 public:
-    UIMoveHolder(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes, std::weak_ptr<UIComponent> UIToMove):UIComponent(Parent, Controller, Position, Classes), UIToMove(UIToMove){}
+    UIMoveHolder(GameObject& Parent, UIController& Controller, Vector2 Position,
+        std::vector<std::string> Classes, std::weak_ptr<UIComponent> UIToMove)
+        :UIComponent(Parent, Controller, Position, Classes), UIToMove(UIToMove){}
 
     virtual void Start(Vector2 StartPos){
         Width = 248;
@@ -19,14 +21,14 @@ public:
     void OnClick(Vector2 EventPos){
         if(!UIToMove.expired())
         {
-            ClickOffset =  EventPos - UIToMove.lock().get()->AbsolutePosition;
+            ClickOffset =  EventPos - (Parent.Box.Position() + UIToMove.lock().get()->RelativePosition);
         }
     }
 
     void OnHold(Vector2 EventPos){
         if(!UIToMove.expired())
         {
-            UIToMove.lock().get()->RelativePosition = EventPos - Camera::Position() - ClickOffset;
+            UIToMove.lock().get()->RelativePosition = EventPos - Parent.Box.Position() - ClickOffset;
         }
     }
 };

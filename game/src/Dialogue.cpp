@@ -67,7 +67,7 @@ DialogueManager::~DialogueManager(){
 
 void DialogueManager::Update(float Dt)
 {
-    Parent.Box.SetPosition(Camera::Position()+Vector2(0,484));
+    // Parent.Box.SetPosition(Camera::Position()+Vector2(0,484));
     _CurrentDialogue->Update(*this, Dt);
 }
 
@@ -92,10 +92,11 @@ void DialogueManager::Render()
     _CurrentDialogue->Render(*this);
 }
 
+#include "Components/CameraFollower.hpp"
 void DialogueManager::Start()
 {
     _CurrentDialogue = _StartDialogue;
-
+    Parent.AddComponent(new CameraFollower(Parent));
     _BackgroundImage = new Sprite(Parent, "res/img/back-dialogue.png");
 }
 

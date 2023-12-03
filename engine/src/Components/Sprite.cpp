@@ -211,9 +211,9 @@ void Sprite::Render(float x, float y)
 void Sprite::Render(float x, float y, float Angle)
 {
     Vector2 Destiny;
-    Destiny.x = (x+GetWidth()/2)*_Parallax.x;
-    Destiny.y = (y+GetHeight()/2)*_Parallax.y;
-    int Layer = (Parent.Depth == DepthMode::Dynamic ? Destiny.y + GetHeight() : Parent.GetLayer());
+    Destiny.x = x*_Parallax.x;
+    Destiny.y = y*_Parallax.y;
+    int Layer = 0;//(Parent.Depth == DepthMode::Dynamic ? Destiny.y + GetHeight() : Parent.GetLayer());
     _SpriteImage->Render(Engine::Instance().GetRenderer(),
         Engine::Instance().GetWindow().GetProjection(),
         Destiny, _Scale, _ClipRect, Angle, _Orientation, Parent.Depth, Layer);

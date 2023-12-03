@@ -19,7 +19,7 @@ void UIController::Start(){
 }
 
 void UIController::Update(float Dt){
-    Parent.Box.SetPosition(Camera::Position());
+    // Parent.Box.SetPosition(Camera::Position());
 
     if(_UIHidden)
     {
@@ -36,8 +36,9 @@ void UIController::Update(float Dt){
  
     for (auto Component = rbegin(UIComponents); Component != rend(UIComponents); ++Component){
         Vector2 MousePos = InputController.MousePosition();
-        if((*Component)->IsInside(MousePos)){
-             _UIFocused = true;
+        if((*Component)->IsInside(MousePos))
+        {
+            _UIFocused = true;
             (*Component)->Trigger(MousePos); 
             break;
         }
@@ -71,7 +72,7 @@ std::weak_ptr<UIComponent> UIController::AddComponent(UIComponent* Component){
     UIComponents.emplace_back(ComponentPointer);
 
     (*ComponentPointer).Start();
-    ComponentPointer->AbsolutePosition = Camera::Position() + ComponentPointer->RelativePosition;
+    ComponentPointer->AbsolutePosition = Parent.Box.Position() + ComponentPointer->RelativePosition;
 
     return std::weak_ptr<UIComponent>(ComponentPointer);
 }

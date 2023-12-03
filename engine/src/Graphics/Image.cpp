@@ -115,16 +115,17 @@ void Image::Render(Renderer& RenderDevice, glm::mat4& Projection, Vector2 Positi
     }
 
     bool VbAltered = false;
-    if (Scale != _LastScale )
+    bool RectChanged = (Dst.x != _LastDst.x || Dst.y != _LastDst.y || Dst.w != _LastDst.w || Dst.h != _LastDst.h);
+    if (Scale != _LastScale || RectChanged)
     {
         _LastScale=Scale;
         //Calculate image size
-        float X = (Dst.w/2) * (Scale.x), Y = (Dst.h/2) *(Scale.y);
+        float X = (Dst.w) * (Scale.x), Y = (Dst.h) *(Scale.y);
         // float X = (Dst.w/2) * (Scale.x + 17e-3), Y = (Dst.h/2) *(Scale.y + 17e-3);//Deforms the tiles tho, find a better way to do this later
-        _Square[0].x = -X; _Square[0].y = -Y;
-        _Square[1].x =  X; _Square[1].y = -Y;
+        _Square[0].x = 0; _Square[0].y = 0;
+        _Square[1].x =  X; _Square[1].y = 0;
         _Square[2].x =  X; _Square[2].y =  Y;
-        _Square[3].x = -X; _Square[3].y =  Y;
+        _Square[3].x = 0; _Square[3].y =  Y;
         VbAltered = true;
     }
 
@@ -156,7 +157,6 @@ void Image::Render(Renderer& RenderDevice, glm::mat4& Projection, Vector2 Positi
     //     VbAltered = true;
     // }
     
-    bool RectChanged = (Dst.x != _LastDst.x || Dst.y != _LastDst.y || Dst.w != _LastDst.w || Dst.h != _LastDst.h);
 
     if(RectChanged || _LastFlip != CurrFlip)
     {

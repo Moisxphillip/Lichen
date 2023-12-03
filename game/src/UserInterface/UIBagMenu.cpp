@@ -32,7 +32,7 @@ void UIBag::Start()
 {
     LoadImage("res/img/UI/bag.png");
     AddComponent(new UIMoveHolder(Parent, Controller, Vector2(0,0), {}, weak_from_this()));
-    AddComponent(new UIBagClose(Parent, Controller, Vector2(220,5), {"#Close"}));
+    AddComponent(new UIBagClose(Parent, Controller, RelativePosition+Vector2(220,5), {"#Close"}));
 }
 
 void UIBag::Close()
@@ -83,8 +83,8 @@ UIItenOptions::UIItenOptions(GameObject& Parent, UIController& Controller, Vecto
 
 void UIItenOptions::Start()
 {
-    AddComponent(new UIItenOptionUse(Parent, Controller, Vector2(0,0), {}));
-    AddComponent(new UIItenOptionThrow(Parent, Controller, Vector2(0,20), {}));
+    AddComponent(new UIItenOptionUse(Parent, Controller, RelativePosition, {}));
+    AddComponent(new UIItenOptionThrow(Parent, Controller, RelativePosition+Vector2(0,20), {}));
     Width=232;
     Height=40;
 }
@@ -92,10 +92,10 @@ void UIItenOptions::Start()
 bool UIItenOptions::IsInside(Vector2 EventPos)
 {
 
-    if(EventPos.x >= AbsolutePosition.x-50 &&
-        EventPos.x < AbsolutePosition.x+50 + Width &&
-        EventPos.y >= AbsolutePosition.y-50  && 
-        EventPos.y < AbsolutePosition.y+50 + Height 
+    if(EventPos.x >= Parent.Box.x+RelativePosition.x-50 &&
+        EventPos.x <Parent.Box.x+RelativePosition.x+50 + Width &&
+        EventPos.y >= Parent.Box.y+RelativePosition.y-50  && 
+        EventPos.y < Parent.Box.y+RelativePosition.y+50 + Height 
     )
     {
         return true;
@@ -105,8 +105,8 @@ bool UIItenOptions::IsInside(Vector2 EventPos)
 
 void UIItenOptions::Update(float Dt, Vector2 BasePos)
 {
-    UIGroupComponent::Update(Dt, BasePos);
-    Input InputController = Input::Instance();
+    UIGroupComponent::Update(Dt, BasePos+RelativePosition);
+    Input& InputController = Input::Instance();
 
 
     if(!IsInside(InputController.MousePosition()))
@@ -131,7 +131,7 @@ void UIItenOptionUse::OnHover(Vector2 EventPos)
 
 void UIItenOptionUse::Update(float Dt, Vector2 BasePos)
 {
-    UIComponent::Update(Dt, BasePos);
+    UIComponent::Update(Dt, BasePos+RelativePosition);
     Input InputController = Input::Instance();
 
 
@@ -155,7 +155,7 @@ void UIItenOptionThrow::OnHover(Vector2 EventPos){
 
 void UIItenOptionThrow::Update(float Dt, Vector2 BasePos)
 {
-    UIComponent::Update(Dt, BasePos);
+    UIComponent::Update(Dt, BasePos+RelativePosition);
     Input InputController = Input::Instance();
 
     if(!IsInside(InputController.MousePosition()))

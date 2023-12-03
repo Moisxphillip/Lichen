@@ -35,7 +35,7 @@ void UIComponent::Start()
 
 void UIComponent::Update(float Dt, Vector2 BasePos)
 {
-    AbsolutePosition = BasePos + RelativePosition;
+    // AbsolutePosition = Parent.Box.Position() + RelativePosition;
 }
 
 void UIComponent::Trigger(Vector2 EventPos)
@@ -77,22 +77,17 @@ void UIComponent::Render()
 {
     if(UISprite)
     {
-        UISprite->Render(AbsolutePosition.x, AbsolutePosition.y);
+        UISprite->Render(Parent.Box.x + RelativePosition.x, Parent.Box.y + RelativePosition.y);
     }
     if(UIText)
     {
-        UIText->Render();
+        UIText->Render(Vector2(Parent.Box.x + RelativePosition.x, Parent.Box.y + RelativePosition.y));
     }
 }
 
 bool UIComponent::IsInside(Vector2 EventPos)
 {
-
-    if(EventPos.x >= AbsolutePosition.x &&
-        EventPos.x < AbsolutePosition.x + Width &&
-        EventPos.y >= AbsolutePosition.y  && 
-        EventPos.y < AbsolutePosition.y + Height 
-    )
+    if(Rectangle(Parent.Box.x + RelativePosition.x,Parent.Box.y + RelativePosition.y, Width, Height).Contains(EventPos))
     {
         return true;
     }
@@ -201,13 +196,13 @@ void UIGroupComponent::Start(){
         Component->Start();
     }
 }
-
+// Rectangle(Parent.Box.x + RelativePosition.x,Parent.Box.y + RelativePosition.y, Width, Height).Contains(EventPos)
 void UIGroupComponent::Update(float Dt, Vector2 BasePos){
-    AbsolutePosition = BasePos + RelativePosition;
+    // AbsolutePosition = BasePos + RelativePosition;
 
     for (auto Component : _UIComponents)
     {
-        Component->Update(Dt, AbsolutePosition); 
+        Component->Update(Dt, Component->RelativePosition+ BasePos/* + RelativePosition*/); 
     }
 }
 
@@ -244,7 +239,7 @@ void UIGroupComponent::LateUpdate(float Dt){
 void UIGroupComponent::Render(){
     if(UISprite)
     {
-        UISprite->Render(AbsolutePosition.x, AbsolutePosition.y);
+        UISprite->Render(Parent.Box.x + RelativePosition.x, Parent.Box.y + RelativePosition.y);
     }
     if(UIText)
     {
@@ -261,7 +256,7 @@ void UIGroupComponent::AddComponent(UIComponent* Component){
     std::shared_ptr<UIComponent> ComponentPointer = std::shared_ptr<UIComponent>(Component);
 
     Component->Start();
-    Component->AbsolutePosition = AbsolutePosition + Component->RelativePosition;
+    // Component->AbsolutePosition = AbsolutePosition + Component->RelativePosition;
 
     _UIComponents.emplace_back(ComponentPointer);
 }

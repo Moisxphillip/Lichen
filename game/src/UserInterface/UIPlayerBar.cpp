@@ -1,5 +1,6 @@
 #include "UserInterface/UIPlayerBar.hpp"
 #include <iostream>
+#include "Character/Player.hpp"
 
 // _________________________________________________#UIPlayerBar_________________________________________________
   
@@ -9,9 +10,9 @@ void UIPlayerBar::Start()
 {
     LoadImage("res/img/UI/PlayerBar.png");
 
-    AddComponent(new UILifeBar(Parent, Controller, Vector2(0,0)));
-    AddComponent(new UIStaminaBar(Parent, Controller, Vector2(0,0)));
-    AddComponent(new UIManaBar(Parent, Controller, Vector2(0,0)));
+    AddComponent(new UILifeBar(Parent, Controller, RelativePosition + Vector2(52,8)));
+    AddComponent(new UIStaminaBar(Parent, Controller, RelativePosition + Vector2(85,56)));
+    AddComponent(new UIManaBar(Parent, Controller, RelativePosition + Vector2(83,34)));
 }
 
 
@@ -26,16 +27,22 @@ void UILifeBar::Start()
 
 void UILifeBar::Update(float Dt, Vector2 BasePos)
 {
-    UIComponent::Update(Dt, BasePos);
-    _CurrentLife = 50.f / 100.f;
+    UIComponent::Update(Dt, BasePos+RelativePosition);
+    if(Player::Self == nullptr)
+    {
+        _CurrentLife = 0.0f;
+        return;
+    }
+    Stats& Tmp = Player::Self->GetStats();
+    _CurrentLife = std::clamp(float(Tmp.HP) / float(Tmp.MaxHP), 0.0f, 1.0f);;
 }
 
 void UILifeBar::Render()
 {
     if(UISprite)
     {
-        UISprite->SetClip(0,0,_CurrentLife*UISprite->GetWidth(),UISprite->GetHeight());
-        UISprite->Render(AbsolutePosition.x, AbsolutePosition.y);
+        UISprite->SetClip(0,0, std::clamp(_CurrentLife, 0.0f, 1.0f) * UISprite->GetWidth(),UISprite->GetHeight());
+        UISprite->Render(Parent.Box.Position().x + RelativePosition.x, Parent.Box.Position().y + RelativePosition.y);
     }
 }
 
@@ -50,8 +57,14 @@ void UIStaminaBar::Start()
 
 void UIStaminaBar::Update(float Dt, Vector2 BasePos)
 {
-    UIComponent::Update(Dt, BasePos);
-    _CurrentStamina = 1;
+    UIComponent::Update(Dt, BasePos+RelativePosition);
+     if(Player::Self == nullptr)
+    {
+        _CurrentStamina = 0.0f;
+        return;
+    }
+    Stats& Tmp = Player::Self->GetStats();
+    _CurrentStamina = std::clamp(float(Tmp.Stamina) / float(Tmp.MaxStamina), 0.0f, 1.0f);
 }
 
 void UIStaminaBar::Render()
@@ -59,7 +72,7 @@ void UIStaminaBar::Render()
     if(UISprite)
     {
         UISprite->SetClip(0,0,_CurrentStamina*UISprite->GetWidth(),UISprite->GetHeight());
-        UISprite->Render(AbsolutePosition.x, AbsolutePosition.y);
+        UISprite->Render(Parent.Box.Position().x + RelativePosition.x, Parent.Box.Position().y + RelativePosition.y);
     }
 }
 
@@ -74,8 +87,14 @@ void UIManaBar::Start()
 
 void UIManaBar::Update(float Dt, Vector2 BasePos)
 {
-    UIComponent::Update(Dt, BasePos);
-    _CurrentMana = 80.f / 100.f;
+    UIComponent::Update(Dt, BasePos+RelativePosition);
+    if(Player::Self == nullptr)
+    {
+        _CurrentMana = 0.0f;
+        return;
+    }
+    Stats& Tmp = Player::Self->GetStats();
+    _CurrentMana = std::clamp(float(Tmp.Mana) / float(Tmp.MaxMana), 0.0f, 1.0f);
 }
 
 void UIManaBar::Render()
@@ -83,7 +102,7 @@ void UIManaBar::Render()
     if(UISprite)
     {
         UISprite->SetClip(0,0,_CurrentMana*UISprite->GetWidth(),UISprite->GetHeight());
-        UISprite->Render(AbsolutePosition.x, AbsolutePosition.y);
+        UISprite->Render(Parent.Box.Position().x + RelativePosition.x, Parent.Box.Position().y + RelativePosition.y);
     }
 }
 

@@ -32,7 +32,7 @@ Player::Player(GameObject& Parent, std::string Label)
     _Type = COMPONENT_PLAYER;
     Parent.Represents = PLAYER_MASK;
     Parent.Interacts = ENEMY_ATK_MASK | INTERACT_MASK | CollisionMask::Terrain;
-    _MyStats = Stats{100, 100, 1, 0, 5, 25, 5, 5, 0, 3, 0, 100};
+    _MyStats = Stats{100, 100, 1, 0, 5, 25, 5, 5, 2, 3, 50, 100};
     MyCollider = nullptr;
     Self = this;
     _HitCooldown.SetLimit(PLAYER_DEFAULT_INVULNERABILITY);
@@ -221,6 +221,14 @@ void PlayerIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
 
     if(Ip.MouseJustPressed(MouseButton::Right))
     {
+        if(Player::Self->GetStats().Mana>0)
+        {
+            Player::Self->GetStats().Mana-=5;
+        }
+        else
+        {
+            Player::Self->GetStats().Mana=100;
+        }
         Sm.SetState(PLAYER_SPECIAL);
         return;
     }
@@ -242,6 +250,14 @@ void PlayerIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
 
     if(Ip.KeyJustPressed(Key::Space))
     {
+        if(Player::Self->GetStats().Stamina>0)
+        {
+            Player::Self->GetStats().Stamina--;
+        }
+        else
+        {
+            Player::Self->GetStats().Stamina=3;
+        }
         Sm.SetState(PLAYER_DASH);
     }
 }
@@ -286,6 +302,14 @@ void PlayerWalk::PhysicsUpdate(StateMachine& Sm, float Dt)
     if(Ip.KeyJustPressed(Key::Space))
     {
         // Sm.LastDirection = Vector2(x, y).Normalized();
+                if(Player::Self->GetStats().Stamina>0)
+        {
+            Player::Self->GetStats().Stamina--;
+        }
+        else
+        {
+            Player::Self->GetStats().Stamina=3;
+        }
         Sm.SetState(PLAYER_DASH);
     }
 
