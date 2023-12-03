@@ -1,5 +1,8 @@
 #include "TestScene.hpp"
-
+#include "Dummy.hpp"
+#include "Enemy/Slime.hpp"
+// #include "Dialogue.hpp"
+#include "EnemyFactory.hpp"
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
 #include "Graphics/Draw.hpp"
@@ -13,6 +16,7 @@
 #include "Components/CameraFollower.hpp"
 #include "Components/CameraFollower.hpp"
 #include "Components/Fade.hpp"
+#include "UserInterface/UIController.hpp"
 
 #include "Enemy/Slime.hpp"
 #include "EnemyFactory.hpp"
@@ -42,6 +46,9 @@ void Test01::LoadAssets()
  
     Engine::Instance().GetRenderer().SetClearColor((std::string)"#4c0317");
 
+    
+    // Cam.Follow(UI);
+
     GameObject* imgo = new GameObject();
     imgo->Depth = DepthMode::Foreground;
     text = new Text(*imgo, "./res/ttf/Caviar.ttf", 20, TextStyle::BLENDED, ".", Color("#ffffff"));
@@ -56,9 +63,24 @@ void Test01::LoadAssets()
     playerObj->Box.SetCenter(Vector2(640, 750));
     playerObj->AddComponent(player);
     AddGameObj(playerObj);
+    Cam.Follow(playerObj);
+    
+    // GameObject* slimeObj = new GameObject(2);
+    // Slime* slime = new Slime(*slimeObj);
+    // slimeObj->Box.SetCenter(Vector2(640, 150));
+    // slimeObj->AddComponent(slime);
+    // AddGameObj(slimeObj);
+    // Cam.Follow(slimeObj);
+
+    // GameObject* dialeobj = new GameObject(3);
+    // slimeObj->AddComponent(new DialogueManager(*dialeobj, "ala.json"));
+    // AddGameObj(dialeobj);
+    // Dialogueobj->Box.SetCenter(Vector2(640, 150));
+
     
     GameObject* enemyObj = new GameObject(2);
     enemyObj->AddComponent(EnemyFactory::CreateEnemy(*enemyObj, EnemyType::GRUB, Vector2(100, 100)));
+    
     AddGameObj(enemyObj);
 
     //Testing map
@@ -152,6 +174,15 @@ void Test01::LoadAssets()
     AddGameObj(Snd);
     
     
+    GameObject* UI = new GameObject();
+    UI->Depth = DepthMode::Foreground;
+    UI->SetLayer(50);
+    UIController* Controller = new UIController(*UI);
+    UI->AddComponent(new CameraFollower(*UI));
+    UI->AddComponent(Controller);
+
+    AddGameObj(UI);
+
 }
 
 void Test01::PhysicsUpdate(float Dt)

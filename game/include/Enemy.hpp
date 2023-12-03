@@ -8,7 +8,8 @@
 #include "Tools/Xrand.hpp"
 
 #define ATTACK_TIME 0.8
-#define MAX_WANDERING_INTERVAL 10
+#define MAX_WANDERING_INTERVAL 20
+#define MIN_WANDERING_INTERVAL 8
 #define MAX_WANDERING_DISTANCE 600
 
 #define DEFAULT_HP 20
@@ -38,6 +39,7 @@ class Enemy : public StateMachine {
 
     public:
         Enemy(GameObject& Parent, std::string Label);
+
         
         void SMStart();
         bool MoveTo(Vector2 Destiny, float Dt);
@@ -91,16 +93,23 @@ class EnemyIdle : public GenericState {
     public:
         EnemyIdle(const StateInfo& Specs);
         void PhysicsUpdate(StateMachine& Sm, float Dt);
+        
+        void GenerateRandomInterval();
 };
 
 class EnemyWalk : public GenericState {
     private:
-        Vector2 _EnemyDestiny;
+        Vector2 _EnemyDistance;
         XrandU64 _Randomizer;
 
     public:
+        bool Collided;
+
         EnemyWalk(const StateInfo& Specs);
         void PhysicsUpdate(StateMachine& Sm, float Dt);
+        void OnCollision(StateMachine& Sm, GameObject& Other);
+
+        void GenerateRandomDistance();
 };
 
 class EnemyPursuit : public GenericState {

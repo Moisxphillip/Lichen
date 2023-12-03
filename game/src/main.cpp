@@ -2,6 +2,8 @@
 #include "Legacy/TitleScene.hpp"
 #include "TestScene.hpp"
 #include "Core/Engine.hpp"
+#include "Tools/JsonParser.hpp"
+#include "DTO/DialogueDTO.hpp"
 
 
 int main (int argc, char** argv) 

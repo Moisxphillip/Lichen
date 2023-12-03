@@ -2,7 +2,7 @@
 #include "Enemy.hpp"
 #include "Dummy.hpp"
 #include "Core/Engine.hpp"
-
+#include "Dialogue.hpp"
 #include <iostream>
 #include <ctime>
 
@@ -31,8 +31,7 @@ Enemy::Enemy(GameObject& Parent, std::string Label):
     _MovimentationSpeed(DEFAULT_MOVIMENTATION_SPEED){}
 
 
-void Enemy::SMStart(){
-}
+void Enemy::SMStart(){}
 
 bool Enemy::MoveTo(Vector2 Destiny, float Dt){
     Destiny.x > Parent.Box.x ? SetFlip(Flip::H) : SetFlip(Flip::N);
@@ -186,7 +185,7 @@ Enemy* Enemy::Builder:: Build(){
 EnemyIdle::EnemyIdle(const StateInfo& Specs):GenericState(Specs){
     _Randomizer = XrandU64(static_cast<unsigned long long int>(std::time(nullptr)));
     _WanderingTimer.Restart();
-    _WanderingInterval = _Randomizer.gen()%MAX_WANDERING_INTERVAL+1;
+    GenerateRandomInterval();
 }
 
 void EnemyIdle::PhysicsUpdate(StateMachine& Sm, float Dt){
@@ -198,19 +197,47 @@ void EnemyIdle::PhysicsUpdate(StateMachine& Sm, float Dt){
         Sm.SetState(ENEMY_PURSUIT);
     }
 
-    // if(_WanderingTimer.Get()>= _WanderingInterval){
-    //     _WanderingTimer.Restart();
-    //     _WanderingInterval = _Randomizer.gen()%MAX_WANDERING_INTERVAL+1;
-    //     Sm.SetState(ENEMY_WALK);
-    // }
+    if(_WanderingTimer.Get()>= _WanderingInterval){
+        _WanderingTimer.Restart();
+        GenerateRandomInterval();
+        Sm.SetState(ENEMY_WALK);
+    }
+}
+
+void EnemyIdle::GenerateRandomInterval(){
+    _WanderingInterval = MIN_WANDERING_INTERVAL+_Randomizer.gen()%(MAX_WANDERING_INTERVAL-MIN_WANDERING_INTERVAL)+1;
 }
 
 // ___________________________________________________________________EnemyWalk___________________________________________________________________
 
-EnemyWalk::EnemyWalk(const StateInfo& Specs):GenericState(Specs){
+EnemyWalk::EnemyWalk(const StateInfo& Specs):GenericState(Specs), Collided(false){
+    _Randomizer = XrandU64(42);
+    GenerateRandomDistance();
 }
 
 void EnemyWalk::PhysicsUpdate(StateMachine& Sm, float Dt){
+
+    Enemy* EnemySM = reinterpret_cast<Enemy*>(&Sm);
+    // if(Dummy::Player->Parent.Box.DistCenters(Sm.Parent.Box) <= EnemySM->GetDetectionRange()){
+    //     Sm.SetState(ENEMY_PURSUIT);
+    // }
+
+    if(!EnemySM->MoveTo(Sm.Parent.Box.Center()+_EnemyDistance, Dt) || Collided){
+        
+        Sm.SetState(ENEMY_IDLE);
+    }
+    Collided = false;
+}
+
+
+void EnemyWalk::OnCollision(StateMachine& Sm, GameObject& Other){
+    Collided = true;
+}
+
+void EnemyWalk::GenerateRandomDistance(){
+    float Distance = _Randomizer.gen()%MAX_WANDERING_DISTANCE+1;
+    float Angle = _Randomizer.gen()%MAX_WANDERING_DISTANCE+1;
+    _EnemyDistance = Vector2(Distance,0).Rotate(Angle);
 }
 
 // ___________________________________________________________________EnemyPursuit___________________________________________________________________
