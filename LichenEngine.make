@@ -88,12 +88,9 @@ GENERATED += $(OBJDIR)/Color.o
 GENERATED += $(OBJDIR)/Combat.o
 GENERATED += $(OBJDIR)/Component.o
 GENERATED += $(OBJDIR)/Controls.o
-<<<<<<< HEAD
 GENERATED += $(OBJDIR)/Critter.o
-=======
 GENERATED += $(OBJDIR)/Dialogue.o
 GENERATED += $(OBJDIR)/DialogueDTO.o
->>>>>>> 51328e5 (Add: dialogue system and WIP: UI)
 GENERATED += $(OBJDIR)/Draw.o
 GENERATED += $(OBJDIR)/Dummy.o
 GENERATED += $(OBJDIR)/ElementLoader.o
@@ -144,6 +141,11 @@ GENERATED += $(OBJDIR)/TileSet.o
 GENERATED += $(OBJDIR)/Timer.o
 GENERATED += $(OBJDIR)/TitleScene.o
 GENERATED += $(OBJDIR)/Tools.o
+GENERATED += $(OBJDIR)/UIBagMenu.o
+GENERATED += $(OBJDIR)/UIBasicComponents.o
+GENERATED += $(OBJDIR)/UIComponent.o
+GENERATED += $(OBJDIR)/UIController.o
+GENERATED += $(OBJDIR)/UIPlayerBar.o
 GENERATED += $(OBJDIR)/Vector2.o
 GENERATED += $(OBJDIR)/VertexArray.o
 GENERATED += $(OBJDIR)/VertexBuffer.o
@@ -167,12 +169,9 @@ OBJECTS += $(OBJDIR)/Color.o
 OBJECTS += $(OBJDIR)/Combat.o
 OBJECTS += $(OBJDIR)/Component.o
 OBJECTS += $(OBJDIR)/Controls.o
-<<<<<<< HEAD
 OBJECTS += $(OBJDIR)/Critter.o
-=======
 OBJECTS += $(OBJDIR)/Dialogue.o
 OBJECTS += $(OBJDIR)/DialogueDTO.o
->>>>>>> 51328e5 (Add: dialogue system and WIP: UI)
 OBJECTS += $(OBJDIR)/Draw.o
 OBJECTS += $(OBJDIR)/Dummy.o
 OBJECTS += $(OBJDIR)/ElementLoader.o
@@ -223,6 +222,11 @@ OBJECTS += $(OBJDIR)/TileSet.o
 OBJECTS += $(OBJDIR)/Timer.o
 OBJECTS += $(OBJDIR)/TitleScene.o
 OBJECTS += $(OBJDIR)/Tools.o
+OBJECTS += $(OBJDIR)/UIBagMenu.o
+OBJECTS += $(OBJDIR)/UIBasicComponents.o
+OBJECTS += $(OBJDIR)/UIComponent.o
+OBJECTS += $(OBJDIR)/UIController.o
+OBJECTS += $(OBJDIR)/UIPlayerBar.o
 OBJECTS += $(OBJDIR)/Vector2.o
 OBJECTS += $(OBJDIR)/VertexArray.o
 OBJECTS += $(OBJDIR)/VertexBuffer.o
@@ -508,6 +512,21 @@ $(OBJDIR)/LoopSprite.o: game/src/Tools/LoopSprite.cpp
 =======
 $(OBJDIR)/JsonParser.o: game/src/Tools/JsonParser.cpp
 >>>>>>> 9cc285a (Add: dialogue system and WIP: UI)
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/UIBagMenu.o: game/src/UserInterface/UIBagMenu.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/UIBasicComponents.o: game/src/UserInterface/UIBasicComponents.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/UIComponent.o: game/src/UserInterface/UIComponent.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/UIController.o: game/src/UserInterface/UIController.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/UIPlayerBar.o: game/src/UserInterface/UIPlayerBar.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/main.o: game/src/main.cpp

@@ -218,9 +218,9 @@ EnemyWalk::EnemyWalk(const StateInfo& Specs):GenericState(Specs), Collided(false
 void EnemyWalk::PhysicsUpdate(StateMachine& Sm, float Dt){
 
     Enemy* EnemySM = reinterpret_cast<Enemy*>(&Sm);
-    if(Dummy::Player->Parent.Box.DistCenters(Sm.Parent.Box) <= EnemySM->GetDetectionRange()){
-        Sm.SetState(ENEMY_PURSUIT);
-    }
+    // if(Dummy::Player->Parent.Box.DistCenters(Sm.Parent.Box) <= EnemySM->GetDetectionRange()){
+    //     Sm.SetState(ENEMY_PURSUIT);
+    // }
 
     if(!EnemySM->MoveTo(Sm.Parent.Box.Center()+_EnemyDistance, Dt) || Collided){
         

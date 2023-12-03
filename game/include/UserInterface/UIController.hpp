@@ -3,7 +3,9 @@
 
 #include "Components/Component.hpp"
 #include <unordered_map>
-#include <UIComponent.hpp>
+#include "UserInterface/UIComponent.hpp"
+
+class UIComponent;
 
 class UIController : public Component {
 private:
@@ -22,13 +24,13 @@ public:
 
     std::weak_ptr<UIComponent> AddComponent(UIComponent* Component);
     std::weak_ptr<UIComponent> GetComponentAtPosition(Vector2 Position);
+    std::weak_ptr<UIComponent> GetComponentByClass(std::string Class);
 
     bool IsUIHidden();
     bool IsUIFocused();
     void ShowUI();
     void HideUI();
     void ToggleHideUI();
-
 };
 
 #endif
