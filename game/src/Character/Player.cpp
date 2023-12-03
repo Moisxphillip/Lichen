@@ -32,7 +32,7 @@ Player::Player(GameObject& Parent, std::string Label)
     _Type = COMPONENT_PLAYER;
     Parent.Represents = PLAYER_MASK;
     Parent.Interacts = ENEMY_ATK_MASK | INTERACT_MASK | CollisionMask::Terrain;
-    _MyStats = Stats{100, 100, 1, 0, 5, 25, 5, 5};
+    _MyStats = Stats{100, 100, 1, 0, 5, 25, 5, 5, 0, 3, 0, 100};
     MyCollider = nullptr;
     Self = this;
     _HitCooldown.SetLimit(PLAYER_DEFAULT_INVULNERABILITY);

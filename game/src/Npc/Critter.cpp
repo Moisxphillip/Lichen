@@ -43,10 +43,12 @@ void Bird::SMStart()
 #define BIRD_MIN_DIST 100.f*100.f
 #define BIRD_MAX_DIST 700.f*700.f
 
+#include <ctime>
+
 BirdIdle::BirdIdle(const StateInfo& Specs)
 : GenericState(Specs)
 {
-    _Randomness.seed(42); //TODO Use time seed later
+    _Randomness.seed(static_cast<unsigned long long int>(std::time(nullptr)));
 }
 
 void BirdIdle::Start()

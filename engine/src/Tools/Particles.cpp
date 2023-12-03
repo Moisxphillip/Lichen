@@ -10,21 +10,23 @@
 // : Size(0.0f, 0.0f), Position(0.0f, 0.0f), Velocity(0.0f, 0.0f), Acceleration(0.0f, 0.0f), Angle(0.0f), Duration(0.0f),
 // TimeSpent(0.0f), Active(false), Windswept(false), StartColor("#ffffff"), EndColor("#ffffff"), Average(StartColor)
 // {}
+#include <ctime>
 
 std::vector<ParticleManager::_Particle> ParticleManager::_Particles;
 int ParticleManager::_Index;
 Vector2 ParticleManager::_Wind;
-XrandF32 ParticleManager::_Random(42); //TODO Seed properly later
+XrandF32 ParticleManager::_Random(static_cast<unsigned long long int>(std::time(nullptr))); //TODO Seed properly later
 GameObject* ParticleManager::_Obj;
 Sprite* ParticleManager::_Sprite;
 ParticleManager* ParticleManager::_Self = nullptr;
+
+#include <ctime>
 
 ParticleManager::ParticleManager()
 {
     _Index = 499;
     _Particles.resize(_Index+1);
-    _Random.seed(42);//TODO seed properly later
-    // _sprite = new Image("./res/img/particle.png");
+    _Random.seed(static_cast<unsigned long long int>(std::time(nullptr)));
     _Obj = new GameObject();
     _Sprite = new Sprite(*_Obj, "./engine/res/particle_4x4f_16.16px.png", 16, 4, 4);
     _Wind = Vector2(0.0f,1.0f);

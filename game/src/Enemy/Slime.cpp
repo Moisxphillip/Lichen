@@ -20,7 +20,7 @@ Slime::Slime(GameObject& Parent, std::string Label)
     MyCollider = nullptr;
     Parent.Represents = ENEMY_MASK | ENEMY_ATK_MASK;
     Parent.Interacts = PLAYER_MASK | ENEMY_MASK | CollisionMask::Terrain;
-    MyStats = Stats{100, 100, 1, 0, 5, 5, 5, 5};
+    MyStats = Stats{100, 100, 1, 0, 5, 5, 5, 5, 0, 0, 0, 0};
 }
 
 #include "Mechanics/Equipment.hpp"

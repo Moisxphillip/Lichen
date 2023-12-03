@@ -137,7 +137,6 @@ void Physics::ResolveCollision(AACollider& A, AACollider& B)
 
 void Physics::_LinearProjection(AACollider& A, AACollider& B, Manifold& M)
 {
-    //TODO turn normal axis aligned for circles in circle x rectangle to solve speed up and weird corner forces
     Vector2 Correction = M.Normal * (std::max(M.Penetration - _CorrectionSlop, 0.0f)
         /(A.GetInvMass() + B.GetInvMass()) * _CorrectionPercent);
     A.Position -= Correction * A.GetInvMass();

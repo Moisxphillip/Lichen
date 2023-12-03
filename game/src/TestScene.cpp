@@ -14,7 +14,6 @@
 #include "Components/CameraFollower.hpp"
 #include "Components/Fade.hpp"
 
-#include "Dummy.hpp"
 #include "Enemy/Slime.hpp"
 #include "EnemyFactory.hpp"
 #include "Character/Player.hpp"
@@ -188,7 +187,7 @@ void Test01::PhysicsUpdate(float Dt)
 }
 int _Type = 0;
 
-XrandF32 Rng(42);
+
 void Test01::Update(float Dt)
 {
     Input& input = Input::Instance();
@@ -212,8 +211,8 @@ void Test01::Update(float Dt)
         z.Position =  input.MousePosition();
         // z.Velocity =  Vector2(50,0);
         // z.Acceleration =  Vector2(0,300);
-        z.Angle = 2.0f * M_PI * Rng.gen();
-        z.RotationPerSec = 2.0f * M_PI * (Rng.gen()-0.5f);
+        z.Angle = 2.0f * M_PI * Engine::RandomFloat();
+        z.RotationPerSec = 2.0f * M_PI * (Engine::RandomFloat()-0.5f);
         z.Spread = 3.1415f/2.0f;
         z.Duration = 4.0f;
         z.Windswept = true;

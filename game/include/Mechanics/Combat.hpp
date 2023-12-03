@@ -8,6 +8,7 @@ struct Stats
 {
     int HP, MaxHP, Level, Exp;
     int Vit, Str, Dex, Int;
+    int Stamina=0, MaxStamina=0, Mana=0, MaxMana=0;
     friend std::ostream& operator<<(std::ostream& Out, const Stats& stats);
 };
 

@@ -1,12 +1,13 @@
 #include "Mechanics/Combat.hpp"
 
 #include <cmath>
+#include <ctime>
 
 XrandU64 Combat::Dice;
 
 Combat::Combat()
 {
-    Dice.seed(42);//TODO Seed with time later
+    Dice.seed(static_cast<unsigned long long int>(std::time(nullptr)));
 }
 
 int Combat::CalculateDamage(Stats& Attacker, AttackData& AtkData, Stats& Defender)

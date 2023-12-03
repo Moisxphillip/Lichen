@@ -2,9 +2,13 @@
 #include "Enemy.hpp"
 #include "Dummy.hpp"
 #include "Core/Engine.hpp"
+
 #include <iostream>
+#include <ctime>
 
 #include "TestScene.hpp"
+
+
 
 // TODO delete this once TileSet grid is settled
 const std::vector<std::vector<int>> Grid = {
@@ -180,7 +184,7 @@ Enemy* Enemy::Builder:: Build(){
 // ___________________________________________________________________EnemyIdle___________________________________________________________________
 
 EnemyIdle::EnemyIdle(const StateInfo& Specs):GenericState(Specs){
-    _Randomizer = XrandU64(42);
+    _Randomizer = XrandU64(static_cast<unsigned long long int>(std::time(nullptr)));
     _WanderingTimer.Restart();
     _WanderingInterval = _Randomizer.gen()%MAX_WANDERING_INTERVAL+1;
 }
@@ -240,10 +244,8 @@ void EnemyPursuit::PhysicsUpdate(StateMachine& Sm, float Dt){
                                             );
         for(auto p : path)
         {
-            // std::cout  << p.x  << ' ' << p.y << '\n';//TODO REMOVE
             EnemyPath.emplace(Vector2(p.x*GridWidthSize+(GridWidthSize/2),p.y*GridHeightSize+(GridHeightSize/2)));
         }
-        // std::cout <<path.size()<< '\n';//TODO REMOVE
 
         if(Dummy::Self != nullptr && path.size() > 0) //shouldn't follow if there's no valid path
         {
