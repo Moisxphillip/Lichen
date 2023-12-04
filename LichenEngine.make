@@ -114,6 +114,8 @@ GENERATED += $(OBJDIR)/Generic.o
 GENERATED += $(OBJDIR)/Image.o
 GENERATED += $(OBJDIR)/IndexBuffer.o
 GENERATED += $(OBJDIR)/Input.o
+GENERATED += $(OBJDIR)/Inventory.o
+GENERATED += $(OBJDIR)/Item.o
 GENERATED += $(OBJDIR)/JsonParser.o
 GENERATED += $(OBJDIR)/LoopSprite.o
 GENERATED += $(OBJDIR)/MainGame.o
@@ -201,6 +203,8 @@ OBJECTS += $(OBJDIR)/Generic.o
 OBJECTS += $(OBJDIR)/Image.o
 OBJECTS += $(OBJDIR)/IndexBuffer.o
 OBJECTS += $(OBJDIR)/Input.o
+OBJECTS += $(OBJDIR)/Inventory.o
+OBJECTS += $(OBJDIR)/Item.o
 OBJECTS += $(OBJDIR)/JsonParser.o
 OBJECTS += $(OBJDIR)/LoopSprite.o
 OBJECTS += $(OBJDIR)/MainGame.o
@@ -508,6 +512,12 @@ $(OBJDIR)/Combat.o: game/src/Mechanics/Combat.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Equipment.o: game/src/Mechanics/Equipment.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Inventory.o: game/src/Mechanics/Inventory.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Item.o: game/src/Mechanics/Item.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Critter.o: game/src/Npc/Critter.cpp

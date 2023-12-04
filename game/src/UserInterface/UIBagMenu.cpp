@@ -1,24 +1,25 @@
 #include "UserInterface/UIBagMenu.hpp"
+#include "UserInterface/UIBagMenu.hpp"
 #include "Core/Input.hpp"
 #include <iostream>
 
   
   
-UIBagButton::UIBagButton(GameObject& Parent, UIController& Controller, Vector2 Position):UIComponent(Parent, Controller, Position),_IsOpened(false){}
+UIBagButton::UIBagButton(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position):UIComponent(ParentComponent, Position),_IsOpened(false){}
 
 void UIBagButton::Start(){
     LoadImage("res/img/UI/mochilaui.png");
 }
 
 void UIBagButton::OnRelease(Vector2 EventPos){
-    auto Bag = Controller.GetComponentByClass("#Bag");
+    auto Bag = UIController::CurrentUI->GetComponentByClass("#Bag");
     if (!Bag.expired())
     {
         Bag.lock().get()->Close();
     }
     else
     {
-        Controller.AddComponent(new UIBag(Parent, Controller, UIBag::LastBagRelativePosition, {"#Bag"}));
+        UIController::CurrentUI->AddComponent(new UIBag({}, UIBag::LastBagRelativePosition, {"#Bag"}));
     }
 }
 
@@ -26,13 +27,13 @@ void UIBagButton::OnRelease(Vector2 EventPos){
 
 Vector2 UIBag::LastBagRelativePosition = Vector2(600,100);
 
-UIBag::UIBag(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes):UIGroupComponent(Parent, Controller, Position, Classes){}
+UIBag::UIBag(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes):UIGroupComponent(ParentComponent, Position, Classes){}
 
-void UIBag::Start()
+void UIBag::GroupStart()
 {
     LoadImage("res/img/UI/bag.png");
-    AddComponent(new UIMoveHolder(Parent, Controller, Vector2(0,0), {}, weak_from_this()));
-    AddComponent(new UIBagClose(Parent, Controller, RelativePosition+Vector2(220,5), {"#Close"}));
+    AddComponent(new UIMoveHolder(weak_from_this(), Vector2(0,0), {}));
+    AddComponent(new UIBagClose(weak_from_this(), Vector2(220,5), {"#Close"}));
 }
 
 void UIBag::Close()
@@ -43,16 +44,11 @@ void UIBag::Close()
 
 void UIBag::OnRightClick(Vector2 EventPos)
 {
-    Controller.AddComponent(new UIItenOptions(Parent,Controller, EventPos-Camera::Position(), {}));
+    UIController::CurrentUI->AddComponent(new UIItenOptions({}, EventPos-Camera::Position(), {}));
 }
 
-void UIBag::LateUpdate(float Dt)
+void UIBag::OnLateUpdate(Vector2 EventPos, float Dt)
 {
-    for(auto Component : _UIComponents)
-    {
-        Component->LateUpdate(Dt);
-    }
-
     for (auto Component = begin(_UIComponents); Component != end(_UIComponents); ++Component)
     {
         if ((*Component)->ShouldBeClosed() && (*Component)->HasClass("#Close"))
@@ -63,9 +59,40 @@ void UIBag::LateUpdate(float Dt)
     }
 }
 
+// std::vector<std::map<Vector2, UIItem*>> InventorySlots;
+bool UIBag::StoreAtSlot(UIItem* Item, Vector2 EventPos)
+{
+    // for(auto Row : InventorySlots)
+    // {
+    //     for(auto Column : Row)
+    //     {
+    //         if(Rectangle(Column.first.x, Column.first.y, SLOT_WIDTH, SLOT_HEIGHT).Contains(EventPos))
+    //         {
+    //             if(Column.second == nullptr)
+    //             {
+    //                 // Inventory->StoreAt();
+    //                 // Item->RelativePosition = Column.first;
+    //                 return true;
+    //             }
+    //             else 
+    //             {
+    //                 // Item* =  Inventory->RemoveAt();
+    //                 // Inventory->StoreAt(Item->BaseItem);
+
+    //                 // Inventory->StoreAt();
+    //                 return true;
+    //             }
+                
+    //         }
+    //     }
+    // }
+    // return false;
+}
+
+
 //________________________________________________________#UIBagClose________________________________________________________
 
-UIBagClose::UIBagClose(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes):UIComponent(Parent, Controller, Position, Classes){}
+UIBagClose::UIBagClose(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes):UIComponent(ParentComponent, Position, Classes){}
 
 void UIBagClose::Start()
 {
@@ -79,37 +106,21 @@ void UIBagClose::OnClick(Vector2 EventPos)
 
 //________________________________________________________#UIItenOptions________________________________________________________
 
-UIItenOptions::UIItenOptions(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes):UIGroupComponent(Parent, Controller, Position, Classes){}
+UIItenOptions::UIItenOptions(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes):UIGroupComponent(ParentComponent, Position, Classes){}
 
-void UIItenOptions::Start()
+void UIItenOptions::GroupStart()
 {
-    AddComponent(new UIItenOptionUse(Parent, Controller, RelativePosition, {}));
-    AddComponent(new UIItenOptionThrow(Parent, Controller, RelativePosition+Vector2(0,20), {}));
+    AddComponent(new UIItenOptionUse(weak_from_this(), Vector2(0,0), {}));
+    AddComponent(new UIItenOptionThrow(weak_from_this(), Vector2(0,20), {}));
     Width=232;
     Height=40;
 }
 
-bool UIItenOptions::IsInside(Vector2 EventPos)
+void UIItenOptions::OnUpdate(Vector2 EventPos, float Dt)
 {
-
-    if(EventPos.x >= Parent.Box.x+RelativePosition.x-50 &&
-        EventPos.x <Parent.Box.x+RelativePosition.x+50 + Width &&
-        EventPos.y >= Parent.Box.y+RelativePosition.y-50  && 
-        EventPos.y < Parent.Box.y+RelativePosition.y+50 + Height 
-    )
-    {
-        return true;
-    }
-    return false;
-}
-
-void UIItenOptions::Update(float Dt, Vector2 BasePos)
-{
-    UIGroupComponent::Update(Dt, BasePos+RelativePosition);
     Input& InputController = Input::Instance();
 
-
-    if(!IsInside(InputController.MousePosition()))
+    if(!UIComponent::IsInside(InputController.MousePosition(), 50,50))
     {
         Close();
     }
@@ -117,7 +128,7 @@ void UIItenOptions::Update(float Dt, Vector2 BasePos)
 
 //________________________________________________________#UIItenOptionUse________________________________________________________
 
-UIItenOptionUse::UIItenOptionUse(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes):UIComponent(Parent, Controller, Position, Classes){}
+UIItenOptionUse::UIItenOptionUse(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes):UIComponent(ParentComponent, Position, Classes){}
 
 void UIItenOptionUse::Start()
 {
@@ -129,11 +140,9 @@ void UIItenOptionUse::OnHover(Vector2 EventPos)
     UISprite->SetFrame(1);
 }
 
-void UIItenOptionUse::Update(float Dt, Vector2 BasePos)
+void UIItenOptionUse::OnUpdate(Vector2 EventPos, float Dt)
 {
-    UIComponent::Update(Dt, BasePos+RelativePosition);
     Input InputController = Input::Instance();
-
 
     if(!IsInside(InputController.MousePosition()))
     {
@@ -143,19 +152,20 @@ void UIItenOptionUse::Update(float Dt, Vector2 BasePos)
 
 //________________________________________________________#UIItenOptionThrow________________________________________________________
 
-UIItenOptionThrow::UIItenOptionThrow(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes):UIComponent(Parent, Controller, Position, Classes){}
+UIItenOptionThrow::UIItenOptionThrow(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes):UIComponent(ParentComponent, Position, Classes){}
 
-void UIItenOptionThrow::Start(){
+void UIItenOptionThrow::Start()
+{
     LoadImage("res/img/UI/descartarui.png", 2, 2, 1);
 }
 
-void UIItenOptionThrow::OnHover(Vector2 EventPos){
+void UIItenOptionThrow::OnHover(Vector2 EventPos)
+{
     UISprite->SetFrame(1);
 }
 
-void UIItenOptionThrow::Update(float Dt, Vector2 BasePos)
+void UIItenOptionThrow::OnUpdate(Vector2 EventPos, float Dt)
 {
-    UIComponent::Update(Dt, BasePos+RelativePosition);
     Input InputController = Input::Instance();
 
     if(!IsInside(InputController.MousePosition()))
