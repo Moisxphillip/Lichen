@@ -91,6 +91,7 @@ GENERATED += $(OBJDIR)/Controls.o
 GENERATED += $(OBJDIR)/Critter.o
 GENERATED += $(OBJDIR)/Dialogue.o
 GENERATED += $(OBJDIR)/DialogueDTO.o
+GENERATED += $(OBJDIR)/DistanceTrigger.o
 GENERATED += $(OBJDIR)/Draw.o
 GENERATED += $(OBJDIR)/Dummy.o
 GENERATED += $(OBJDIR)/ElementLoader.o
@@ -172,6 +173,7 @@ OBJECTS += $(OBJDIR)/Controls.o
 OBJECTS += $(OBJDIR)/Critter.o
 OBJECTS += $(OBJDIR)/Dialogue.o
 OBJECTS += $(OBJDIR)/DialogueDTO.o
+OBJECTS += $(OBJDIR)/DistanceTrigger.o
 OBJECTS += $(OBJDIR)/Draw.o
 OBJECTS += $(OBJDIR)/Dummy.o
 OBJECTS += $(OBJDIR)/ElementLoader.o
@@ -508,6 +510,9 @@ $(OBJDIR)/TestScene.o: game/src/TestScene.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Controls.o: game/src/Tools/Controls.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/DistanceTrigger.o: game/src/Tools/DistanceTrigger.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/ElementLoader.o: game/src/Tools/ElementLoader.cpp

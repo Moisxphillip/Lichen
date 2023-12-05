@@ -10,7 +10,7 @@ int main (int argc, char** argv)
 {
     // TitleScene* Begin = new TitleScene(); //Penguin
     Test01* Begin = new Test01();//Tests
-    Engine::Instance().Push(Begin);
+    Engine::Instance("Give It Back!", 1280, 720, 1280, 720, false).Push(Begin);
     Engine::Instance().Run();
 
     return 0;    

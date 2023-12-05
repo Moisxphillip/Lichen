@@ -14,6 +14,7 @@ class Slime : public StateMachine
     private:
 
     public:
+        static int EnemyCount;
         Stats MyStats;
         AACircle* MyCollider;
         Slime(GameObject& Parent, std::string Label = "Slime");
@@ -38,11 +39,14 @@ class SlimeIdle : public GenericState
 class SlimeWalk : public GenericState
 {
     private:
+        Timer _SearchPath;
+        bool _UpdateTime;
         std::queue<Vector2> Path;
     public:
         SlimeWalk(const StateInfo& Specs);
         void Start();
         void PhysicsUpdate(StateMachine& Sm, float Dt);
+        void Update(StateMachine& Sm, float Dt);
 };
 
 //Hurt state

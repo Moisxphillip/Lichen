@@ -9,13 +9,6 @@
 #include "TestScene.hpp"
 
 
-
-// TODO delete this once TileSet grid is settled
-const std::vector<std::vector<int>> Grid = {
-        {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0} , {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0} , {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0}, {0,0,0,0,0,0,0,0,0,0}
-    };
-// int GridWidth = 4;
-// int GridHeight = 4;
 int GridWidthSize = 64;
 int GridHeightSize = 64;
 
@@ -211,7 +204,7 @@ void EnemyIdle::GenerateRandomInterval(){
 // ___________________________________________________________________EnemyWalk___________________________________________________________________
 
 EnemyWalk::EnemyWalk(const StateInfo& Specs):GenericState(Specs), Collided(false){
-    _Randomizer = XrandU64(42);
+    _Randomizer = XrandU64(XrandU64(static_cast<unsigned long long int>(std::time(nullptr))));
     GenerateRandomDistance();
 }
 

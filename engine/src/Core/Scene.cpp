@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "Core/Scene.hpp"
+#include "Math/Physics.hpp"
 
 Scene::Scene()
 {
@@ -75,6 +76,44 @@ void Scene::SceneStart()
 void Scene::ScenePhysicsUpdate(float Dt)
 {
 	PhysicsUpdate(Dt);
+
+	//Collision detection
+	for(int i = 0; i< (int)SceneGameObjects.size()-1; i++)
+	{
+		if(!SceneGameObjects[i]->Contains(ComponentType::AACollider))
+		{
+			continue;
+		}
+
+		AACollider* ColA = (AACollider*)SceneGameObjects[i]->GetComponent(ComponentType::AACollider);
+		if(!ColA->Active)
+		{
+			continue;
+		}
+		for(int j = i+1; j < (int)SceneGameObjects.size(); j++)
+		{
+			if(!SceneGameObjects[j]->Contains(ComponentType::AACollider)  
+				 ||(((SceneGameObjects[i]->Represents & SceneGameObjects[j]->Interacts) //Activate once object masks are being used
+				| (SceneGameObjects[j]->Represents & SceneGameObjects[i]->Interacts)) == CollisionMask::None) 
+                )
+			{
+				continue;
+			}
+
+			AACollider* ColB = (AACollider*)SceneGameObjects[j]->GetComponent(ComponentType::AACollider);
+            if(!ColB->Active)
+            {
+                continue;
+            }
+			if((Physics::CheckCollision(*ColA, *ColB)))
+			{
+                Physics::ResolveCollision(*ColA, *ColB);
+				SceneGameObjects[i]->OnCollision(*SceneGameObjects[j]);
+				SceneGameObjects[j]->OnCollision(*SceneGameObjects[i]);
+			}
+		}
+	}
+
 	//Engine Object Updates
 	for(int i = 0; i< (int)(SceneGameObjects.size()); i++)
 	{

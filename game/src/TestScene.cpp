@@ -22,6 +22,7 @@
 #include "EnemyFactory.hpp"
 #include "Character/Player.hpp"
 #include "Tools/LoopSprite.hpp"
+#include "Tools/DistanceTrigger.hpp"
 
 std::vector<std::vector<int>>* Test01::CollisionMap = nullptr;
 
@@ -83,68 +84,87 @@ void Test01::LoadAssets()
     
     AddGameObj(enemyObj);
 
-    //Testing map
+    //Testing map V2
     GameObject* Tiles = new GameObject(-5);
     Tiles->Depth = DepthMode::Background;
     TileSet* Tset = new TileSet(64,64, "./res/img/Tiles/Ground.png");
-    TileMap* Map = new TileMap(*Tiles, "./res/map/v1/mapa_v1_ground",Tset);
+    TileMap* Map = new TileMap(*Tiles, "./res/map/v2/mapa_v2_ground",Tset);
     Tiles->AddComponent(Map);
     AddGameObj(Tiles);
 
     Tiles = new GameObject(-4);
     Tiles->Depth = DepthMode::Background;
     Tset = new TileSet(64,64, "./res/img/Tiles/AboveGround.png");
-    Map = new TileMap(*Tiles, "./res/map/v1/mapa_v1_AboveGround",Tset);
+    Map = new TileMap(*Tiles, "./res/map/v2/mapa_v2_AboveGround",Tset);
+    Tiles->AddComponent(Map);
+    AddGameObj(Tiles);
+    
+    Tiles = new GameObject(-3);
+    Tiles->Depth = DepthMode::Background;
+    Tset = new TileSet(64,64, "./res/img/Tiles/Ground.png");
+    Map = new TileMap(*Tiles, "./res/map/v2/mapa_v2_shadow",Tset);
     Tiles->AddComponent(Map);
     AddGameObj(Tiles);
 
     Tiles = new GameObject(-4);
     Tiles->Depth = DepthMode::Foreground;
     Tset = new TileSet(64,64, "./res/img/Tiles/AboveGround.png");
-    Map = new TileMap(*Tiles, "./res/map/v1/mapa_v1_AbovePlayer",Tset);
+    Map = new TileMap(*Tiles, "./res/map/v2/mapa_v2_AbovePlayer",Tset);
     Tiles->AddComponent(Map);
     AddGameObj(Tiles);
 
     Tiles = new GameObject(-3);
     Tiles->Depth = DepthMode::Foreground;
     Tset = new TileSet(64,64, "./res/img/Tiles/AboveGround.png");
-    Map = new TileMap(*Tiles, "./res/map/v1/mapa_v1_AbovePlayer2",Tset);
+    Map = new TileMap(*Tiles, "./res/map/v2/mapa_v2_AbovePlayer2",Tset);
     Tiles->AddComponent(Map);
     AddGameObj(Tiles);
 
     Tiles = new GameObject(100);
     Tiles->Depth = DepthMode::Foreground;
     Tset = new TileSet(64,64, "./res/img/Tiles/Ground.png");
-    Map = new TileMap(*Tiles, "./res/map/v1/mapa_v1_collision",Tset);
-    Map->LoadCollision("./res/map/v1/mapa_v1");
+    Map = new TileMap(*Tiles, "./res/map/v2/mapa_v2_collision",Tset);
+    Map->LoadCollision("./res/map/v2/mapa_v2");
     Map->Enabled = false;
     CollisionMap = &(Map->_TileMatrix);
     Tiles->AddComponent(Map);
     AddGameObj(Tiles);
 
-    // //Testing map
-    // GameObject* Tiles = new GameObject();
+    // //Testing map V1
+    // GameObject* Tiles = new GameObject(-5);
     // Tiles->Depth = DepthMode::Background;
-
-    // TileSet* Tset = new TileSet(64,64, "./res/img/Tiles/PradoSet.png");
-    // TileMap* Map = new TileMap(*Tiles, "./res/map/pradomap_ground",Tset);
-    
-    // // TileSet* Tset = new TileSet(64,64, "./res/img/testSet.png");
-    // // TileMap* Map = new TileMap(*Tiles, "./res/map/Tests_Floor",Tset);
+    // TileSet* Tset = new TileSet(64,64, "./res/img/Tiles/Ground.png");
+    // TileMap* Map = new TileMap(*Tiles, "./res/map/v1/mapa_v1_ground",Tset);
     // Tiles->AddComponent(Map);
     // AddGameObj(Tiles);
 
-    // Tiles = new GameObject(1);
+    // Tiles = new GameObject(-4);
     // Tiles->Depth = DepthMode::Background;
-    
-    // Tset = new TileSet(64,64, "./res/img/Tiles/PradoSet.png");
-    // Map = new TileMap(*Tiles, "./res/map/pradomap_collision",Tset);
-    // Map->LoadCollision("./res/map/pradomap_collision");
-    // Map->Enabled = false;
+    // Tset = new TileSet(64,64, "./res/img/Tiles/AboveGround.png");
+    // Map = new TileMap(*Tiles, "./res/map/v1/mapa_v1_AboveGround",Tset);
+    // Tiles->AddComponent(Map);
+    // AddGameObj(Tiles);
 
-    // // Tset = new TileSet(64,64, "./res/img/testSet.png");
-    // // Map = new TileMap(*Tiles, "./res/map/Tests_Rocks",Tset);
-    // // Map->LoadCollision("./res/map/Test_Rocks");
+    // Tiles = new GameObject(-4);
+    // Tiles->Depth = DepthMode::Foreground;
+    // Tset = new TileSet(64,64, "./res/img/Tiles/AboveGround.png");
+    // Map = new TileMap(*Tiles, "./res/map/v1/mapa_v1_AbovePlayer",Tset);
+    // Tiles->AddComponent(Map);
+    // AddGameObj(Tiles);
+
+    // Tiles = new GameObject(-3);
+    // Tiles->Depth = DepthMode::Foreground;
+    // Tset = new TileSet(64,64, "./res/img/Tiles/AboveGround.png");
+    // Map = new TileMap(*Tiles, "./res/map/v1/mapa_v1_AbovePlayer2",Tset);
+    // Tiles->AddComponent(Map);
+    // AddGameObj(Tiles);
+
+    // Tiles = new GameObject(100);
+    // Tiles->Depth = DepthMode::Foreground;
+    // Tset = new TileSet(64,64, "./res/img/Tiles/Ground.png");
+    // Map = new TileMap(*Tiles, "./res/map/v1/mapa_v1_collision",Tset);
+    // Map->LoadCollision("./res/map/v1/mapa_v1");
+    // Map->Enabled = false;
     // CollisionMap = &(Map->_TileMatrix);
     // Tiles->AddComponent(Map);
     // AddGameObj(Tiles);
@@ -170,7 +190,17 @@ void Test01::LoadAssets()
     Sd->Pan = true;
     Sd->Play(100);
     Snd->AddComponent(Sd);
-    Snd->AddComponent(new Sprite(*Snd, "./res/galor.png"));
+    Sprite* Sprt = new Sprite(*Snd, "./res/galor.png");
+    Snd->AddComponent(Sprt);
+    DistanceTrigger* Dt = new DistanceTrigger(*Snd, Sprt, 400);
+    // DistanceTrigger* Dt = new DistanceTrigger(*Snd, Sd, 400, DistTriggerMode::Custom);
+    // Dt->SetOnActivation(
+    //     [Sd](){Sd->Play();}
+    // );
+    // Dt->SetOnInactivation(
+    //     [Sd](){Sd->Stop();}
+    // );
+    Snd->AddComponent(Dt);
     AddGameObj(Snd);
     
     
@@ -188,33 +218,7 @@ void Test01::LoadAssets()
 void Test01::PhysicsUpdate(float Dt)
 {    
     //TODO transfer to appropriate place, add the masks to it
-	for(int i = 0; i< (int)SceneGameObjects.size()-1; i++)
-	{
-		if(!SceneGameObjects[i]->Contains(ComponentType::AACollider))
-		{
-			continue;
-		}
 
-		AACollider* ColA = (AACollider*)SceneGameObjects[i]->GetComponent(ComponentType::AACollider);
-		for(int j = i+1; j < (int)SceneGameObjects.size(); j++)
-		{
-			if(!SceneGameObjects[j]->Contains(ComponentType::AACollider)  
-				 ||(((SceneGameObjects[i]->Represents & SceneGameObjects[j]->Interacts) //Activate once object masks are being used
-				| (SceneGameObjects[j]->Represents & SceneGameObjects[i]->Interacts)) == CollisionMask::None) 
-                )
-			{
-				continue;
-			}
-
-			AACollider* ColB = (AACollider*)SceneGameObjects[j]->GetComponent(ComponentType::AACollider);
-			if((Physics::CheckCollision(*ColA, *ColB)))
-			{
-                Physics::ResolveCollision(*ColA, *ColB);
-				SceneGameObjects[i]->OnCollision(*SceneGameObjects[j]);
-				SceneGameObjects[j]->OnCollision(*SceneGameObjects[i]);
-			}
-		}
-	}
 }
 int _Type = 0;
 

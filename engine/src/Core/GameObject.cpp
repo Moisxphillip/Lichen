@@ -47,7 +47,10 @@ void GameObject::PhysicsUpdate(float Dt)
 {
     for (int i = 0; i < (int)(_GameObjComponents.size()); i++)
     {
-        _GameObjComponents[i]->PhysicsUpdate(Dt);//Calls update from each component belonging to this GameObject
+        if(_GameObjComponents[i]->Active)
+        {
+            _GameObjComponents[i]->PhysicsUpdate(Dt);//Calls update from each component belonging to this GameObject
+        }
     }
 }
 
@@ -55,7 +58,10 @@ void GameObject::Update(float Dt)
 {
     for (int i = 0; i < (int)(_GameObjComponents.size()); i++)
     {
-        _GameObjComponents[i]->Update(Dt);//Calls update from each component belonging to this GameObject
+        if(_GameObjComponents[i]->Active)
+        {
+            _GameObjComponents[i]->Update(Dt);//Calls update from each component belonging to this GameObject
+        }
     }
 }
 
@@ -63,7 +69,10 @@ void GameObject::LateUpdate(float Dt)
 {
     for (int i = 0; i < (int)(_GameObjComponents.size()); i++)
     {
-        _GameObjComponents[i]->LateUpdate(Dt);//Calls update from each component belonging to this GameObject
+        if(_GameObjComponents[i]->Active)
+        {
+            _GameObjComponents[i]->LateUpdate(Dt);//Calls update from each component belonging to this GameObject
+        }
     }
 
     if(Angle< -M_PI || Angle >float(M_PI))//Wrapper for avoiding unlimited growth
@@ -76,7 +85,10 @@ void GameObject::OnCollision(GameObject& Other)
 {
     for(int i = 0; i < (int)(_GameObjComponents.size()); i++)
     {
-        _GameObjComponents[i]->OnCollision(Other);
+        if(_GameObjComponents[i]->Active)
+        {
+            _GameObjComponents[i]->OnCollision(Other);
+        }
     }
 }
 
@@ -84,7 +96,10 @@ void GameObject::Render()
 {
     for (int i = 0; i < (int)(_GameObjComponents.size()); i++)
     {
-        _GameObjComponents[i]->Render();//Call render for each component belonging to this GameObject
+         if(_GameObjComponents[i]->Active)
+        {
+            _GameObjComponents[i]->Render();//Call render for each component belonging to this GameObject
+        }
     }
 }
 

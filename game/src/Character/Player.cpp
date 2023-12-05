@@ -24,7 +24,7 @@
 #define PLAYER_DEFAULT_FRICTION 0.1f
 #define PLAYER_DEFAULT_INVULNERABILITY 1.5f
 
-Player* Player::Self;
+Player* Player::Self = nullptr;
 
 Player::Player(GameObject& Parent, std::string Label)
 : StateMachine(Parent, Label)

@@ -4,6 +4,7 @@ Component::Component(GameObject& GameObj)
 : Parent(GameObj)
 {
     _Type = ComponentType::None;
+    Active = true;
 }
 
 Component::~Component()

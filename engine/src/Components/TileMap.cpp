@@ -362,6 +362,7 @@ void TileMap::_CoordOptimizer(std::vector<RectInt>& Coords)
     }
 }
 
+#include "Tools/DistanceTrigger.hpp"
 void TileMap::LoadCollision(std::string fileName)
 {    
     int HashResult = _Hash(_TileMatrix);
@@ -388,6 +389,7 @@ void TileMap::LoadCollision(std::string fileName)
         ColliderObj->Depth = Parent.Depth;
         AARectangle *TileCollider = new AARectangle(*ColliderObj, ColliderKind::Stationary, Rectangle(Block[i].x*_CurrTileSet->GetTileWidth(), Block[i].y*_CurrTileSet->GetTileHeight(),
             Block[i].w*_CurrTileSet->GetTileWidth(), Block[i].h*_CurrTileSet->GetTileHeight()));
+        ColliderObj->AddComponent(new DistanceTrigger(*ColliderObj, TileCollider, 1000));
         ColliderObj->AddComponent(TileCollider);
         ColliderObj->Represents = CollisionMask::Terrain;
         ColliderObj->Box = Rectangle(Block[i].x*_CurrTileSet->GetTileWidth(), Block[i].y*_CurrTileSet->GetTileHeight(),

@@ -9,6 +9,7 @@ class Component
     protected:
         ComponentType _Type;
     public:
+        bool Active;
         GameObject& Parent;
         Component(GameObject& Parent);
         virtual ~Component();

@@ -5,7 +5,7 @@
 
 #include <algorithm>
 
-float Sound::_EarDistance = 256;
+float Sound::_EarDistance = 256.0f;
 float Sound::_LMaxRadius = 800.0f;
 float Sound::_LMinRadius = 180.0f / _LMaxRadius;
 float Sound::_MaxRadius = _LMaxRadius * _LMaxRadius;
@@ -83,10 +83,6 @@ bool Sound::IsPlaying()
 
 void Sound::SetVolume(int Volume)
 {
-    if(Pan)
-    {
-        Error("Sound::SetVolume: Trying to set volume on an automatic Pan object");
-    }
     _SoundVolume = std::clamp(Volume, 0, 255);
 }
 
@@ -110,7 +106,7 @@ void Sound::_SoundPosition()
     float SqDistR = std::pow(Parent.Box.Center().x - Pos.x + _EarDistance/2, 2) + std::pow(Parent.Box.Center().y - Pos.y, 2);
     float LVol = std::max(std::min(-SqDistL/_MaxRadius + 1 + _MinRadius, 1.f),0.f);
     float RVol = std::max(std::min(-SqDistR/_MaxRadius + 1 + _MinRadius, 1.f),0.f);
-    Mix_SetPanning(_SoundChannel,(int)(RVol*255), (int)(LVol*255));
+    Mix_SetPanning(_SoundChannel,(int)(RVol*_SoundVolume), (int)(LVol*_SoundVolume));
 }
 
 //Inheritance Functions
