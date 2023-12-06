@@ -12,7 +12,10 @@
 class Slime : public StateMachine
 {
     private:
-
+        Timer _HitCooldown;
+        float _FlickTime;
+        bool _Flick;
+        
     public:
         static int EnemyCount;
         Stats MyStats;
@@ -21,6 +24,7 @@ class Slime : public StateMachine
         ~Slime();
         void MoveTo(Vector2 Destiny, float Dt);
         void SMStart();
+        void SMUpdate(float Dt);
         void SMOnCollision(GameObject& Other);
         Vector2 Target;
 };

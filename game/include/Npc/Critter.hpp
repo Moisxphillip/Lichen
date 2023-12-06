@@ -7,6 +7,7 @@
 
 
 
+//-------------------------------------------Bird----------------------------------------------
 class Bird : public StateMachine
 {
     private:
@@ -54,6 +55,44 @@ class BirdPeck : public GenericState
         void Start();
         void Update(StateMachine& Sm, float Dt);
 };
+
+
+
+//-------------------------------------------Worm----------------------------------------------
+class Worm : public StateMachine
+{
+    private:
+
+    public:
+        Worm(GameObject& Parent, std::string Label = "Worm");
+        ~Worm();
+        void SMStart();
+};
+
+//-------------------------------------------States----------------------------------------------
+
+//Idle
+class WormIdle : public GenericState
+{
+    private:
+
+    public:
+        WormIdle(const StateInfo& Specs);
+        void Start();
+        void Update(StateMachine& Sm, float Dt);
+};
+
+//Fly
+class WormFlee : public GenericState
+{
+    private:
+        Vector2 _Direction;
+        bool _Init;
+    public:
+        WormFlee(const StateInfo& Specs);
+        void Update(StateMachine& Sm, float Dt);
+};
+
 
 
 #endif//GAME_CRITTER

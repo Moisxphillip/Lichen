@@ -17,6 +17,8 @@
 
 int Slime::EnemyCount = 0;
 
+#define ENEMY_DEFAULT_INVULNERABILITY 0.6f
+
 Slime::Slime(GameObject& Parent, std::string Label)
 : StateMachine(Parent, Label)
 {
@@ -25,6 +27,10 @@ Slime::Slime(GameObject& Parent, std::string Label)
     Parent.Interacts = PLAYER_MASK | ENEMY_MASK | CollisionMask::Terrain;
     MyStats = Stats{100, 100, 1, 0, 5, 5, 5, 5, 0, 0, 0, 0};
     EnemyCount++;
+    _HitCooldown.SetLimit(ENEMY_DEFAULT_INVULNERABILITY);
+    _HitCooldown.Update(ENEMY_DEFAULT_INVULNERABILITY);
+    _FlickTime = 0.0f;
+    _Flick = false;
 }
 
 #include "Mechanics/Equipment.hpp"
@@ -61,6 +67,38 @@ void Slime::SMStart()
     SI = {SLIME_HURT, 24, 1, 0.0f, false, true};
     AddState(SLIME_HURT, new SlimeHurt(SI));
 }
+
+
+void Slime::SMUpdate(float Dt)
+{
+    if(!_HitCooldown.Finished())
+    {
+        _HitCooldown.Update(Dt);
+        if(_HitCooldown.Get() > _FlickTime)
+        {
+            _FlickTime+=0.2f;
+            if(!_Flick)
+            {
+                _Sections[0].get()->SetAddColor(Color("#ffffff"));
+                _Flick = true;
+            }
+            else
+            {
+                _Sections[0].get()->SetAddColor(Color("#000000"));
+                _Flick = false;
+            }
+        }
+        
+        if (_HitCooldown.Finished())
+        {
+            _Sections[0].get()->SetAddColor(Color("#000000"));
+            _Flick = false;
+            _FlickTime = 0.0f;
+        }
+    }    
+}
+
+
 #include "Definitions.hpp"
 void Slime::SMOnCollision(GameObject& Other)
 {
@@ -85,7 +123,7 @@ void Slime::SMOnCollision(GameObject& Other)
         SetState(SLIME_HURT);
         MyCollider->ApplyForce(Other.Box.Center().DistVector2(Parent.Box.Center()).Normalized() * Atk->Data.Knockback * 50000);
         MyCollider->SetFriction(0.05f);
-
+        _HitCooldown.Restart();
     }
 }
 
@@ -227,12 +265,12 @@ void SlimeWalk::Update(StateMachine& Sm, float Dt)
 }
 
 //------------------------------HURT------------------------------
-#define HURT_TIME 0.6f
+#define ENEMY_DEFAULT_INVULNERABILITY 0.6f
 
 SlimeHurt::SlimeHurt(const StateInfo& Specs)
 : GenericState(Specs)
 {
-    _HurtTime.SetLimit(HURT_TIME);
+    _HurtTime.SetLimit(ENEMY_DEFAULT_INVULNERABILITY);
 }
 
 

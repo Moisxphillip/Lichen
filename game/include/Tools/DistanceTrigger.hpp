@@ -7,6 +7,7 @@
 enum class DistTriggerMode
 {
     Disable,
+    Enable,
     Delete,
     Custom,
 };

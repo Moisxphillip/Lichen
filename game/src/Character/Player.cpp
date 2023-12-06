@@ -36,7 +36,7 @@ Player::Player(GameObject& Parent, std::string Label)
     MyCollider = nullptr;
     Self = this;
     _HitCooldown.SetLimit(PLAYER_DEFAULT_INVULNERABILITY);
-    _HitCooldown.Restart();
+    _HitCooldown.Update(PLAYER_DEFAULT_INVULNERABILITY);
 }
 
 Player::~Player()
@@ -98,8 +98,6 @@ bool Flick = false;
 float FlickTime = 0.0f;
 void Player::SMUpdate(float Dt)
 {   
-    Input& Ip = Input::Instance();
-    
     if(!_HitCooldown.Finished())
     {
         _HitCooldown.Update(Dt);
@@ -125,15 +123,6 @@ void Player::SMUpdate(float Dt)
             FlickTime = 0.0f;
         }
     }
-
-    if(Ip.MouseJustPressed(MouseButton::Middle))
-    {
-        GameObject* birb = new GameObject();
-        birb->AddComponent(new Bird(*birb));
-        birb->Box.SetCenter(Ip.MousePosition());
-        Engine::Instance().CurrentScene().AddGameObj(birb);
-    }
-    
 }
 
 #define KNOCKBACK 60000

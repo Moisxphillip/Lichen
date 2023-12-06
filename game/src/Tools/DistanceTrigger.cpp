@@ -51,6 +51,19 @@ void DistanceTrigger::Update(float Dt)
                 _Active = false;
             }
             break;
+        
+        case DistTriggerMode::Enable:
+            if(!_Active && _OnBounds())
+            {
+                _Subject->Active = false;
+                _Active = true;
+            }
+            else if (_Active && !_OnBounds())
+            {
+                _Subject->Active = true;
+                _Active = false;
+            }
+            break;
 
         case DistTriggerMode::Delete:
             if(!_OnBounds())
@@ -62,19 +75,19 @@ void DistanceTrigger::Update(float Dt)
         case DistTriggerMode::Custom:
             if(!_Active && _OnBounds())
             {
+                _Active = true;
                 if(_OnActive)
                 {
                     _OnActive();
                 }
-                _Active = true;
             }
             else if (_Active && !_OnBounds())
             {
+                _Active = false;
                 if(_OnInactive)
                 {
                     _OnInactive();
                 }
-                _Active = false;
             }
             break;
 
