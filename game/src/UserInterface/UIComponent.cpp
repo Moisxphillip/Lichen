@@ -7,7 +7,8 @@ UIComponent::UIComponent(std::weak_ptr<UIComponent> ParentComponent, Vector2 Pos
     RelativePosition(Position), 
     IsActive(true), 
     UISprite(nullptr), 
-    UIText(nullptr) {}
+    UIText(nullptr),
+    WantsFocus(false) {}
 
 UIComponent::UIComponent(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes): 
     ParentComponent(ParentComponent),
@@ -15,6 +16,7 @@ UIComponent::UIComponent(std::weak_ptr<UIComponent> ParentComponent, Vector2 Pos
     IsActive(true), 
     UISprite(nullptr), 
     UIText(nullptr), 
+    WantsFocus(false),
     Classes(Classes){}
 
 UIComponent::~UIComponent()
@@ -47,7 +49,6 @@ void UIComponent::Trigger(Vector2 EventPos)
         }
         else
         {
-            std::cout<<"awsdas"<<std::endl;
             OnClick(EventPos);
         }
     }
@@ -88,7 +89,11 @@ void UIComponent::Render()
     {
         UIText->Render(Vector2(AbsolutePosition.x, AbsolutePosition.y));
     }
+
+    ComplementaryRender();
 }
+
+void UIComponent::ComplementaryRender(){}
 
 bool UIComponent::IsInside(Vector2 EventPos)
 {
@@ -326,6 +331,8 @@ void UIGroupComponent::Render(){
     {
         Component->Render();
     }
+
+    UIComponent::ComplementaryRender();
 }
 
 void UIGroupComponent::AddComponent(UIComponent* Component){

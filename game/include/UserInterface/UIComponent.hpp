@@ -12,6 +12,7 @@ class UIComponent: public std::enable_shared_from_this<UIComponent>
 {
 protected:
     bool IsActive;
+    
 
     virtual void OnHover(Vector2 EventPos);
     virtual void OnClick(Vector2 EventPos);
@@ -20,9 +21,10 @@ protected:
     virtual void OnHold(Vector2 EventPos);
     virtual void OnRelease(Vector2 EventPos);
     virtual void OnUpdate(Vector2 EventPos, float Dt);    
-    virtual void OnLateUpdate(Vector2 EventPos, float DT);   
+    virtual void OnLateUpdate(Vector2 EventPos, float Dt);   
 
 public: 
+    bool WantsFocus;
     std::vector<std::string> Classes;
     std::weak_ptr<UIComponent> ParentComponent;
     Vector2 RelativePosition;
@@ -39,6 +41,7 @@ public:
 
     virtual void Start();
     virtual void Render();
+    virtual void ComplementaryRender();
     virtual void Close();
 
     virtual void Update(Vector2 EventPos, float Dt);

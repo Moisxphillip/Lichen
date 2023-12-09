@@ -3,13 +3,52 @@
 
 #define SLOT_WIDTH  50
 #define SLOT_HEIGHT  50
-
+#define INVENTORY_START_WIDTH 4
+#define INVENTORY_START_HEIGHT 232
+#define SLOTS_ROWS 4
+#define SLOTS_COLUMNS 5
 
 
 #include "UserInterface/UIComponent.hpp"
-#include "Core/Camera.hpp"
-#include "UserInterface/UIBasicComponents.hpp"
 #include "UserInterface/UIItem.hpp"
+#include "UserInterface/UIBasicComponents.hpp"
+#include "Core/Camera.hpp"
+
+class UIItem;
+
+struct SlotSpace
+{
+    int Id;
+    UIItem* Item;
+    Vector2 Position;
+    ItemClass SlotType;
+};
+
+class UIItem;
+
+class UIBag : public UIGroupComponent {
+private:
+    std::vector<SlotSpace> EquipSlot;  
+    std::vector<std::vector<SlotSpace>> InventorySlots;
+
+public:
+    static Vector2 LastBagRelativePosition;
+
+    UIBag(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes);
+    ~UIBag();
+
+    void GroupStart();
+    void Close();
+    void OnLateUpdate(Vector2 EventPos, float Dt);
+    void PlaceAtSlot(SlotSpace& SlotToPlace, UIItem* Item);
+    void RemoveFromSlot(UIItem* Item);
+    
+    bool StoreAtFirstSlot(UIItem* Item);
+    bool Store(UIItem* Item, Vector2 EventPos);
+
+    void ThrowFromSlot(UIItem* Item);
+    SlotSpace& GetSlot(int SlotNumber);
+};
 
 class UIBagButton : public UIComponent {
 private:
@@ -24,22 +63,6 @@ public:
 
 };
 
-class UIBag : public UIGroupComponent {
-private:
-    // std::vector<std::map<Vector2, UIItem*>> InventorySlots;
-
-public:
-    static Vector2 LastBagRelativePosition;
-
-    UIBag(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes);
-
-    void GroupStart();
-    void Close();
-    void OnRightClick(Vector2 EventPos);
-    void OnLateUpdate(Vector2 EventPos, float Dt);
-
-    bool StoreAtSlot(UIItem* Item, Vector2 EventPos);
-};
 
 class UIBagClose : public UIComponent {
 public:
@@ -48,35 +71,6 @@ public:
     void OnClick(Vector2 EventPos);
 };
 
-class UIItenOptions: public UIGroupComponent {
-public:
-    UIItenOptions(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes);
-    void GroupStart();
-    void OnUpdate(Vector2 EventPos, float Dt);
-};
-
-class UIItenOptionUse: public UIComponent 
-{
-public:
-    UIItenOptionUse(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes);
-    void Start();
-    void OnHover(Vector2 EventPos);
-    void OnUpdate(Vector2 EventPos, float Dt);
-};
-
-class UIItenOptionThrow: public UIComponent {
-public:
-    UIItenOptionThrow(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes);
-    void Start();
-    void OnHover(Vector2 EventPos);
-    void OnUpdate(Vector2 EventPos, float Dt);
-    
-};
-
-
-// class UIBagItens : public UIGroupComponent {};
-
-// class UIBagItemSpace: public UIComponent {};
 
 // class UIBagEquipmentSpace: public UIComponent {};
 

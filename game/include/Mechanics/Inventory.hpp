@@ -4,20 +4,30 @@
 #include "Mechanics/Item.hpp"
 #include "Components/Component.hpp"
 
+
+
 class Inventory: public Component{
+private:
+    std::vector<std::shared_ptr<Equipment>> _Equiped;
+    std::vector<std::vector<std::shared_ptr<Item>>> _ItemInventory;
+
 public:
-    std::vector<Equipment*> Equiped;
-    std::vector<std::vector<Item*>> ItemInventory;
+    static Inventory* Instance;
 
     Inventory(GameObject& Parent);
+    ~Inventory();
 
     void Start();
+    
+    std::shared_ptr<Item> RemoveAt(int Row, int Column);
+    bool StoreAtFirstEmpty(std::shared_ptr<Item> Item);
+    bool StoreAtFirstEmpty(std::shared_ptr<Item> Item, int& Row, int& Column);
+    void StoreAt(std::shared_ptr<Item>, int Row, int Column);
+    void Equip(std::shared_ptr<Equipment> Equipment);
+    std::shared_ptr<Equipment> DequipFromType(ItemClass Type);
 
-    bool StoreAtFirstEmpty(Item* Item);
-    Item* RemoveAt(int Row, int Column);
-    void StoreAt(Item* Item, int Row, int Column);
-    void EquipAt(Equipment* Equipment, int Idx);
-    Equipment* DequipAt(int Idx);
+    std::vector<std::shared_ptr<Equipment>>& GetEquiped();
+    std::vector<std::vector<std::shared_ptr<Item>>>& GetItemInventory();
 };
 
 #endif

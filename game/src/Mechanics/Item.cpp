@@ -4,7 +4,16 @@
 
 
 Item::Item(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile): 
-    Component(Parent), Name(Name), Description(Description), UISpriteFile(UISpriteFile), ItemSpriteFile(ItemSpriteFile){}
+    Component(Parent), Name(Name), Description(Description), UISpriteFile(UISpriteFile), ItemSpriteFile(ItemSpriteFile), UseText(""), Type(ItemClass::General){}
+
+Item::Item(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile, ItemClass Type): 
+    Component(Parent), Name(Name), Description(Description), UISpriteFile(UISpriteFile), ItemSpriteFile(ItemSpriteFile), UseText(""), Type(Type){}
+
+Item::Item(GameObject& Parent, ItemClass Type): 
+    Component(Parent), Name(""), Description(""), UISpriteFile(""), ItemSpriteFile(""), UseText(""), Type(Type){}
+
+
+Item::~Item(){}
 
 void Item::Start()
 {
@@ -32,17 +41,32 @@ void Item::SetUseText(std::string UseText)
 
 void Item::UseItem(){}
 
+void Item::Throw(){}
+
+bool Item::IsEquipment()
+{
+    return false;
+}
+
 
 // __________________________________________________________________ #Equipment __________________________________________________________________
 
 Equipment::Equipment(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile):Item(Parent, Name, Description, UISpriteFile, ItemSpriteFile){}
 
-Equipment::Equipment(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile, EquipStats Stats):
-    Item(Parent, Name, Description, UISpriteFile, ItemSpriteFile), _Stats(Stats){}
+Equipment::Equipment(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile, EquipStats Stats, ItemClass Type):
+    Item(Parent, Name, Description, UISpriteFile, ItemSpriteFile, Type), _Stats(Stats){}
+
+Equipment::Equipment(GameObject& Parent, ItemClass Type):
+    Item(Parent, Type), _Stats({}){}
 
 void Equipment::UseItem()
 {
     // TODO add stats
+}
+
+bool Equipment::IsEquipment()
+{
+    return true;
 }
 
 void Equipment::OnRemove()

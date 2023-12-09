@@ -3,20 +3,40 @@
 
 #include "UserInterface/UIComponent.hpp"
 
-class UIMoveHolder : public UIComponent {
+class UIMoveParent : public UIGroupComponent {
 private:
     bool _IsHolding;
     Vector2 _ClickOffset;
     std::weak_ptr<UIComponent> _UIToMove;
 
 public:
-    UIMoveHolder(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position,
+    UIMoveParent(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position,
     std::vector<std::string> Classes);
 
-    virtual void Start();
+    virtual void GroupStart();
 
     void OnClick(Vector2 EventPos);
     void OnLateUpdate(Vector2 EventPos, float Dt);
 };
+
+class UIMovable : public UIGroupComponent {
+protected:
+    
+    Vector2 _ClickOffset;
+    std::weak_ptr<UIComponent> _UIToMove;
+
+public:
+    bool IsHolding;
+    UIMovable(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position,
+    std::vector<std::string> Classes);
+
+    virtual void GroupStart();
+
+    virtual void OnClick(Vector2 EventPos);
+    void OnLateUpdate(Vector2 EventPos, float Dt);
+    void HoldToMouse();
+    void FreeFromMouse();
+};
+
 
 #endif
