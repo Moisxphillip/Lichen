@@ -17,7 +17,7 @@
 #include "Components/CameraFollower.hpp"
 #include "Components/Fade.hpp"
 #include "UserInterface/UIController.hpp"
-
+#include "Mechanics/Inventory.hpp"
 #include "Enemy/Slime.hpp"
 #include "EnemyFactory.hpp"
 #include "Character/Player.hpp"
@@ -203,6 +203,10 @@ void Test01::LoadAssets()
     // );
     Snd->AddComponent(Dt);
     AddGameObj(Snd);
+
+    GameObject* Inv = new GameObject();
+    Inv->AddComponent(new Inventory(*Inv));
+    AddGameObj(Inv);
     
     
     GameObject* UI = new GameObject();

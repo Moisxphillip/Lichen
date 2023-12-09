@@ -14,6 +14,8 @@ private:
     std::vector<std::shared_ptr<UIComponent>> UIComponents;
 
 public: 
+    static UIController* CurrentUI;
+
     UIController(GameObject& Parent);
     ~UIController();
 
@@ -31,6 +33,7 @@ public:
     void ShowUI();
     void HideUI();
     void ToggleHideUI();
+    Vector2 Position();
 };
 
 #endif

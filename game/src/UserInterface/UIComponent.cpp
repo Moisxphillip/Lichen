@@ -2,24 +2,21 @@
 #include "Core/Input.hpp"
 #include <algorithm>
 
-UIComponent::UIComponent(GameObject& Parent, UIController& Controller, Vector2 Position): 
-    Component(Parent),
-    Controller(Controller), 
+UIComponent::UIComponent(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position): 
+    ParentComponent(ParentComponent),
     RelativePosition(Position), 
     IsActive(true), 
     UISprite(nullptr), 
-    UIText(nullptr) 
-    {
-        AbsolutePosition = Position;
-    }
+    UIText(nullptr),
+    WantsFocus(false) {}
 
-UIComponent::UIComponent(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes): 
-    Component(Parent),
-    Controller(Controller), 
+UIComponent::UIComponent(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes): 
+    ParentComponent(ParentComponent),
     RelativePosition(Position), 
     IsActive(true), 
     UISprite(nullptr), 
     UIText(nullptr), 
+    WantsFocus(false),
     Classes(Classes){}
 
 UIComponent::~UIComponent()
@@ -28,14 +25,16 @@ UIComponent::~UIComponent()
    delete UIText;
 }
 
-void UIComponent::Start()
+void UIComponent::Start(){}
+
+void UIComponent::Update(Vector2 EventPos, float Dt)
 {
-    AbsolutePosition = RelativePosition;
+    OnUpdate(EventPos, Dt);
 }
 
-void UIComponent::Update(float Dt, Vector2 BasePos)
+void UIComponent::LateUpdate(Vector2 EventPos, float Dt)
 {
-    // AbsolutePosition = Parent.Box.Position() + RelativePosition;
+    OnLateUpdate(EventPos, Dt);
 }
 
 void UIComponent::Trigger(Vector2 EventPos)
@@ -44,23 +43,21 @@ void UIComponent::Trigger(Vector2 EventPos)
 
     if(InputController.MouseJustPressed(MouseButton::Left))
     {
-        OnClick(EventPos);
-    }
-    else if( InputController.MouseJustPressed(MouseButton::Right))
-    {
-        if(InputController.MouseJustReleased(MouseButton::Right))
+        if(InputController.MouseJustReleased(MouseButton::Left))
         {
             OnDoubleClick(EventPos);
         }
         else
         {
-            OnRightClick(EventPos);
+            OnClick(EventPos);
         }
-        
+    }
+    else if( InputController.MouseJustPressed(MouseButton::Right))
+    {
+        OnRightClick(EventPos);
     }
     else if( InputController.MousePressedDown(MouseButton::Left))
     {
-        
         OnHold(EventPos);
     }
     else if(InputController.MouseJustReleased(MouseButton::Left))
@@ -75,19 +72,77 @@ void UIComponent::Trigger(Vector2 EventPos)
 
 void UIComponent::Render()
 {
+    if(!ParentComponent.expired())
+    {
+        AbsolutePosition = ParentComponent.lock()->AbsolutePosition + RelativePosition;
+    } 
+    else
+    {
+        AbsolutePosition = UIController::CurrentUI->Parent.Box.Position() + RelativePosition;
+    }
+
     if(UISprite)
     {
-        UISprite->Render(Parent.Box.x + RelativePosition.x, Parent.Box.y + RelativePosition.y);
+        UISprite->Render(AbsolutePosition.x, AbsolutePosition.y);
     }
     if(UIText)
     {
-        UIText->Render(Vector2(Parent.Box.x + RelativePosition.x, Parent.Box.y + RelativePosition.y));
+        UIText->Render(Vector2(AbsolutePosition.x, AbsolutePosition.y));
     }
+
+    ComplementaryRender();
 }
+
+void UIComponent::ComplementaryRender(){}
 
 bool UIComponent::IsInside(Vector2 EventPos)
 {
-    if(Rectangle(Parent.Box.x + RelativePosition.x,Parent.Box.y + RelativePosition.y, Width, Height).Contains(EventPos))
+    if(!ParentComponent.expired())
+    {
+        AbsolutePosition = ParentComponent.lock()->AbsolutePosition + RelativePosition;
+    } 
+    else
+    {
+        AbsolutePosition = UIController::CurrentUI->Parent.Box.Position() + RelativePosition;
+    }
+
+    if(Rectangle(AbsolutePosition.x, AbsolutePosition.y, Width, Height).Contains(EventPos))
+    {
+        return true;
+    }
+    return false;
+}
+
+bool UIComponent::IsInside(Vector2 EventPos, float OffsetX, float OffsetY)
+{
+    if(!ParentComponent.expired())
+    {
+        AbsolutePosition = ParentComponent.lock()->AbsolutePosition + RelativePosition;
+    } 
+    else
+    {
+        AbsolutePosition = UIController::CurrentUI->Parent.Box.Position() + RelativePosition;
+    }
+
+    if(Rectangle(AbsolutePosition.x - OffsetX, AbsolutePosition.y - OffsetY, Width +OffsetX, Height + OffsetY).Contains(EventPos))
+    {
+        return true;
+    }
+    return false;
+}
+
+bool UIComponent::IsInside(Vector2 EventPos, float OffsetLeft, float OffsetRight, float OffsetTop, float OffsetBottom)
+{
+    if(!ParentComponent.expired())
+    {
+        AbsolutePosition = ParentComponent.lock()->AbsolutePosition + RelativePosition;
+    } 
+    else
+    {
+        AbsolutePosition = UIController::CurrentUI->Parent.Box.Position() + RelativePosition;
+    }
+
+    if(Rectangle(AbsolutePosition.x - OffsetLeft, AbsolutePosition.y - OffsetTop, Width +OffsetRight, Height + OffsetBottom).Contains(EventPos))
     {
         return true;
     }
@@ -97,14 +152,14 @@ bool UIComponent::IsInside(Vector2 EventPos)
 
 void UIComponent::LoadImage(std::string File)
 {
-    UISprite = new Sprite(Parent, File);
+    UISprite = new Sprite(UIController::CurrentUI->Parent, File);
     Width = UISprite->GetWidth();
     Height = UISprite->GetHeight();
 }
 
 void UIComponent::LoadImage(std::string File, int FrameCount, int Columns, int Rows)
 {
-    UISprite = new Sprite(Parent, File, FrameCount, Columns, Rows);
+    UISprite = new Sprite(UIController::CurrentUI->Parent, File, FrameCount, Columns, Rows);
     Width = UISprite->GetWidth();
     Height = UISprite->GetHeight();
 }
@@ -173,36 +228,48 @@ void UIComponent::OnHold(Vector2 EventPos){}
 
 void UIComponent::OnRelease(Vector2 EventPos){}
 
-void UIComponent::OnUpdate(Vector2 EventPos){}
+void UIComponent::OnUpdate(Vector2 EventPos, float Dt){}
 
+void UIComponent::OnLateUpdate(Vector2 EventPos, float Dt){}
 
 
 // __________________________________________________________________UIGroupComponent _________________________________________________________________
 
 
-UIGroupComponent::UIGroupComponent(GameObject& Parent, UIController& Controller, Vector2 Position ):UIComponent(Parent, Controller, Position){}
+UIGroupComponent::UIGroupComponent(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position ):UIComponent(ParentComponent, Position){}
 
-UIGroupComponent::UIGroupComponent(GameObject& Parent,  UIController& Controller, Vector2 Position, std::vector<std::string> Classes):UIComponent(Parent, Controller, Position, Classes){}
+UIGroupComponent::UIGroupComponent(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes):UIComponent(ParentComponent, Position, Classes){}
 
-UIGroupComponent::~UIGroupComponent(){
+UIGroupComponent::~UIGroupComponent()
+{
     for (auto Component = rbegin(this->_UIComponents); Component != rend(this->_UIComponents); ++Component) 
+    {
         (*Component).reset();
-    
+    }
+        
+
     this->_UIComponents.clear();
 }
 
-void UIGroupComponent::Start(){
-    for (auto Component: _UIComponents){
+void UIGroupComponent::Start()
+{
+    GroupStart();
+
+    for (auto Component: _UIComponents)
+    {
         Component->Start();
     }
 }
-// Rectangle(Parent.Box.x + RelativePosition.x,Parent.Box.y + RelativePosition.y, Width, Height).Contains(EventPos)
-void UIGroupComponent::Update(float Dt, Vector2 BasePos){
-    // AbsolutePosition = BasePos + RelativePosition;
 
+void UIGroupComponent::GroupStart(){}
+
+void UIGroupComponent::Update(Vector2 EventPos, float Dt)
+{
+    OnUpdate(EventPos, Dt);
+    
     for (auto Component : _UIComponents)
     {
-        Component->Update(Dt, Component->RelativePosition+ BasePos/* + RelativePosition*/); 
+        Component->Update(EventPos, Dt); 
     }
 }
 
@@ -220,10 +287,12 @@ void UIGroupComponent::Trigger(Vector2 EventPos){
 }
 
 
-void UIGroupComponent::LateUpdate(float Dt){
+void UIGroupComponent::LateUpdate(Vector2 EventPos, float Dt){
+    OnLateUpdate(EventPos, Dt);
+
     for (auto Component = begin(_UIComponents); Component != end(_UIComponents); ++Component)
     {
-        (*Component)->LateUpdate(Dt);
+        (*Component)->LateUpdate(EventPos, Dt);
     }
 
     for(int i = 0; i< (int)(_UIComponents.size()); i++)
@@ -234,13 +303,25 @@ void UIGroupComponent::LateUpdate(float Dt){
 			i--;
 		}
 	}
+
+    
 }
 
 void UIGroupComponent::Render(){
+    if(!ParentComponent.expired())
+    {
+        AbsolutePosition = ParentComponent.lock()->AbsolutePosition + RelativePosition;
+    } 
+    else
+    {
+        AbsolutePosition = UIController::CurrentUI->Parent.Box.Position() + RelativePosition;
+    }
+
     if(UISprite)
     {
-        UISprite->Render(Parent.Box.x + RelativePosition.x, Parent.Box.y + RelativePosition.y);
+        UISprite->Render(AbsolutePosition.x, AbsolutePosition.y);
     }
+
     if(UIText)
     {
         UIText->Render();
@@ -250,22 +331,27 @@ void UIGroupComponent::Render(){
     {
         Component->Render();
     }
+
+    UIComponent::ComplementaryRender();
 }
 
 void UIGroupComponent::AddComponent(UIComponent* Component){
+
     std::shared_ptr<UIComponent> ComponentPointer = std::shared_ptr<UIComponent>(Component);
 
     Component->Start();
-    // Component->AbsolutePosition = AbsolutePosition + Component->RelativePosition;
 
     _UIComponents.emplace_back(ComponentPointer);
 }
 
-std::weak_ptr<UIComponent> UIGroupComponent::GetComponentAtPosition(Vector2 Position){
+std::weak_ptr<UIComponent> UIGroupComponent::GetComponentAtPosition(Vector2 Position)
+{
     if(IsInside(Position))
     {
-        for (auto Component = begin(_UIComponents); Component != end(_UIComponents); ++Component){
+        for (auto Component = begin(_UIComponents); Component != end(_UIComponents); ++Component)
+        {
             std::weak_ptr<UIComponent> Cmpnt = (*Component)->GetComponentAtPosition(Position);
+
             if((*Component)->IsInside(Position))
             {
                 return (*Component)->GetComponentAtPosition(Position);
@@ -276,7 +362,8 @@ std::weak_ptr<UIComponent> UIGroupComponent::GetComponentAtPosition(Vector2 Posi
     return {};
 }
 
-std::weak_ptr<UIComponent> UIGroupComponent::GetComponentByClass(std::string Class){
+std::weak_ptr<UIComponent> UIGroupComponent::GetComponentByClass(std::string Class)
+{
     if((std::find(Classes.begin(), Classes.end(), Class) == Classes.end())) 
     {
         for (auto Component = begin(_UIComponents); Component != end(_UIComponents); ++Component)

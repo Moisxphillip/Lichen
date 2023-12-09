@@ -149,13 +149,13 @@ void Player::SMOnCollision(GameObject& Other)
     //Equipment Interaction
     else if(Other.Contains(COMPONENT_EQUIP) && Input::Instance().KeyJustPressed(Key::F))
     {
-        Equipment* Equip = (Equipment*)Other.GetComponent(COMPONENT_EQUIP);
-        std::cout 
-            << "Equipment Data:\nVit: " << Equip->Attributes.Vit
-            << "\nStr: " << Equip->Attributes.Str
-            << "\nDex: " << Equip->Attributes.Dex
-            << "\nInt: " << Equip->Attributes.Int << '\n';
-        //TODO Register once and ignore after, because an OnCollision can run more than once each loop
+        // Equipment* Equip = (Equipment*)Other.GetComponent(COMPONENT_EQUIP);
+        // std::cout 
+        //     << "Equipment Data:\nVit: " << Equip->Attributes.Vit
+        //     << "\nStr: " << Equip->Attributes.Str
+        //     << "\nDex: " << Equip->Attributes.Dex
+        //     << "\nInt: " << Equip->Attributes.Int << '\n';
+        // //TODO Register once and ignore after, because an OnCollision can run more than once each loop
     }
 
 

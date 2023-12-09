@@ -1,84 +1,108 @@
-// #ifndef LICHEN_ITEM
-// #define LICHEN_ITEM
+#ifndef LICHEN_ITEM
+#define LICHEN_ITEM
 
-// #include "Components/Component.hpp"
-// #include "Components/Sprite.hpp"
+#include "Components/Component.hpp"
+#include "Components/Sprite.hpp"
 
-// struct EquipStats
-// {
-//     int Vit = 0,
-//         Str = 0,
-//         Dex = 0,
-//         Int = 0;
+struct EquipStats
+{
+    int Vit = 0,
+        Str = 0,
+        Dex = 0,
+        Int = 0;
 
-//     bool Active = false;
-// };
+    bool Active = false;
+};
+
+enum class ItemClass
+{
+    General,
+    Boot,
+    Collar,
+    Bracelet,
+    Legs
+};
 
 
-// class Item : public Component
-// {
-// public:
-//     std::string Name;
-//     std::string Description;
-//     std::string UseText;
+class Item : public Component
+{
+protected:
+    Item(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile, ItemClass Type);
+    Item(GameObject& Parent, ItemClass Type);
 
-//     Sprite* UISprite;
-//     Sprite* ItemSprite;
+public:
+    std::string UISpriteFile;
+    std::string ItemSpriteFile;
+    std::string Name;
+    std::string Description;
+    std::string UseText;
+    ItemClass Type;
 
-//     Item(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile);
+    Sprite* UISprite;
+    Sprite* ItemSprite;
 
-//     void Start();
-//     void Update(float Dt);
-//     void Render();
-//     void SetUseText(std::string UseText);
-
-//     virtual void UseItem();
-// };
-
-// class Equipment : public Item
-// {
-// private:
-//     EquipStats _Stats;
-
-// public:
-//     Equipment(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile);
-//     Equipment(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile, EquipStats Stats);
-
-//     void UseItem();
-
-//     void SetStats(EquipStats Stats);
-//     EquipStats GetStats();
-// };
-
-// class Consumable : public Item
-// {
-// private:
-//     int _InstantHealingPoints;
-
-// public:
-//     Consumable(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile);
-//     Consumable(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile, int _InstantHealingPoints);
-
-//     void UseItem();
-
-//     void SetInstantHealingPoints(int InstantHealingPoints);
-//     int GetInstantHealingPointss();
+    Item(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile);
     
-// };
+    ~Item();
 
-// class Food : public Item
-// {
-// private:
-//     int _HealingPoints;
+    void Start();
+    void Update(float Dt);
+    void Render();
+    void SetUseText(std::string UseText);
+    virtual bool IsEquipment();
 
-// public:
-//     Food(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile);
-//     Food(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile, int _HealingPoints);
+    void Throw();
 
-//     void UseItem();
+    virtual void UseItem();
+};
 
-//     void SetHealingPoints(int HealingPoints);
-//     int GetHealingPoints();
-// };
+class Equipment : public Item
+{
+private:
+    EquipStats _Stats;
+    
+public:
+    Equipment(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile);
+    Equipment(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile, EquipStats Stats, ItemClass Type);
+    Equipment(GameObject& Parent, ItemClass Type);
 
-// #endif
+    void UseItem();
+    void OnRemove();
+    bool IsEquipment();
+
+    void SetStats(EquipStats Stats);
+    EquipStats GetStats();
+};
+
+class Consumable : public Item
+{
+private:
+    int _InstantHealingPoints;
+
+public:
+    Consumable(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile);
+    Consumable(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile, int InstantHealingPoints);
+
+    void UseItem();
+
+    void SetInstantHealingPoints(int InstantHealingPoints);
+    int GetInstantHealingPointss();
+    
+};
+
+class Food : public Item
+{
+private:
+    int _HealingPoints;
+
+public:
+    Food(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile);
+    Food(GameObject& Parent, std::string Name, std::string Description, std::string UISpriteFile, std::string ItemSpriteFile, int _HealingPoints);
+
+    void UseItem();
+
+    void SetHealingPoints(int HealingPoints);
+    int GetHealingPoints();
+};
+
+#endif

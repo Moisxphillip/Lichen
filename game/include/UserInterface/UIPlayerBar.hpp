@@ -5,42 +5,39 @@
 
 class UIPlayerBar : public UIGroupComponent {
 public:
-    UIPlayerBar(GameObject& Parent, UIController& Controller, Vector2 Position);
+    UIPlayerBar(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position);
 
-    void Start();
+    void GroupStart();
 };
 
 class UILifeBar : public UIComponent {
 private:
     float _CurrentLife;
 public:
-    UILifeBar(GameObject& Parent, UIController& Controller, Vector2 Position);
+    UILifeBar(std::weak_ptr<UIComponent> ParentComponent,  Vector2 Position);
 
-    void Update(float Dt, Vector2 BasePos);
+    void OnUpdate(Vector2 EventPos, float Dt);
     void Start();
-    void Render();
 };
 
 class UIStaminaBar : public UIComponent {
 private:
     float _CurrentStamina;
 public:
-    UIStaminaBar(GameObject& Parent, UIController& Controller, Vector2 Position);
+    UIStaminaBar(std::weak_ptr<UIComponent> ParentComponent,  Vector2 Position);
 
-    void Update(float Dt, Vector2 BasePos);
+    void OnUpdate(Vector2 EventPos, float Dt);
     void Start();
-    void Render();
 };
 
 class UIManaBar : public UIComponent {
 private:
     float _CurrentMana;
 public:
-    UIManaBar(GameObject& Parent, UIController& Controller, Vector2 Position);
+    UIManaBar(std::weak_ptr<UIComponent> ParentComponent,  Vector2 Position);
 
-    void Update(float Dt, Vector2 BasePos);
+    void OnUpdate(Vector2 EventPos, float Dt);
     void Start();
-    void Render();
 };
 
 #endif

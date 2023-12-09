@@ -4,38 +4,44 @@
 #include "Core/Input.hpp"
 #include "Core/Camera.hpp"
 
-UIController::UIController(GameObject& Parent):Component(Parent),_UIFocused(false), _UIHidden(false){}
+UIController* UIController::CurrentUI = nullptr;
+
+UIController::UIController(GameObject& Parent):Component(Parent),_UIFocused(false), _UIHidden(false)
+{
+    CurrentUI = this;
+}
 
 UIController::~UIController(){
     for (auto Component = rbegin(this->UIComponents); Component != rend(this->UIComponents); ++Component) 
         (*Component).reset();
     
     this->UIComponents.clear();
+
+    CurrentUI = nullptr;
 }
 
 void UIController::Start(){
-    AddComponent(new UIBagButton(Parent, *this, Vector2(1180,630)));
-    AddComponent(new UIPlayerBar(Parent, *this, Vector2(40,40)));
+    AddComponent(new UIBagButton({}, Vector2(1180,630)));
+    AddComponent(new UIPlayerBar({}, Vector2(40,40)));
 }
 
 void UIController::Update(float Dt){
-    // Parent.Box.SetPosition(Camera::Position());
-
     if(_UIHidden)
     {
         return;
     }
 
-    Input InputController = Input::Instance();
     _UIFocused = false;
+
+    Vector2 MousePos = Input::Instance().MousePosition();
 
     for(auto Component : UIComponents)
     {
-        Component->Update(Dt, Parent.Box.Position());
+        Component->Update(MousePos, Dt);
     }
  
-    for (auto Component = rbegin(UIComponents); Component != rend(UIComponents); ++Component){
-        Vector2 MousePos = InputController.MousePosition();
+    for (auto Component = rbegin(UIComponents); Component != rend(UIComponents); ++Component)
+    {
         if((*Component)->IsInside(MousePos))
         {
             _UIFocused = true;
@@ -45,16 +51,19 @@ void UIController::Update(float Dt){
     }
 }
 
-void UIController::LateUpdate(float Dt){
+void UIController::LateUpdate(float Dt)
+{
+    Vector2 MousePos = Input::Instance().MousePosition();
+
     for (auto Component = begin(UIComponents); Component != end(UIComponents); ++Component){
-        (*Component)->LateUpdate(Dt);
+        (*Component)->LateUpdate(MousePos, Dt);
     }
 
     for(int i = 0; i< (int)(UIComponents.size()); i++)
 	{
 		if(UIComponents[i]->ShouldBeClosed())
 		{
-			UIComponents.erase(UIComponents.begin()+i); //Removes stuff discarded by RequestDelete()
+			UIComponents.erase(UIComponents.begin()+i); 
 			i--;
 		}
 	}
@@ -66,18 +75,19 @@ void UIController::Render(){
     }
 }
 
-std::weak_ptr<UIComponent> UIController::AddComponent(UIComponent* Component){
+std::weak_ptr<UIComponent> UIController::AddComponent(UIComponent* Component)
+{
     std::shared_ptr<UIComponent> ComponentPointer = std::shared_ptr<UIComponent>(Component);
 
     UIComponents.emplace_back(ComponentPointer);
 
     (*ComponentPointer).Start();
-    ComponentPointer->AbsolutePosition = Parent.Box.Position() + ComponentPointer->RelativePosition;
 
     return std::weak_ptr<UIComponent>(ComponentPointer);
 }
 
-std::weak_ptr<UIComponent> UIController::GetComponentByClass(std::string Class){
+std::weak_ptr<UIComponent> UIController::GetComponentByClass(std::string Class)
+{
     for (auto Component = begin(UIComponents); Component != end(UIComponents); ++Component)
     {
         std::weak_ptr<UIComponent> Cmpnt = (*Component)->GetComponentByClass(Class);
@@ -89,7 +99,8 @@ std::weak_ptr<UIComponent> UIController::GetComponentByClass(std::string Class){
     return {};
 }
 
-std::weak_ptr<UIComponent> UIController::GetComponentAtPosition(Vector2 Position){
+std::weak_ptr<UIComponent> UIController::GetComponentAtPosition(Vector2 Position)
+{
     for (auto Component = begin(UIComponents); Component != end(UIComponents); ++Component)
     {
         std::weak_ptr<UIComponent> Cmpnt = (*Component)->GetComponentAtPosition(Position);
@@ -99,6 +110,11 @@ std::weak_ptr<UIComponent> UIController::GetComponentAtPosition(Vector2 Position
         }  
     }
     return {};
+}
+
+Vector2 UIController::Position()
+{
+    return Parent.Box.Position();
 }
     
 

@@ -1,9 +1,54 @@
 #ifndef LICHEN_UI_BAG_MENU
 #define LICHEN_UI_BAG_MENU
 
+#define SLOT_WIDTH  50
+#define SLOT_HEIGHT  50
+#define INVENTORY_START_WIDTH 4
+#define INVENTORY_START_HEIGHT 232
+#define SLOTS_ROWS 4
+#define SLOTS_COLUMNS 5
+
+
 #include "UserInterface/UIComponent.hpp"
-#include "Core/Camera.hpp"
+#include "UserInterface/UIItem.hpp"
 #include "UserInterface/UIBasicComponents.hpp"
+#include "Core/Camera.hpp"
+
+class UIItem;
+
+struct SlotSpace
+{
+    int Id;
+    UIItem* Item;
+    Vector2 Position;
+    ItemClass SlotType;
+};
+
+class UIItem;
+
+class UIBag : public UIGroupComponent {
+private:
+    std::vector<SlotSpace> EquipSlot;  
+    std::vector<std::vector<SlotSpace>> InventorySlots;
+
+public:
+    static Vector2 LastBagRelativePosition;
+
+    UIBag(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes);
+    ~UIBag();
+
+    void GroupStart();
+    void Close();
+    void OnLateUpdate(Vector2 EventPos, float Dt);
+    void PlaceAtSlot(SlotSpace& SlotToPlace, UIItem* Item);
+    void RemoveFromSlot(UIItem* Item);
+    
+    bool StoreAtFirstSlot(UIItem* Item);
+    bool Store(UIItem* Item, Vector2 EventPos);
+
+    void ThrowFromSlot(UIItem* Item);
+    SlotSpace& GetSlot(int SlotNumber);
+};
 
 class UIBagButton : public UIComponent {
 private:
@@ -11,59 +56,21 @@ private:
    
 public:
 
-    UIBagButton(GameObject& Parent, UIController& Controller, Vector2 Position);
+    UIBagButton(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position);
+
     void Start();
     void OnRelease(Vector2 EventPos);
+
 };
 
-class UIBag : public UIGroupComponent {
-public:
-    static Vector2 LastBagRelativePosition;
-
-    UIBag(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes);
-    void Start();
-    void Close();
-    void OnRightClick(Vector2 EventPos);
-    void LateUpdate(float Dt) override;
-};
 
 class UIBagClose : public UIComponent {
 public:
-    UIBagClose(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes);
+    UIBagClose(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position, std::vector<std::string> Classes);
     void Start();
     void OnClick(Vector2 EventPos);
 };
 
-class UIItenOptions: public UIGroupComponent {
-public:
-    UIItenOptions(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes);
-    void Start();
-    void Update(float Dt, Vector2 BasePos);
-    bool IsInside(Vector2 EventPos);
-};
-
-class UIItenOptionUse: public UIComponent 
-{
-public:
-    UIItenOptionUse(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes);
-    void Start();
-    void OnHover(Vector2 EventPos);
-    void Update(float Dt, Vector2 BasePos);
-};
-
-class UIItenOptionThrow: public UIComponent {
-public:
-    UIItenOptionThrow(GameObject& Parent, UIController& Controller, Vector2 Position, std::vector<std::string> Classes);
-    void Start();
-    void OnHover(Vector2 EventPos);
-    void Update(float Dt, Vector2 BasePos);
-    
-};
-
-
-// class UIBagItens : public UIGroupComponent {};
-
-// class UIBagItemSpace: public UIComponent {};
 
 // class UIBagEquipmentSpace: public UIComponent {};
 

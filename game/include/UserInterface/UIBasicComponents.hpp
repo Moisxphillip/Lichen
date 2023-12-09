@@ -3,34 +3,40 @@
 
 #include "UserInterface/UIComponent.hpp"
 
-class UIMoveHolder : public UIComponent {
+class UIMoveParent : public UIGroupComponent {
 private:
-    Vector2 ClickOffset;
-    std::weak_ptr<UIComponent> UIToMove;
+    bool _IsHolding;
+    Vector2 _ClickOffset;
+    std::weak_ptr<UIComponent> _UIToMove;
 
 public:
-    UIMoveHolder(GameObject& Parent, UIController& Controller, Vector2 Position,
-        std::vector<std::string> Classes, std::weak_ptr<UIComponent> UIToMove)
-        :UIComponent(Parent, Controller, Position, Classes), UIToMove(UIToMove){}
+    UIMoveParent(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position,
+    std::vector<std::string> Classes);
 
-    virtual void Start(Vector2 StartPos){
-        Width = 248;
-        Height = 50;
-    };
+    virtual void GroupStart();
 
-    void OnClick(Vector2 EventPos){
-        if(!UIToMove.expired())
-        {
-            ClickOffset =  EventPos - (Parent.Box.Position() + UIToMove.lock().get()->RelativePosition);
-        }
-    }
-
-    void OnHold(Vector2 EventPos){
-        if(!UIToMove.expired())
-        {
-            UIToMove.lock().get()->RelativePosition = EventPos - Parent.Box.Position() - ClickOffset;
-        }
-    }
+    void OnClick(Vector2 EventPos);
+    void OnLateUpdate(Vector2 EventPos, float Dt);
 };
+
+class UIMovable : public UIGroupComponent {
+protected:
+    
+    Vector2 _ClickOffset;
+    std::weak_ptr<UIComponent> _UIToMove;
+
+public:
+    bool IsHolding;
+    UIMovable(std::weak_ptr<UIComponent> ParentComponent, Vector2 Position,
+    std::vector<std::string> Classes);
+
+    virtual void GroupStart();
+
+    virtual void OnClick(Vector2 EventPos);
+    void OnLateUpdate(Vector2 EventPos, float Dt);
+    void HoldToMouse();
+    void FreeFromMouse();
+};
+
 
 #endif
