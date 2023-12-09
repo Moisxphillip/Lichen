@@ -104,7 +104,6 @@ void UIBag::OnLateUpdate(Vector2 EventPos, float Dt)
 
 void UIBag::PlaceAtSlot(SlotSpace& SlotToPlace, UIItem* Item)
 {
-    std::cout<<"Putting "<<Item->GetBaseItem()->Name<<" from "<<SlotToPlace.Id<<std::endl;
 
     if(SlotToPlace.SlotType == ItemClass::General)
     {
@@ -133,7 +132,6 @@ void UIBag::RemoveFromSlot(UIItem* Item)
 
 
     auto& Slot = GetSlot(Item->CurrentSlotNumber);
-    std::cout<<"Removing "<<Item->GetBaseItem()->Name<<" from "<<Slot.Id<<std::endl;
     if( Slot.SlotType == ItemClass::General)
     {
         int Row = (Slot.Position.x - INVENTORY_START_WIDTH)/SLOT_WIDTH;
