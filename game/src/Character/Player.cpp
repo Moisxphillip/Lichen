@@ -133,7 +133,7 @@ void Player::SMOnCollision(GameObject& Other)
         && Other.Contains(COMPONENT_ATTACK) && static_cast<bool>(Other.Represents & ENEMY_ATK_MASK))
     {
         Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
-        int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, _MyStats);
+        int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, _MyStats, Parent.Box.Center());
         if(_MyStats.HP <= 0)
         {
             SetState(PLAYER_DEATH);
@@ -170,7 +170,7 @@ void Player::AddExperience(int Exp)
 void Player::DoAttack()
 {
     Input& Ip = Input::Instance();
-    MyCollider->SetVelocity(Vector2(0.0f, 0.0f));
+    MyCollider->SetVelocity(Vector2::ZERO);
     GameObject* Atk = new GameObject;
     Atk->Represents = PLAYER_ATK_MASK;
     Vector2 Direction = Parent.Box.Center().DistVector2(Ip.MousePosition()).Normalized();
@@ -277,6 +277,7 @@ void PlayerWalk::PhysicsUpdate(StateMachine& Sm, float Dt)
     if(x == 0 && y ==0) //condition for changing to idle state
     {
         Sm.SetState(PLAYER_IDLE);
+        reinterpret_cast<Player*>(&Sm)->MyCollider->SetVelocity(Vector2::ZERO);
         return;
     }
     
@@ -389,6 +390,7 @@ void PlayerAttack::Update(StateMachine& Sm, float Dt)
     if(_AttackTime.Finished())
     {
         Sm.SetState(PLAYER_IDLE);
+        reinterpret_cast<Player*>(&Sm)->MyCollider->SetVelocity(Vector2::ZERO);
     }
 }
 
@@ -419,7 +421,8 @@ void PlayerSpecial::Update(StateMachine& Sm, float Dt)
     _SpecialTime.Update(Dt);
     if(_SpecialTime.Finished())
     {
-        Sm.SetState(PLAYER_IDLE);   
+        Sm.SetState(PLAYER_IDLE);
+        reinterpret_cast<Player*>(&Sm)->MyCollider->SetVelocity(Vector2::ZERO);  
     }
 }
 
@@ -453,6 +456,7 @@ void PlayerHurt::Update(StateMachine& Sm, float Dt)
     {
         reinterpret_cast<Player*>(&Sm)->MyCollider->SetFriction(PLAYER_DEFAULT_FRICTION);
         Sm.SetState(PLAYER_IDLE);
+        reinterpret_cast<Player*>(&Sm)->MyCollider->SetVelocity(Vector2::ZERO);
     }
 }
 

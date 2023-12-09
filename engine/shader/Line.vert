@@ -1,4 +1,4 @@
-#version 330 core
+#version 440 core
 layout (location = 0) in vec2 position;
 uniform mat4 U_Mvp;
 void main()

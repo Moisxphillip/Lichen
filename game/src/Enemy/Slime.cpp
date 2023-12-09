@@ -23,9 +23,9 @@ Slime::Slime(GameObject& Parent, std::string Label)
 : StateMachine(Parent, Label)
 {
     MyCollider = nullptr;
-    Parent.Represents = ENEMY_MASK | ENEMY_ATK_MASK;
+    Parent.Represents = ENEMY_MASK | ENEMY_ATK_MASK;//Only use ATK_MASK in this part when you intend for the enemy to cause damage upon touch
     Parent.Interacts = PLAYER_MASK | ENEMY_MASK | CollisionMask::Terrain;
-    MyStats = Stats{100, 100, 1, 0, 5, 5, 5, 5, 0, 0, 0, 0};
+    MyStats = Stats{50, 50, 1, 0, 5, 5, 5, 5, 0, 0, 0, 0};//Will be reset after creation to suit the spawn point needs
     EnemyCount++;
     _HitCooldown.SetLimit(ENEMY_DEFAULT_INVULNERABILITY);
     _HitCooldown.Update(ENEMY_DEFAULT_INVULNERABILITY);
@@ -53,7 +53,7 @@ void Slime::SMStart()
     MyCollider->GetBall().SetCenter(Parent.Box.Center());
     Parent.AddComponent(MyCollider);
     Parent.AddComponent(new Attack(Parent, MyStats, {10, 1, ScalingStats::Strength}, Parent.Interacts));
-    Parent.AddComponent(new DistanceTrigger(Parent, this, 2560, DistTriggerMode::Delete));
+    Parent.AddComponent(new DistanceTrigger(Parent, this, 2560, DistTriggerMode::Delete)); //TODO Adjust distance value to suitable values
     //Create an idle state
     StateInfo SI = {SLIME_IDLE, 6, 6, 0.2f, true, true}; //these are for setting up the spritesheet portion on update
     AddState(SLIME_IDLE, new SlimeIdle(SI));
@@ -76,7 +76,7 @@ void Slime::SMUpdate(float Dt)
         _HitCooldown.Update(Dt);
         if(_HitCooldown.Get() > _FlickTime)
         {
-            _FlickTime+=0.2f;
+            _FlickTime+=0.1f;
             if(!_Flick)
             {
                 _Sections[0].get()->SetAddColor(Color("#ffffff"));
@@ -104,14 +104,15 @@ void Slime::SMOnCollision(GameObject& Other)
 {
     if(_CurrState != SLIME_HURT && !Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) && static_cast<bool>(Other.Represents & PLAYER_ATK_MASK))
     {
-        //  if(_CurrState != PLAYER_HURT && _CurrState != PLAYER_DASH && _CurrState != PLAYER_DEATH 
-        // && Other.Contains(COMPONENT_ATTACK) && static_cast<bool>(Other.Represents & ENEMY_ATK_MASK))
-        // {
         Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
-        int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats);
+        Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats, Parent.Box.Center());
         if(MyStats.HP <= 0)
         {
-            // SetState(PLAYER_DEATH);
+            // SetState(PLAYER_DEATH);//Todo make death state
+            if(Player::Self != nullptr)
+            {
+                Player::Self->AddExperience(Combat::DeathExp(MyStats.Level));
+            }
             GameObject* Drop = new GameObject();
             Drop->Depth = DepthMode::Dynamic;
             Drop->AddComponent(new Equipment(*Drop));

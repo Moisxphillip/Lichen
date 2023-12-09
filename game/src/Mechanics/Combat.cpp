@@ -1,5 +1,10 @@
 #include "Mechanics/Combat.hpp"
 
+#include "Core/Engine.hpp"
+#include "Components/Text.hpp"
+#include "Tools/TimedText.hpp"
+#include "Tools/SimpleMovement.hpp"
+
 #include <cmath>
 #include <ctime>
 
@@ -10,7 +15,7 @@ Combat::Combat()
     Dice.seed(static_cast<unsigned long long int>(std::time(nullptr)));
 }
 
-int Combat::CalculateDamage(Stats& Attacker, AttackData& AtkData, Stats& Defender)
+int Combat::CalculateDamage(Stats& Attacker, AttackData& AtkData, Stats& Defender, Vector2 Position)
 {
     float Damage = AtkData.BaseDamage, Accumulator = 0.0f;
 
@@ -24,6 +29,21 @@ int Combat::CalculateDamage(Stats& Attacker, AttackData& AtkData, Stats& Defende
     int FinalDamage = _DamagePenalty(Attacker.Level, Defender.Level, Damage) - (Defender.Vit/10.0f);
 
     Defender.HP -= FinalDamage;
+    if(Position != Vector2::ZERO) //Prompts damage text
+    {
+        Color NumColor((Roll == 20 ? "#f36901" : (Roll == 1 ? "#550183" : "#ffffff")));
+        std::string Prompt =  std::to_string(FinalDamage);
+        GameObject* Dmg = new GameObject();
+        Dmg->Depth = DepthMode::Foreground;
+        Text* Txt = new Text(*Dmg,"./res/ttf/alagard.ttf", 40, TextStyle::BLENDED, Prompt, NumColor);
+        Dmg->AddComponent(Txt);
+        Dmg->AddComponent(new TimedText(*Dmg, Txt, NumColor, 0.2f, 0.8f, 0.2f));
+        Dmg->AddComponent(new SimpleMovement(*Dmg, Vector2(0.0f, -35.0f)));
+        Position += Vector2(Engine::RandomFloat() * 80.0f, 0.0f).Rotated(2.0f*M_PI * Engine::RandomFloat());
+        Dmg->Box.SetPosition(Position);
+        Engine::Instance().CurrentScene().AddGameObj(Dmg);
+    }
+
     return FinalDamage;
 }
 

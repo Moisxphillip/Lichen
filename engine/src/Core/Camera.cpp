@@ -104,9 +104,12 @@ void Camera::Update(float Dt)
     Engine::Instance().GetRenderer().SetViewPosition(_Position*-1);    
 }
 
+
+// float delay, playerVelocity, smoothness;
 void Camera::UpdateLazy(float Dt, Vector2& Target)
 {
-    
+    // Vector2 targetPos = Target + delay * playerVelocity;
+//   _Position += (targetPos - _Position) * Dt * smoothness;
 }
 
 // #include <iostream>

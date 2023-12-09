@@ -137,10 +137,10 @@ void Sprite::SetFrame(int Frame)
     
     SetClip(Column * Width, Row * Height, Width, Height);
     
-    if(_FrameTime > 0.0f)
-    {
-        _TimeElapsed = 0;
-    }
+    // if(_FrameTime > 0.0f)
+    // {
+    _TimeElapsed = 0.0f;
+    // }
     _CurrFrame = Frame;
 }
 
@@ -154,7 +154,7 @@ void Sprite::SetFrameSpan(int Span)
     if(_FrameStart+Span > _FrameCount)
     {
         Error("Sprite::SetFrameSpan: Trying to set a too large frame span for the current sprite settings");
-        return;
+        // return;
     }
     _FrameSpan = Span;
 }
@@ -164,7 +164,7 @@ void Sprite::SetFrameStart(int Start)
     if(Start+_FrameSpan > _FrameCount)
     {
         Error("Sprite::SetFrameStart: Trying to set a too large start value for the current sprite settings");
-        return;
+        // return;
     }
     _FrameStart = Start;
     _CurrFrame = Start;

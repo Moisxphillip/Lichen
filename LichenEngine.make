@@ -95,6 +95,7 @@ GENERATED += $(OBJDIR)/DistanceTrigger.o
 GENERATED += $(OBJDIR)/Draw.o
 GENERATED += $(OBJDIR)/Dummy.o
 GENERATED += $(OBJDIR)/ElementLoader.o
+GENERATED += $(OBJDIR)/Emitter.o
 GENERATED += $(OBJDIR)/EndScene.o
 GENERATED += $(OBJDIR)/EndScreen.o
 GENERATED += $(OBJDIR)/Enemy.o
@@ -117,6 +118,7 @@ GENERATED += $(OBJDIR)/JsonParser.o
 GENERATED += $(OBJDIR)/LoopSprite.o
 GENERATED += $(OBJDIR)/MainGame.o
 GENERATED += $(OBJDIR)/MainMenu.o
+GENERATED += $(OBJDIR)/Malachi.o
 GENERATED += $(OBJDIR)/Minion.o
 GENERATED += $(OBJDIR)/Music.o
 GENERATED += $(OBJDIR)/Particles.o
@@ -124,11 +126,13 @@ GENERATED += $(OBJDIR)/PenguinBody.o
 GENERATED += $(OBJDIR)/PenguinCannon.o
 GENERATED += $(OBJDIR)/Physics.o
 GENERATED += $(OBJDIR)/Player.o
+GENERATED += $(OBJDIR)/Projectile.o
 GENERATED += $(OBJDIR)/Rectangle.o
 GENERATED += $(OBJDIR)/Renderer.o
 GENERATED += $(OBJDIR)/Resources.o
 GENERATED += $(OBJDIR)/Scene.o
 GENERATED += $(OBJDIR)/Shader.o
+GENERATED += $(OBJDIR)/SimpleMovement.o
 GENERATED += $(OBJDIR)/Slime.o
 GENERATED += $(OBJDIR)/Sound.o
 GENERATED += $(OBJDIR)/Sprite.o
@@ -139,6 +143,7 @@ GENERATED += $(OBJDIR)/Text.o
 GENERATED += $(OBJDIR)/Texture.o
 GENERATED += $(OBJDIR)/TileMap.o
 GENERATED += $(OBJDIR)/TileSet.o
+GENERATED += $(OBJDIR)/TimedText.o
 GENERATED += $(OBJDIR)/Timer.o
 GENERATED += $(OBJDIR)/TitleScene.o
 GENERATED += $(OBJDIR)/Tools.o
@@ -177,6 +182,7 @@ OBJECTS += $(OBJDIR)/DistanceTrigger.o
 OBJECTS += $(OBJDIR)/Draw.o
 OBJECTS += $(OBJDIR)/Dummy.o
 OBJECTS += $(OBJDIR)/ElementLoader.o
+OBJECTS += $(OBJDIR)/Emitter.o
 OBJECTS += $(OBJDIR)/EndScene.o
 OBJECTS += $(OBJDIR)/EndScreen.o
 OBJECTS += $(OBJDIR)/Enemy.o
@@ -199,6 +205,7 @@ OBJECTS += $(OBJDIR)/JsonParser.o
 OBJECTS += $(OBJDIR)/LoopSprite.o
 OBJECTS += $(OBJDIR)/MainGame.o
 OBJECTS += $(OBJDIR)/MainMenu.o
+OBJECTS += $(OBJDIR)/Malachi.o
 OBJECTS += $(OBJDIR)/Minion.o
 OBJECTS += $(OBJDIR)/Music.o
 OBJECTS += $(OBJDIR)/Particles.o
@@ -206,11 +213,13 @@ OBJECTS += $(OBJDIR)/PenguinBody.o
 OBJECTS += $(OBJDIR)/PenguinCannon.o
 OBJECTS += $(OBJDIR)/Physics.o
 OBJECTS += $(OBJDIR)/Player.o
+OBJECTS += $(OBJDIR)/Projectile.o
 OBJECTS += $(OBJDIR)/Rectangle.o
 OBJECTS += $(OBJDIR)/Renderer.o
 OBJECTS += $(OBJDIR)/Resources.o
 OBJECTS += $(OBJDIR)/Scene.o
 OBJECTS += $(OBJDIR)/Shader.o
+OBJECTS += $(OBJDIR)/SimpleMovement.o
 OBJECTS += $(OBJDIR)/Slime.o
 OBJECTS += $(OBJDIR)/Sound.o
 OBJECTS += $(OBJDIR)/Sprite.o
@@ -221,6 +230,7 @@ OBJECTS += $(OBJDIR)/Text.o
 OBJECTS += $(OBJDIR)/Texture.o
 OBJECTS += $(OBJDIR)/TileMap.o
 OBJECTS += $(OBJDIR)/TileSet.o
+OBJECTS += $(OBJDIR)/TimedText.o
 OBJECTS += $(OBJDIR)/Timer.o
 OBJECTS += $(OBJDIR)/TitleScene.o
 OBJECTS += $(OBJDIR)/Tools.o
@@ -449,6 +459,12 @@ $(OBJDIR)/Dummy.o: game/src/Dummy.cpp
 $(OBJDIR)/Enemy.o: game/src/Enemy.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Malachi.o: game/src/Enemy/Malachi.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Projectile.o: game/src/Enemy/Projectile.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Slime.o: game/src/Enemy/Slime.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -518,6 +534,9 @@ $(OBJDIR)/DistanceTrigger.o: game/src/Tools/DistanceTrigger.cpp
 $(OBJDIR)/ElementLoader.o: game/src/Tools/ElementLoader.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Emitter.o: game/src/Tools/Emitter.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/EventChain.o: game/src/Tools/EventChain.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -525,6 +544,12 @@ $(OBJDIR)/JsonParser.o: game/src/Tools/JsonParser.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/LoopSprite.o: game/src/Tools/LoopSprite.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/SimpleMovement.o: game/src/Tools/SimpleMovement.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/TimedText.o: game/src/Tools/TimedText.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/UIBagMenu.o: game/src/UserInterface/UIBagMenu.cpp

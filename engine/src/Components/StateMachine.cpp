@@ -59,7 +59,6 @@ void StateMachine::SetState(SMState Set)
         _Sections[i].get()->SetFrameSpan(X.FrameSpan);
         _Sections[i].get()->SetFrameStart(X.FrameStart);
         _Sections[i].get()->SetFrameTime(X.FrameTime);
-        _Sections[i].get()->SetFrame(X.FrameStart);
         _Sections[i].get()->Loop = X.Loop;
     }
     _CurrState = Set;

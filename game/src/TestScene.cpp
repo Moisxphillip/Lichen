@@ -42,6 +42,7 @@ Text* text = nullptr;
 Fade* _Fader = nullptr;
 
 #include "Components/Sound.hpp"
+#include "Enemy/Malachi.hpp"
 void Test01::LoadAssets()
 {
  
@@ -238,7 +239,7 @@ void Test01::Update(float Dt)
         _Type = _Type < 0 ? 15 : _Type;
         std::cout <<_Type << '\n';
     }
-    if(input.MousePressedDown(MouseButton::Left))
+    if(false && input.MousePressedDown(MouseButton::Left))
     {
         Particle z;
         z.Type = _Type;
@@ -280,6 +281,15 @@ void Test01::Update(float Dt)
             playerObj->AddComponent(player);
             AddGameObj(playerObj);
     }
+    if(Input::Instance().KeyJustPressed(Key::Number3) && Malachi::Self == nullptr)
+    {
+            GameObject* Obj = new GameObject();
+            Malachi* Mala = new Malachi(*Obj);
+            Obj->Box.SetCenter(Input::Instance().MousePosition());
+            Obj->AddComponent(Mala);
+            AddGameObj(Obj);
+    }
+
     if(Input::Instance().KeyJustPressed(Key::Number8))
     {
         _Fader->SetFinishColor(Color("#1228093a"));

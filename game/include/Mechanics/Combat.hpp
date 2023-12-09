@@ -3,6 +3,7 @@
 
 #include "Tools/Xrand.hpp"
 #include <ostream>
+#include "Math/Vector2.hpp"
 
 struct Stats
 {
@@ -36,7 +37,7 @@ class Combat
 
     public:
         Combat();
-        static int CalculateDamage(Stats& Attacker, AttackData& AtkData, Stats& Defender);
+        static int CalculateDamage(Stats& Attacker, AttackData& AtkData, Stats& Defender, Vector2 Position = Vector2::ZERO);
         static int DeathExp(int CurrentLevel);
         static int LevelUpExp(int CurrentLevel);
 };
