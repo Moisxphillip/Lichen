@@ -3,7 +3,7 @@
 
 #include "Enemy.hpp"
 
-enum EnemyType {GRUB,SLIME,GOLEM};
+enum EnemyType {GRUB, SLIME,MUSHROOM, WOLF, GOLEM};
 
 class EnemyFactory{
 public:
