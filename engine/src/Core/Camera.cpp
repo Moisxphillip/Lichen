@@ -3,7 +3,7 @@
 #include "Core/Engine.hpp"
 
 Vector2 Camera::_Position = Vector2(0.0f,0.0f);
-
+Rectangle Camera::Boundaries = Rectangle(0,0,2000,2000);
 Camera::Camera()
 : _Velocity(0.0f,0.0f), 
 _RectBounds(0.0f,0.0f,100.0f,100.0f),
@@ -77,6 +77,8 @@ void Camera::Update(float Dt)
     //TODO implement camera modes
     // _Position -= Offset;
     Vector2 Target = _Focus->Box.Center();
+    Vector2 HalfScreenSize = Engine::Instance().GetRenderSize()*0.5f;
+
     switch(_CurrentMode)
     {
         case CameraMode::Fixed:
@@ -84,22 +86,28 @@ void Camera::Update(float Dt)
             break;
 
         case CameraMode::Lazy:
-            _Position+=Engine::Instance().GetRenderSize()*0.5f;
+            _Position+=HalfScreenSize;
             UpdateLazy(Dt, Target);
             break;
 
         case CameraMode::Ahead:
-            _Position+=Engine::Instance().GetRenderSize()*0.5f;
+            _Position+=HalfScreenSize;
             UpdateAhead(Dt, Target);
             break;
 
         default:
             break;
     }
-    _Position-=Engine::Instance().GetRenderSize()*0.5f;
+    _Position-=HalfScreenSize;
+    if(Boundaries.w !=0)
+    {
+        _Position.x = std::min(std::max(Boundaries.x, _Position.x), Boundaries.w - HalfScreenSize.x*2);
+        _Position.y = std::min(std::max(Boundaries.y, _Position.y), Boundaries.h - HalfScreenSize.y*2);
+    }
     // _Position += Offset;
-    _Position.x = std::floor(_Position.x);
-    _Position.y = std::floor(_Position.y);
+
+    _Position.x = std::round(_Position.x);
+    _Position.y = std::round(_Position.y);
 
     Engine::Instance().GetRenderer().SetViewPosition(_Position*-1);    
 }

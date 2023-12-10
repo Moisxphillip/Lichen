@@ -105,18 +105,23 @@ void Slime::SMOnCollision(GameObject& Other)
     if(_CurrState != SLIME_HURT && !Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) && static_cast<bool>(Other.Represents & PLAYER_ATK_MASK))
     {
         Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
-        int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats);
-        // if(MyStats.HP <= 0)
-        // {
-        //     SetState(PLAYER_DEATH);
-        //     GameObject* Drop = new GameObject();
-        //     Drop->Depth = DepthMode::Dynamic;
-        //     Drop->AddComponent(new Equipment(*Drop));
-        //     Drop->Box.SetCenter(Parent.Box.Center());
-        //     Engine::Instance().CurrentScene().AddGameObj(Drop);
-        //     Parent.RequestDelete();
-        //     return;
-        // }
+        int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats, Parent.Box.Center());
+        if(MyStats.HP <= 0)
+        {
+            // SetState(PLAYER_DEATH);
+            // GameObject* Drop = new GameObject();
+            // Drop->Depth = DepthMode::Dynamic;
+            // Drop->AddComponent(new Equipment(*Drop));
+            // Drop->Box.SetCenter(Parent.Box.Center());
+            // Engine::Instance().CurrentScene().AddGameObj(Drop);
+            if(Player::Self != nullptr)
+            {
+                Player::Self->AddExperience(Combat::DeathExp(MyStats.Level));
+            }
+            
+            Parent.RequestDelete();
+            return;
+        }
         SetState(SLIME_HURT);
         MyCollider->ApplyForce(Other.Box.Center().DistVector2(Parent.Box.Center()).Normalized() * Atk->Data.Knockback * 50000);
         MyCollider->SetFriction(0.05f);

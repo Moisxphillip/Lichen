@@ -11,28 +11,21 @@
 #include "Graphics/Image.hpp"
 #include "Math/Vector2.hpp"
 
-enum class MovementLevel
-{
-    Simple,
-    Intermediate,
-    Heavy,
-};
-
 struct Particle
 {
-    unsigned int Type;
-    Vector2 Size;
+    unsigned int Type = 0;
+    Vector2 Size = Vector2(1.0f, 1.0f);
     Vector2 Position;
     Vector2 Velocity;
     Vector2 Acceleration;
-    float SpeedVariation;//%
-    float AccelVariation;//%
-    float Angle;//Around own center
-    float RotationPerSec;//How much should rotate
-    float Spread;//angle centered on the velocity
-    float Duration;//S
-    bool Windswept;//Affected by wind vector
-    bool ColorInterpolation;
+    float SpeedVariation = 0;//%
+    float AccelVariation = 0;//%
+    float Angle = 0;//Around own center
+    float RotationPerSec = 0;//How much should rotate
+    float Spread = 0;//angle centered on the velocity
+    float Duration = 0;//S
+    bool Windswept = false;//Affected by wind vector
+    bool ColorInterpolation = false;
     Color StartColor;
     Color EndColor;
 };
@@ -71,5 +64,15 @@ class ParticleManager
         static void Render();
         static void Emit(Particle& P);
 };
+
+class PremadeParticles
+{
+    public:
+        static Particle Leaf(Vector2 Position);
+        static Particle Spore(Vector2 Position);
+        static Particle Energy(Vector2 Position);
+
+};
+
 
 #endif//LICHEN_PARTICLES

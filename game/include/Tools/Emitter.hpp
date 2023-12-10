@@ -15,7 +15,7 @@ class Emitter : public Component
         std::function<GameObject*(Vector2 Position)> _Emit;
     public:
         Emitter(GameObject& Parent, float Time, Vector2 Spread, bool DeleteAfter = false);
-        void SetEmitCall(std::function<GameObject*()> Function);
+        void SetEmitCall(std::function<GameObject*(Vector2)> Function);
         void Update(float Dt);
 
 };

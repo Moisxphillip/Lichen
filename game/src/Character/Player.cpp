@@ -33,6 +33,7 @@ Player::Player(GameObject& Parent, std::string Label)
     Parent.Represents = PLAYER_MASK;
     Parent.Interacts = ENEMY_ATK_MASK | INTERACT_MASK | CollisionMask::Terrain;
     _MyStats = Stats{100, 100, 1, 0, 5, 25, 5, 5, 2, 3, 50, 100};
+    _ExpToLevelUp = Combat::LevelUpExp(_MyStats.Level);
     MyCollider = nullptr;
     Self = this;
     _HitCooldown.SetLimit(PLAYER_DEFAULT_INVULNERABILITY);
@@ -161,10 +162,41 @@ void Player::SMOnCollision(GameObject& Other)
 
 }
 
+#include "Components/Text.hpp"
+#include "Components/CameraFollower.hpp"
+#include "Tools/TimedText.hpp"
+void Player::LevelUpMsg()
+{
+    Color NumColor("#ffffff");
+    std::string Prompt =  "Nivel "+ std::to_string(_MyStats.Level)+ " alcancado!";
+    GameObject* Lvl = new GameObject();
+    Lvl->Depth = DepthMode::Foreground;
+    Text* Txt = new Text(*Lvl,"./res/ttf/alagard.ttf", 40, TextStyle::BLENDED, Prompt, NumColor);
+    Lvl->AddComponent(Txt);
+    Lvl->AddComponent(new TimedText(*Lvl, Txt, NumColor, 0.2f, 1.5f, 0.2f));
+    CameraFollower* Cf = new CameraFollower(*Lvl);
+    Cf->Offset = Vector2(640 - Txt->GetDimensions().x*0.5f, 200);
+    Lvl->AddComponent(Cf);
+    Engine::Instance().CurrentScene().AddGameObj(Lvl);
+}
+
 void Player::AddExperience(int Exp)
 {
-    _MyStats.Exp +=Exp; 
-    //TODO Add level up structure and function around here
+    if(_MyStats.Level == 20)
+    {
+        return;
+    }
+    _MyStats.Exp +=Exp;
+    if(_MyStats.Exp >=  _ExpToLevelUp)
+    {
+        _MyStats.Level++;
+        int Leftovers = _MyStats.Exp - _ExpToLevelUp;
+        _MyStats.Exp = 0;
+        _ExpToLevelUp = Combat::LevelUpExp(_MyStats.Level);
+        AddExperience(Leftovers);
+        //TODO Signal stats system about the points to allocate
+        LevelUpMsg();
+    }
 }
 
 void Player::DoAttack()
@@ -204,7 +236,7 @@ void PlayerIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
 
     if(Ip.MouseJustPressed(MouseButton::Left))
     {
-        reinterpret_cast<Player*>(&Sm)->DoAttack();
+        reinterpret_cast<Player*>(&Sm)->DoAttack();//TODO move hitbox creation to a timer inside attack state once the sprites are done
         return;
     }
 
@@ -360,7 +392,7 @@ void PlayerDash::Update(StateMachine& Sm, float Dt)
 }
 
 //------------------------------ATTACK------------------------------
-#define ATTACK_TIME 0.7f
+#define ATTACK_TIME 0.5f
 
 PlayerAttack::PlayerAttack(const StateInfo& Specs)
 : GenericState(Specs)
@@ -375,9 +407,6 @@ void PlayerAttack::Start()
 
 void PlayerAttack::OnCollision(StateMachine& Sm, GameObject& Other)
 {
-    // if(_DashForce != 0 && (Other.Represents & CollisionMask::Terrain) != CollisionMask::None)
-    // {
-    // }
 }
 
 void PlayerAttack::PhysicsUpdate(StateMachine& Sm, float Dt)

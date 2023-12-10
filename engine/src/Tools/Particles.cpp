@@ -139,7 +139,7 @@ void ParticleManager::Render()
     }
 }
 
-#define WIND_SPEED 200
+#define WIND_SPEED 180
 #define WIND_VARIATION 20
 
 #include <iostream>
@@ -153,4 +153,46 @@ void ParticleManager::_WindSimulation()
         _Wind.Rotate(3.1415/2*(_Random.gen()-0.5f));
         // std::cout << _Wind << '\n';
     }
+}
+
+Particle PremadeParticles::Leaf(Vector2 Position)
+{
+    Particle z;
+    z.Type = 0;
+    // z.Size =  Vector2(1,1);
+    z.Position = Position;
+    // z.Velocity =  Vector2(50,0);
+    // z.Acceleration =  Vector2(0,300);
+    // z.Angle = 2.0f * M_PI * Engine::RandomFloat();
+    z.RotationPerSec = 2.0f * M_PI * (Engine::RandomFloat()-0.5f);
+    z.Spread = 3.1415f/2.0f;
+    z.Duration = 4.0f;
+    z.Windswept = true;
+    // z.ColorInterpolation = true;
+    z.StartColor = Color("#67c685");
+    // z.EndColor = Color("#00440088");
+
+    // ParticleManager::Instance().Emit(z);
+    return z;
+}
+
+Particle PremadeParticles::Spore(Vector2 Position)
+{
+    Particle z;
+    z.Type = 12;
+    // z.Size =  Vector2(1,1);
+    z.Position = Position;
+    // z.Velocity =  Vector2(50,0);
+    // z.Acceleration =  Vector2(0,300);
+    // z.Angle = 2.0f * M_PI * Engine::RandomFloat();
+    z.RotationPerSec = 2.0f * M_PI * (Engine::RandomFloat()-0.5f);
+    z.Spread = 3.1415f/2.0f;
+    z.Duration = 4.0f;
+    z.Windswept = true;
+    // z.ColorInterpolation = true;
+    z.StartColor = Color("#00ff00ff");
+    // z.EndColor = Color("#00440088");
+
+    // ParticleManager::Instance().Emit(z);
+    return z;
 }

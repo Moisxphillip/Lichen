@@ -76,6 +76,11 @@ void Text::SetText(std::string Text)
     _RemakeTexture();
 }
 
+Vector2 Text::GetDimensions()
+{
+    return Vector2(_Handler->GetWidth(), _Handler->GetHeight());
+}
+
 void Text::Render()
 {
     Vector2 Position = Parent.Box.Position();

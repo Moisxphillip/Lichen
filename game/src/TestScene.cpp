@@ -225,41 +225,41 @@ void Test01::PhysicsUpdate(float Dt)
     //TODO transfer to appropriate place, add the masks to it
 
 }
-int _Type = 0;
+// int _Type = 0;
 
-
+#include "Tools/Emitter.hpp"
 void Test01::Update(float Dt)
 {
     Input& input = Input::Instance();
-    if(input.KeyJustPressed(Key::Equal))
+    
+    // if(input.KeyJustPressed(Key::Equal))
+    // {
+    //     _Type++;
+    //     _Type = _Type > 15 ? 0 : _Type;
+    //     std::cout <<_Type << '\n';
+    // }
+    // else if(input.KeyJustPressed(Key::Minus))
+    // {
+    //     _Type--;
+    //     _Type = _Type < 0 ? 15 : _Type;
+    //     std::cout <<_Type << '\n';
+    // }
+
+    //Creating emitters
+    if(input.MouseJustPressed(MouseButton::Middle))
     {
-        _Type++;
-        _Type = _Type > 15 ? 0 : _Type;
-        std::cout <<_Type << '\n';
-    }
-    else if(input.KeyJustPressed(Key::Minus))
-    {
-        _Type--;
-        _Type = _Type < 0 ? 15 : _Type;
-        std::cout <<_Type << '\n';
-    }
-    if(false && input.MousePressedDown(MouseButton::Left))
-    {
-        Particle z;
-        z.Type = _Type;
-        z.Size =  Vector2(1,1);
-        z.Position =  input.MousePosition();
-        // z.Velocity =  Vector2(50,0);
-        // z.Acceleration =  Vector2(0,300);
-        z.Angle = 2.0f * M_PI * Engine::RandomFloat();
-        z.RotationPerSec = 2.0f * M_PI * (Engine::RandomFloat()-0.5f);
-        z.Spread = 3.1415f/2.0f;
-        z.Duration = 4.0f;
-        z.Windswept = true;
-        z.ColorInterpolation = true;
-        z.StartColor = Color("#00ff00ff");
-        z.EndColor = Color("#00440088");
-        ParticleManager::Instance().Emit(z);
+        GameObject* EmtObj = new GameObject();
+        Emitter* Emt = new Emitter(*EmtObj, 1, Vector2(200, 40));
+        EmtObj->Box.SetPosition(input.MousePosition());
+        Emt->SetEmitCall(
+            [](Vector2 Position)
+            {
+                Particle Z = PremadeParticles::Leaf(Position);
+                ParticleManager::Instance().Emit(Z);
+                return nullptr;
+            });
+        EmtObj->AddComponent(Emt);
+        AddGameObj(EmtObj);
     }
 
 

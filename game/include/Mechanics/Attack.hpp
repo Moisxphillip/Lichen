@@ -14,10 +14,10 @@ class Attack: public Component
         Timer _LifeTime;
 
     public:
-        Stats& Attacker;
+        Stats Attacker;
         AttackData Data;
         Attack(GameObject& Parent, 
-            Stats& Attacker, 
+            Stats Attacker, 
             AttackData Data, 
             CollisionMask Target, 
             float LifeTime=0.0f, 

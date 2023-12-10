@@ -6,6 +6,12 @@ Emitter::Emitter(GameObject& Parent, float Time, Vector2 Spread, bool DeleteAfte
 {
     _ToEmit.SetLimit(Time);
     _ToEmit.Restart();
+    Parent.Box.Redimension(Spread);
+}
+
+void Emitter::SetEmitCall(std::function<GameObject*(Vector2)> Function)
+{
+    _Emit = Function;
 }
 
 void Emitter::Update(float Dt)

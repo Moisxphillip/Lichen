@@ -8,6 +8,8 @@
 #include "Definitions.hpp"
 #include "Mechanics/Equipment.hpp"
 #include "Core/Input.hpp"
+#include "Enemy/Projectile.hpp"
+
 
 //Define names for the SMState enums, so it's easier to know which state you're using
 #define MALACHI_IDLE SMState::Type01
@@ -29,13 +31,14 @@ Malachi::Malachi(GameObject& Parent, std::string Label)
 {
     MyCollider = nullptr;
     Parent.Represents = ENEMY_MASK;
-    Parent.Interacts = PLAYER_MASK | ENEMY_MASK | PLAYER_ATK_MASK;
+    Parent.Interacts = REFLECTED_BULLET_MASK | PLAYER_ATK_MASK;
     MyStats = Stats{100, 100, 1, 0, 5, 5, 5, 5, 0, 0, 0, 0};
     _HitCooldown.SetLimit(ENEMY_DEFAULT_INVULNERABILITY);
     _HitCooldown.Update(ENEMY_DEFAULT_INVULNERABILITY);
     _FlickTime = 0.0f;
     _Flick = false;
     Self = this;
+    Shield = nullptr;
     for(int i = 0; i<5; i++)
     {
         Arena[i] = nullptr;
@@ -58,9 +61,14 @@ Malachi::~Malachi()
         if(Arena[i] != nullptr)
             Arena[i]->RequestDelete();
     }
+
+    if(Shield != nullptr)
+    {
+        Shield->Parent.RequestDelete();
+    }
 }
 
-#define MALACHI_DEFAULT_FRICTION 0.1f
+// #define MALACHI_DEFAULT_FRICTION 0.1f
 void Malachi::SMStart()
 {
     Sprite* malachi = new Sprite(Parent, "./res/img/boss/malachi_6x9f_110x109px.png", 54, 6, 9, 0.1f);
@@ -68,7 +76,7 @@ void Malachi::SMStart()
     Parent.Box.Redimension(Vector2(malachi->GetWidth(), malachi->GetHeight()));
     AddSprite(malachi);
     MyCollider = new AACircle(Parent, ColliderKind::Trigger, Circle(0,0,malachi->GetHeight()/4));
-    MyCollider->SetFriction(MALACHI_DEFAULT_FRICTION);
+    // MyCollider->SetFriction(MALACHI_DEFAULT_FRICTION);
     MyCollider->GetBall().SetCenter(Parent.Box.Center());
     Parent.AddComponent(MyCollider);
     
@@ -86,11 +94,11 @@ void Malachi::SMStart()
     AddState(MALACHI_ATTACKHORIZ, new MalachiAtkHoriz(SI));
     
     //Pose state
-    SI = {MALACHI_POSE, 24, 3, 0.2f, false, true};
+    SI = {MALACHI_POSE, 24, 3, 0.1f, false, true};
     AddState(MALACHI_POSE, new MalachiTeleportPose(SI));
     
     //TPing state
-    SI = {MALACHI_TELEPORTING, 30, 3, 0.2f, false, true};
+    SI = {MALACHI_TELEPORTING, 30, 3, 0.1f, false, true};
     AddState(MALACHI_TELEPORTING, new MalachiTeleporting(SI));
     
     //TPd state
@@ -102,14 +110,25 @@ void Malachi::SMStart()
     AddState(MALACHI_HURT, new MalachiHurt(SI));
     
     //Vulnerable state
-    SI = {MALACHI_VULNERABLE, 48, 3, 0.2f, true, true};
+    SI = {MALACHI_VULNERABLE, 48, 3, 0.1f, true, true};
     AddState(MALACHI_VULNERABLE, new MalachiVulnerable(SI));
 
     SetupArena();
+    GameObject* Sh = new GameObject();
+    Sh->Depth = DepthMode::Dynamic;
+    Shield = new Sprite(*Sh, "./res/img/boss/shield.png");
+    Sh->Box.Redimension(Vector2(Shield->GetWidth(), Shield->GetHeight()));
+    Sh->AddComponent(Shield);
+    Engine::Instance().CurrentScene().AddGameObj(Sh);
 }
 
 void Malachi::SMUpdate(float Dt)
 {
+    if(Shield != nullptr && Shield->Active)
+    {
+        Shield->Parent.Box.SetCenter(Parent.Box.Center());
+    }
+
     if(!_HitCooldown.Finished())
     {
         _HitCooldown.Update(Dt);
@@ -138,7 +157,13 @@ void Malachi::SMUpdate(float Dt)
 
 void Malachi::SMOnCollision(GameObject& Other)
 {
-    if(/*_CurrState == MALACHI_IDLE &&*/ !Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) 
+
+    if(_CurrState != MALACHI_VULNERABLE && static_cast<bool>(Other.Represents & REFLECTED_BULLET_MASK))
+    {
+        Shield->Active = false;
+        SetState(MALACHI_VULNERABLE);
+    }
+    else if (_CurrState == MALACHI_VULNERABLE && !Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) 
         && static_cast<bool>(Other.Represents & PLAYER_ATK_MASK) && _HitCooldown.Finished())
     {
         Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
@@ -151,6 +176,10 @@ void Malachi::SMOnCollision(GameObject& Other)
             // Drop->AddComponent(new Equipment(*Drop));
             // Drop->Box.SetCenter(Parent.Box.Center());
             // Engine::Instance().CurrentScene().AddGameObj(Drop);
+            if(Player::Self != nullptr)
+            {
+                Player::Self->AddExperience(Combat::DeathExp(MyStats.Level)*2);
+            }
             Parent.RequestDelete();
             return;
         }
@@ -193,6 +222,28 @@ void Malachi::SetupArena()
         Engine::Instance().CurrentScene().AddGameObj(Arena[i]);
     }
 }
+
+void Malachi::Shoot()
+{
+    int Max = 3+ Engine::RandomUint()%3;
+    for(int i = 0; i<Max; i++)
+    {
+    GameObject* Blt = new GameObject();
+    Blt->Depth = DepthMode::Dynamic;
+    Blt->Represents = ENEMY_ATK_MASK;
+    Sprite* Sprt = new Sprite(*Blt, "./res/img/boss/spark.png", 7, 7, 1, 0.1f);
+    Blt->Box.Redimension(Vector2(Sprt->GetWidth(), Sprt->GetHeight()));
+    Blt->AddComponent(Sprt);
+    Vector2 Dir = Player::Self != nullptr ?  Parent.Box.Center().DistVector2(Player::Self->Parent.Box.Center()).Normalized() : Vector2(1, 0);
+    Dir.Rotate((Engine::RandomFloat() - 0.5f)*1.5f);
+    Vector2 Offset = Dir * 100;
+    Blt->Box.SetPosition(Parent.Box.Center() + Offset);
+    Blt->AddComponent(new Projectile(*Blt, Dir*2.0f, Sprt->GetWidth()/3, PLAYER_ATK_MASK | PLAYER_MASK));
+    Blt->AddComponent(new Attack(*Blt, MyStats, {10, 1, ScalingStats::Intelect},
+        Blt->Interacts, 20.0f));
+    Engine::Instance().CurrentScene().AddGameObj(Blt);
+    }
+}
 //------------------------------IDLE------------------------------
 
 
@@ -201,6 +252,8 @@ void Malachi::SetupArena()
 MalachiIdle::MalachiIdle(const StateInfo& Specs)
 : GenericState(Specs)
 {
+    _TeleportChance = 50;
+    _ShootChance = 50;
     _ChangeState.SetLimit(IDLE_TIME + 0.5*Engine::RandomFloat());
 }
 
@@ -218,41 +271,58 @@ void MalachiIdle::Update(StateMachine& Sm, float Dt)
         return;
     }
 
-    float Dist = Sm.Parent.Box.Center().DistanceSquared(Player::Self->Parent.Box.Center());
-    if(Engine::RandomUint() & 1)
-    {
-        Sm.SetState(MALACHI_ATTACKHORIZ);
-        return;
-    }
-    // else
-    // {
-    // }
-    Sm.SetState(MALACHI_POSE);
+    // float Dist = Sm.Parent.Box.Center().DistanceSquared(Player::Self->Parent.Box.Center());
 
+    float Tp = _TeleportChance/100.0f;
+    float Shot = _ShootChance/100.0f;
+    float Rnd = Engine::RandomFloat();
+    
+    if(Rnd < Tp)
+    {
+        _ShootChance+=10;
+        _TeleportChance-=10;
+        Sm.SetState(MALACHI_POSE);
+    }
+    else
+    {
+        _ShootChance-=10;
+        _TeleportChance+=10;
+        Vector2 Dist = Sm.Parent.Box.Center().DistVector2(Player::Self->Parent.Box.Center());
+        Dist.x > 0.0f ? Sm.SetFlip(Flip::H) : Sm.SetFlip(Flip::N);
+        Dist.y > std::abs(Dist.x) ? Sm.SetState(MALACHI_ATTACKDOWN) : Sm.SetState(MALACHI_ATTACKHORIZ);
+    }
+
+    // if(Engine::RandomUint() & 1)
+    // {
+    //     Vector2 Dist = Sm.Parent.Box.Center().DistVector2(Player::Self->Parent.Box.Center());
+    //     Dist.x > 0.0f ? Sm.SetFlip(Flip::H) : Sm.SetFlip(Flip::N);
+    //     Dist.y > std::abs(Dist.x) ? Sm.SetState(MALACHI_ATTACKDOWN) : Sm.SetState(MALACHI_ATTACKHORIZ);
+    //     return;
+    // }
 }
 
 //------------------------------ATKDOWN------------------------------
 MalachiAtkDown::MalachiAtkDown (const StateInfo& Specs)
 : GenericState(Specs)
 {
+    _AtkTime.SetLimit(0.5f);
 }
 
 
 void MalachiAtkDown::Start()
 {
+    _AtkTime.Restart();
 }
 
-// reinterpret_cast<Malachi*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
 void MalachiAtkDown::Update(StateMachine& Sm, float Dt)
 {
-}
-
-void MalachiAtkDown::PhysicsUpdate(StateMachine& Sm, float Dt)
-{
-}
-
-void MalachiAtkDown::OnCollision(StateMachine& Sm, GameObject& Other)
-{
+    _AtkTime.Update(Dt);
+    if(_AtkTime.Finished())
+    {
+        
+        reinterpret_cast<Malachi*>(&Sm)->Shoot();
+        Sm.SetState(MALACHI_IDLE);
+    }
 }
 
 //------------------------------ATKHORIZ------------------------------
@@ -268,37 +338,20 @@ void MalachiAtkHoriz::Start()
     _AtkTime.Restart();
 }
 
-#include "Enemy/Projectile.hpp"
-
 // reinterpret_cast<Malachi*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
 void MalachiAtkHoriz::Update(StateMachine& Sm, float Dt)
 {
     _AtkTime.Update(Dt);
     if(_AtkTime.Finished())
     {
-        GameObject* Blt = new GameObject();
-        Blt->Depth = DepthMode::Dynamic;
-        Sprite* Sprt = new Sprite(*Blt, "./res/img/boss/spark.png", 7, 7, 1, 0.1f);
-        Blt->Box.Redimension(Vector2(Sprt->GetWidth(), Sprt->GetHeight()));
-        Blt->Box.SetPosition(Sm.Parent.Box.Center());
-        Blt->AddComponent(Sprt);
-        Vector2 Dir = Player::Self != nullptr ?  Sm.Parent.Box.Center().DistVector2(Player::Self->Parent.Box.Center()).Normalized() : Vector2(1, 0);
-        Blt->AddComponent(new Projectile(*Blt, Dir*2.0f, Sprt->GetWidth()/3, PLAYER_ATK_MASK));
-        Engine::Instance().CurrentScene().AddGameObj(Blt);
+        reinterpret_cast<Malachi*>(&Sm)->Shoot();
         Sm.SetState(MALACHI_IDLE);
     }
 }
 
-void MalachiAtkHoriz::PhysicsUpdate(StateMachine& Sm, float Dt)
-{
-}
-
-void MalachiAtkHoriz::OnCollision(StateMachine& Sm, GameObject& Other)
-{
-}
 
 //------------------------------TELEPORTPOSE------------------------------
-#define TELEPORT_TIME 1.f
+#define TELEPORT_TIME 0.3f
 
 MalachiTeleportPose::MalachiTeleportPose (const StateInfo& Specs)
 : GenericState(Specs)
@@ -354,7 +407,7 @@ void MalachiTeleporting::Update(StateMachine& Sm, float Dt)
 MalachiTeleported::MalachiTeleported(const StateInfo& Specs)
 : GenericState(Specs)
 {
-    _Tp.SetLimit(TELEPORT_TIME);
+    _Tp.SetLimit(TELEPORT_TIME+0.1f);
 }
 
 void MalachiTeleported::Start()
@@ -398,26 +451,27 @@ void MalachiHurt::OnCollision(StateMachine& Sm, GameObject& Other)
 }
 
 //------------------------------VULNERABLE------------------------------
+#define VULNERABLE_LIMIT 4.0f
+
 MalachiVulnerable::MalachiVulnerable (const StateInfo& Specs)
 : GenericState(Specs)
 {
+    _VulnerableTime.SetLimit(VULNERABLE_LIMIT);
 }
 
 void MalachiVulnerable::Start()
 {
+    _VulnerableTime.Restart();
 }
 
-// reinterpret_cast<Malachi*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
 void MalachiVulnerable::Update(StateMachine& Sm, float Dt)
 {
-}
-
-void MalachiVulnerable::PhysicsUpdate(StateMachine& Sm, float Dt)
-{
-}
-
-void MalachiVulnerable::OnCollision(StateMachine& Sm, GameObject& Other)
-{
+    _VulnerableTime.Update(Dt);
+    if(_VulnerableTime.Finished())
+    {
+        reinterpret_cast<Malachi*>(&Sm)->Shield->Active = true;
+        Sm.SetState(MALACHI_IDLE);
+    }
 }
 
 // //------------------------------ ------------------------------

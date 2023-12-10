@@ -34,9 +34,8 @@ class Camera
         Circle _CircBounds;
 
     public:
-        
         Camera();
-
+        static Rectangle Boundaries;
         static Vector2 Center();
         static Vector2 Position();
         void Follow(GameObject* Focus);

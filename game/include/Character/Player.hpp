@@ -13,6 +13,7 @@ class Player : public StateMachine
     private:
         Timer _HitCooldown;
         Stats _MyStats;
+        int _ExpToLevelUp;
 
     public:
         
@@ -25,6 +26,7 @@ class Player : public StateMachine
         void SMUpdate(float Dt);
         void SMOnCollision(GameObject& Other);        
 
+        void LevelUpMsg();
         void AddExperience(int Exp);
         void DoAttack();
         Stats& GetStats();

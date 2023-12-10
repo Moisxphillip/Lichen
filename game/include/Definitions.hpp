@@ -24,6 +24,7 @@
 
 #define INTERACT_MASK   CollisionMask::Type05
 
+#define REFLECTED_BULLET_MASK  CollisionMask::Type06
 
 
 

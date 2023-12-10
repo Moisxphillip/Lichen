@@ -396,6 +396,8 @@ void TileMap::LoadCollision(std::string fileName)
             Block[i].w*_CurrTileSet->GetTileWidth(), Block[i].h*_CurrTileSet->GetTileHeight());
         Engine::Instance().CurrentScene().AddGameObj(ColliderObj);
     }
+    //TODO move this gambiarra to a more suitable place
+    Camera::Boundaries = Rectangle(0,0, _MapWidth*_CurrTileSet->GetTileWidth(), _MapHeight * _CurrTileSet->GetTileHeight());
 }
 
 //__________________________________

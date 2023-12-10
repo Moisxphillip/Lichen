@@ -120,10 +120,10 @@ void Physics::ResolveCollision(AACollider& A, AACollider& B)
     Vector2 RelVelocity = B.Velocity-A.Velocity; //Relative Velocity of A and B
 
     float VelAlongNormal = RelVelocity.Dot(M.Normal);
-    // if(VelAlongNormal > 0) //Optimization for when things are moving apart, disabled for now
-    // {
-    //     return;
-    // }
+    if(VelAlongNormal > 0) //Optimization for when things are moving apart, disabled for now
+    {
+        return;
+    }
     float e = (A.GetRestitution()+ B.GetRestitution())/2; //Restitutes for the smaller restitution in the interaction
     float j = -(1.0f + e) * VelAlongNormal;// Impulse scalar (j)
     j /= (A.GetInvMass() + B.GetInvMass());

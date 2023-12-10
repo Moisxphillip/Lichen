@@ -15,6 +15,7 @@ class Malachi : public StateMachine
     public:
         static Malachi* Self;
         GameObject* Arena[5];
+        Sprite* Shield;
         Stats MyStats;
         AACircle* MyCollider;
         Malachi(GameObject& Parent, std::string Label = "Malachi");
@@ -23,6 +24,7 @@ class Malachi : public StateMachine
         void SMUpdate(float Dt);
         void SMOnCollision(GameObject& Other);
         void SetupArena();
+        void Shoot();
 };
 
 //Idle state
@@ -30,7 +32,7 @@ class MalachiIdle : public GenericState
 {
     private:
         Timer _ChangeState;
-
+        int _TeleportChance, _ShootChance;
     public:
         void Start();
         MalachiIdle(const StateInfo& Specs);
@@ -42,13 +44,11 @@ class MalachiIdle : public GenericState
 class MalachiAtkDown : public GenericState
 {
     private:
-
+        Timer _AtkTime;
     public:
         MalachiAtkDown(const StateInfo& Specs);
         void Start();
         void Update(StateMachine& Sm, float Dt);
-        void PhysicsUpdate(StateMachine& Sm, float Dt);
-        void OnCollision(StateMachine& Sm, GameObject& Other);
 };
 
 //Horiz Atk state
@@ -60,8 +60,6 @@ class MalachiAtkHoriz : public GenericState
         MalachiAtkHoriz(const StateInfo& Specs);
         void Start();
         void Update(StateMachine& Sm, float Dt);
-        void PhysicsUpdate(StateMachine& Sm, float Dt);
-        void OnCollision(StateMachine& Sm, GameObject& Other);
 };
 
 //Pose state
@@ -114,13 +112,11 @@ class MalachiHurt : public GenericState
 class MalachiVulnerable : public GenericState
 {
     private:
-
+        Timer _VulnerableTime;
     public:
         MalachiVulnerable (const StateInfo& Specs);
         void Start();
         void Update(StateMachine& Sm, float Dt);
-        void PhysicsUpdate(StateMachine& Sm, float Dt);
-        void OnCollision(StateMachine& Sm, GameObject& Other);
 };
 
 #endif//GAME_MALACHI
