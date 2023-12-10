@@ -20,8 +20,10 @@
 int GridWidthSize = 64;
 int GridHeightSize = 64;
 
+int Enemy::EnemyCount = 0;
 
-Enemy::Enemy(GameObject& Parent, std::string Label): 
+
+Enemy::Enemy(GameObject& Parent, std::string Label, Stats EnemyStats): 
     StateMachine(Parent, Label),
     _Hp(DEFAULT_HP),
     _AttackCooldown(DEFAULT_ATTACK_COOLDOWN),
@@ -30,22 +32,29 @@ Enemy::Enemy(GameObject& Parent, std::string Label):
     _Damage(DEFAULT_DAMAGE),
     _KnockbackForce(DEFAULT_KNOCKBACK_FORCE),
     _MovimentationSpeed(DEFAULT_MOVIMENTATION_SPEED),
+    _SearchTime(DEFAULT_SEARCH_TIME),
+    _FollowRange(DEFAULT_FOLLOW_RANGE),
+    _MemoryFollowRange(DEFAULT_MEMORY_RANGE),
     _FlickTime(0.0f),
     _Flick(false),
+    MyStats(EnemyStats),
     MyCollider(nullptr)
     {
         // TODO invert depedence
         Parent.Represents = ENEMY_MASK | ENEMY_ATK_MASK;//Only use ATK_MASK in this part when you intend for the enemy to cause damage upon touch
         Parent.Interacts =  PLAYER_MASK | ENEMY_MASK | CollisionMask::Terrain;
-        MyStats = DEFAULT_STATS; //TODO be sure thsi works
         // EnemyCount++; TODO move enemycoutn to facotry
         _HitCooldown.SetLimit(DEFAULT_INVULNERABILITY);
         _HitCooldown.Update(DEFAULT_INVULNERABILITY);
+        EnemyCount++;
 
     }
 
-Enemy::~Enemy(){}
 
+Enemy::~Enemy()
+{
+    EnemyCount--;
+}
 
 void Enemy::SMStart()
 {
@@ -84,23 +93,35 @@ void Enemy::SMUpdate(float Dt)
 
 void Enemy::SMOnCollision(GameObject& Other)
 {
-    if(_CurrState != ENEMY_HURT && !Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) && static_cast<bool>(Other.Represents & PLAYER_ATK_MASK))
+    if(_CurrState != ENEMY_HURT &&  _CurrState != ENEMY_DEATH && !Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) && static_cast<bool>(Other.Represents & PLAYER_ATK_MASK))
     {
         Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
-        int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats);
+        int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats, Parent.Box.Center());
+
+        
+            // Engine::Instance().CurrentScene().AddGameObj(Drop);
+        
 
         // TODO reaadd drop
-        // if(MyStats.HP <= 0)
-        // {
-        //     SetState(PLAYER_DEATH);
-        //     GameObject* Drop = new GameObject();
-        //     Drop->Depth = DepthMode::Dynamic;
-        //     Drop->AddComponent(new Equipment(*Drop));
-        //     Drop->Box.SetCenter(Parent.Box.Center());
-        //     Engine::Instance().CurrentScene().AddGameObj(Drop);
-        //     Parent.RequestDelete();
-        //     return;
-        // }
+        if(MyStats.HP <= 0)
+        {
+            if(Player::Self != nullptr)
+            {
+                Player::Self->AddExperience(Combat::DeathExp(MyStats.Level));
+            }
+
+            _HitCooldown.Restart();
+            SetState(ENEMY_DEATH);
+            return;
+            // GameObject* Drop = new GameObject();
+            // Drop->Depth = DepthMode::Dynamic;
+            // Drop->AddComponent(new Equipment(*Drop));
+            // Drop->Box.SetCenter(Parent.Box.Center());
+            // Engine::Instance().CurrentScene().AddGameObj(Drop);
+            // Parent.RequestDelete();
+            // return;
+        }
+
         SetState(ENEMY_HURT);
         MyCollider->ApplyForce(Other.Box.Center().DistVector2(Parent.Box.Center()).Normalized() * Atk->Data.Knockback * 50000);
         MyCollider->SetFriction(0.05f);
@@ -108,19 +129,21 @@ void Enemy::SMOnCollision(GameObject& Other)
     }
 }
 
-#define MOVE_SPD 2000
 
 void Enemy::MoveTo(Vector2 Destiny, float Dt)
 {
+
+
     Destiny.x < Parent.Box.Center().x ? SetFlip(Flip::N) : SetFlip(Flip::H);
     Vector2 Distance = Parent.Box.Center().DistVector2(Destiny);
 
-    if(Distance.MagnitudeSquared() < MOVE_SPD*MOVE_SPD *Dt)
-    {
-        Parent.Box.SetCenter(Destiny);
-    }
+    // For now the enemy is teleporting, leave it commented
+    // if(Distance.MagnitudeSquared() < MOVE_SPD*MOVE_SPD *Dt)
+    // {
+    //     Parent.Box.SetCenter(Destiny);
+    // }
 
-    MyCollider->ApplyForce(Distance.Normalized()*MOVE_SPD); 
+    MyCollider->ApplyForce(Distance.Normalized()*_MovimentationSpeed); 
 }
 
 float Enemy::GetAttackCooldown(){
@@ -150,6 +173,21 @@ float Enemy::GetKnockbackForce(){
 float Enemy::GetFlickTime()
 {
     return _FlickTime;
+}
+
+float Enemy::GetSearchTime()
+{
+    return _SearchTime;
+}
+
+float Enemy::GetFollowRange()
+{
+    return _FollowRange;
+}
+
+float Enemy::GetMemoryFollowRange()
+{
+    return _MemoryFollowRange;
 }
 
 
@@ -182,12 +220,31 @@ void Enemy::SetFlickTime(float FlickTime)
     this->_FlickTime  = FlickTime;
 }
 
+void SetSearchTime();
+        void SetFollowRange();
+        void SetMemoryFollowRange();
+
+void Enemy::SetSearchTime(float SearchTime)
+{
+    _SearchTime = SearchTime;
+}
+
+void Enemy::SetFollowRange(float FollowRange)
+{
+    _FollowRange = FollowRange;
+}
+
+void Enemy::SetMemoryFollowRange(float MemoryFollowRange)
+{
+    _MemoryFollowRange = MemoryFollowRange;
+}
+
 
 // ___________________________________________________________________EnemyBuilder___________________________________________________________________
 
-Enemy::Builder::Builder(GameObject& Parent, std::string Label)
+Enemy::Builder::Builder(GameObject& Parent, std::string Label, Stats EnemyStats)
 {
-    _Enemy = new Enemy(Parent, Label);
+    _Enemy = new Enemy(Parent, Label,EnemyStats);
 }
 
 Enemy::Builder::~Builder()
@@ -289,15 +346,14 @@ Enemy* Enemy::Builder:: Build(){
 
 // ___________________________________________________________________EnemyIdle___________________________________________________________________
 
-#define DETECTION_RANGE 380*380
-#define MEMORY_RANGE 550*550
-
 EnemyIdle::EnemyIdle(const StateInfo& Specs):GenericState(Specs){}
 
-void EnemyIdle::PhysicsUpdate(StateMachine& Sm, float Dt){
-    float DistSq = Player::Self != nullptr ? Player::Self->Parent.Box.Center().DistanceSquared(Sm.Parent.Box.Center()) : DETECTION_RANGE+1;
+void EnemyIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
+{
 
-    if(DistSq < DETECTION_RANGE)
+    float DistSq = Player::Self != nullptr ? Player::Self->Parent.Box.Center().DistanceSquared(Sm.Parent.Box.Center()) : reinterpret_cast<Enemy*>(&Sm)->GetDetectionRange()+1;
+
+    if(DistSq < reinterpret_cast<Enemy*>(&Sm)->GetDetectionRange())
     {
         Sm.SetState(ENEMY_WALK);
         return;
@@ -307,12 +363,10 @@ void EnemyIdle::PhysicsUpdate(StateMachine& Sm, float Dt){
 
 // ___________________________________________________________________EnemyWalk___________________________________________________________________
 
-#define SEARCH_TIME 0.8f
-#define FOLLOW_RANGE 80*80
 
-EnemyWalk::EnemyWalk(const StateInfo& Specs):GenericState(Specs)
+EnemyWalk::EnemyWalk(const StateInfo& Specs):GenericState(Specs), _HasSetLimit(false)
 {
-    _SearchPath.SetLimit(SEARCH_TIME + Engine::RandomFloat());
+    
     _SearchPath.Restart();
 }
 
@@ -327,9 +381,9 @@ void EnemyWalk::Start()
 }
 
 void EnemyWalk::PhysicsUpdate(StateMachine& Sm, float Dt){
-    float DistSq = Player::Self != nullptr ? Player::Self->Parent.Box.Center().DistanceSquared(Sm.Parent.Box.Center()) : DETECTION_RANGE+1;
+    float DistSq = Player::Self != nullptr ? Player::Self->Parent.Box.Center().DistanceSquared(Sm.Parent.Box.Center()) : reinterpret_cast<Enemy*>(&Sm)->GetDetectionRange() +1;
 
-    if(DistSq > MEMORY_RANGE)
+    if(DistSq > reinterpret_cast<Enemy*>(&Sm)->GetMemoryFollowRange())
     {
         Path = std::queue<Vector2>();
         Sm.SetState(ENEMY_IDLE);
@@ -337,7 +391,7 @@ void EnemyWalk::PhysicsUpdate(StateMachine& Sm, float Dt){
     }
 
     _UpdateTime = false;
-    if(DistSq < FOLLOW_RANGE)
+    if(DistSq < reinterpret_cast<Enemy*>(&Sm)->GetFollowRange())
     {
         Path = std::queue<Vector2>();
         reinterpret_cast<Enemy*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt);
@@ -399,6 +453,13 @@ void EnemyWalk::PhysicsUpdate(StateMachine& Sm, float Dt){
 
 void EnemyWalk::Update(StateMachine& Sm, float Dt)
 {
+
+    if(!_HasSetLimit)
+    {
+         _SearchPath.SetLimit(reinterpret_cast<Enemy*>(&Sm)->GetSearchTime() + Engine::RandomFloat());
+         _HasSetLimit = true;
+    }
+
     if(_UpdateTime)
     {
         _SearchPath.Update(Dt);
@@ -426,6 +487,30 @@ void EnemyHurt::Update(StateMachine& Sm, float Dt)
     {
         Sm.SetState(ENEMY_IDLE);
         reinterpret_cast<Enemy*>(&Sm)->MyCollider->SetFriction(DEFAULT_FRICTION);
+    }
+   
+}
+
+// ___________________________________________________________________EnemyDeath___________________________________________________________________
+
+EnemyDeath::EnemyDeath(const StateInfo& Specs)
+: GenericState(Specs)
+{
+    _HurtTime.SetLimit(DEFAULT_INVULNERABILITY);
+}
+
+
+void EnemyDeath::Start()
+{
+    _HurtTime.Restart();
+}
+
+void EnemyDeath::Update(StateMachine& Sm, float Dt)
+{
+    _HurtTime.Update(Dt);
+    if(_HurtTime.Finished())
+    {
+        Sm.Parent.RequestDelete();
     }
    
 }
