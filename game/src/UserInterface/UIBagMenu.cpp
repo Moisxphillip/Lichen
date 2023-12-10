@@ -130,7 +130,6 @@ void UIBag::PlaceAtSlot(SlotSpace& SlotToPlace, UIItem* Item)
 void UIBag::RemoveFromSlot(UIItem* Item)
 {
 
-
     auto& Slot = GetSlot(Item->CurrentSlotNumber);
     if( Slot.SlotType == ItemClass::General)
     {

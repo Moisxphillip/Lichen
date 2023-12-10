@@ -462,7 +462,10 @@ $(OBJDIR)/Dialogue.o: game/src/Dialogue.cpp
 $(OBJDIR)/Dummy.o: game/src/Dummy.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/Enemy.o: game/src/Enemy.cpp
+$(OBJDIR)/Enemy.o: game/src/Enemy/Enemy.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/EnemyFactory.o: game/src/Enemy/EnemyFactory.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Malachi.o: game/src/Enemy/Malachi.cpp
@@ -472,9 +475,6 @@ $(OBJDIR)/Projectile.o: game/src/Enemy/Projectile.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Slime.o: game/src/Enemy/Slime.cpp
-	@echo "$(notdir $<)"
-	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
-$(OBJDIR)/EnemyFactory.o: game/src/EnemyFactory.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/EnemyTest.o: game/src/EnemyTest.cpp

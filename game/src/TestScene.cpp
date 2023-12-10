@@ -2,7 +2,7 @@
 #include "Dummy.hpp"
 #include "Enemy/Slime.hpp"
 // #include "Dialogue.hpp"
-#include "EnemyFactory.hpp"
+#include "Enemy/EnemyFactory.hpp"
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
 #include "Graphics/Draw.hpp"
@@ -19,7 +19,6 @@
 #include "UserInterface/UIController.hpp"
 #include "Mechanics/Inventory.hpp"
 #include "Enemy/Slime.hpp"
-#include "EnemyFactory.hpp"
 #include "Character/Player.hpp"
 #include "Tools/LoopSprite.hpp"
 #include "Tools/DistanceTrigger.hpp"
@@ -80,10 +79,7 @@ void Test01::LoadAssets()
     // Dialogueobj->Box.SetCenter(Vector2(640, 150));
 
     
-    GameObject* enemyObj = new GameObject(2);
-    enemyObj->AddComponent(EnemyFactory::CreateEnemy(*enemyObj, EnemyType::GRUB, Vector2(100, 100)));
     
-    AddGameObj(enemyObj);
 
     //Testing map V2
     GameObject* Tiles = new GameObject(-5);
@@ -271,10 +267,15 @@ void Test01::Update(float Dt)
    
     if(Input::Instance().KeyJustPressed(Key::Number1))
     {
+        // GameObject* slimeObj = new GameObject();
+        // Slime* slime = new Slime(*slimeObj);
+        // slimeObj->Box.SetCenter(Input::Instance().MousePosition());
+        // slimeObj->AddComponent(slime);
+        // AddGameObj(slimeObj);
+
+
         GameObject* slimeObj = new GameObject();
-        Slime* slime = new Slime(*slimeObj);
-        slimeObj->Box.SetCenter(Input::Instance().MousePosition());
-        slimeObj->AddComponent(slime);
+        slimeObj->AddComponent(EnemyFactory::CreateEnemy(*slimeObj, EnemyType::SLIME, Input::Instance().MousePosition()));
         AddGameObj(slimeObj);
     }
     if(Input::Instance().KeyJustPressed(Key::Number2) && Player::Self == nullptr)
