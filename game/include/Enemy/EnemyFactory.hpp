@@ -4,7 +4,8 @@
 
 #include "Enemy.hpp"
 
-enum EnemyType {GRUB, SLIME,MUSHROOM, WOLF, GOLEM};
+// TOTAL is only meant to count enum numbers
+enum EnemyType {GRUB, SLIME,MUSHROOM, WOLF,GOLEM ,TOTAL};
 
 class EnemyFactory{
 public:

@@ -37,17 +37,13 @@ Enemy::Enemy(GameObject& Parent, std::string Label, Stats EnemyStats):
     _MemoryFollowRange(DEFAULT_MEMORY_RANGE),
     _FlickTime(0.0f),
     _Flick(false),
+    _AttackTimePoint(0.f),
     MyStats(EnemyStats),
     MyCollider(nullptr)
     {
-        // TODO invert depedence
-        Parent.Represents = ENEMY_MASK | ENEMY_ATK_MASK;//Only use ATK_MASK in this part when you intend for the enemy to cause damage upon touch
-        Parent.Interacts =  PLAYER_MASK | ENEMY_MASK | CollisionMask::Terrain;
-        // EnemyCount++; TODO move enemycoutn to facotry
         _HitCooldown.SetLimit(DEFAULT_INVULNERABILITY);
         _HitCooldown.Update(DEFAULT_INVULNERABILITY);
         EnemyCount++;
-
     }
 
 
@@ -95,12 +91,8 @@ void Enemy::SMOnCollision(GameObject& Other)
 {
     if(_CurrState != ENEMY_HURT &&  _CurrState != ENEMY_DEATH && !Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) && static_cast<bool>(Other.Represents & PLAYER_ATK_MASK))
     {
-        Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
-        int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats, Parent.Box.Center());
-
-        
-            // Engine::Instance().CurrentScene().AddGameObj(Drop);
-        
+        // Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
+        // int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats, Parent.Box.Center());
 
         // TODO reaadd drop
         if(MyStats.HP <= 0)
@@ -122,18 +114,16 @@ void Enemy::SMOnCollision(GameObject& Other)
             // return;
         }
 
-        SetState(ENEMY_HURT);
-        MyCollider->ApplyForce(Other.Box.Center().DistVector2(Parent.Box.Center()).Normalized() * Atk->Data.Knockback * 50000);
-        MyCollider->SetFriction(0.05f);
-        _HitCooldown.Restart();
+        // SetState(ENEMY_HURT);
+        // MyCollider->ApplyForce(Other.Box.Center().DistVector2(Parent.Box.Center()).Normalized() * Atk->Data.Knockback * 50000);
+        // MyCollider->SetFriction(0.05f);
+        // _HitCooldown.Restart();
     }
 }
 
 
 void Enemy::MoveTo(Vector2 Destiny, float Dt)
 {
-
-
     Destiny.x < Parent.Box.Center().x ? SetFlip(Flip::N) : SetFlip(Flip::H);
     Vector2 Distance = Parent.Box.Center().DistVector2(Destiny);
 
@@ -190,6 +180,11 @@ float Enemy::GetMemoryFollowRange()
     return _MemoryFollowRange;
 }
 
+float Enemy::GetAttackTimePoint()
+{
+    return _AttackTimePoint;
+}
+
 
 void Enemy::SetAttackCooldown(float AttackCooldown){
     this->_AttackCooldown  = AttackCooldown;
@@ -239,12 +234,18 @@ void Enemy::SetMemoryFollowRange(float MemoryFollowRange)
     _MemoryFollowRange = MemoryFollowRange;
 }
 
+void Enemy::SettAttackTimePoint(float AttackTimePoint)
+{
+    _AttackTimePoint = AttackTimePoint;
+}
 
 // ___________________________________________________________________EnemyBuilder___________________________________________________________________
 
 Enemy::Builder::Builder(GameObject& Parent, std::string Label, Stats EnemyStats)
 {
     _Enemy = new Enemy(Parent, Label,EnemyStats);
+    _Enemy->Parent.Represents = ENEMY_MASK;
+    _Enemy->Parent.Interacts = PLAYER_MASK | ENEMY_MASK | CollisionMask::Terrain;
 }
 
 Enemy::Builder::~Builder()
@@ -296,6 +297,12 @@ Enemy::Builder& Enemy::Builder::SetKnockbackForce(float KnockbackForce){
 
 Enemy::Builder& Enemy::Builder::SetFlickTime(float FlickTime){
     _Enemy->SetFlickTime(FlickTime);
+    return *this;
+}
+
+Enemy::Builder& Enemy::Builder::SetAttackTimePoint(float AttackTimePoint)
+{
+    _Enemy->SettAttackTimePoint(AttackTimePoint);
     return *this;
 }
 
@@ -366,7 +373,7 @@ void EnemyIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
 
 EnemyWalk::EnemyWalk(const StateInfo& Specs):GenericState(Specs), _HasSetLimit(false)
 {
-    
+    _AttackCooldownTimer.Restart();
     _SearchPath.Restart();
 }
 
@@ -381,9 +388,11 @@ void EnemyWalk::Start()
 }
 
 void EnemyWalk::PhysicsUpdate(StateMachine& Sm, float Dt){
-    float DistSq = Player::Self != nullptr ? Player::Self->Parent.Box.Center().DistanceSquared(Sm.Parent.Box.Center()) : reinterpret_cast<Enemy*>(&Sm)->GetDetectionRange() +1;
+    Enemy* EnemySM = reinterpret_cast<Enemy*>(&Sm);
 
-    if(DistSq > reinterpret_cast<Enemy*>(&Sm)->GetMemoryFollowRange())
+    float DistSq = Player::Self != nullptr ? Player::Self->Parent.Box.Center().DistanceSquared(Sm.Parent.Box.Center()) : EnemySM->GetDetectionRange() +1;
+
+    if(DistSq > EnemySM->GetMemoryFollowRange())
     {
         Path = std::queue<Vector2>();
         Sm.SetState(ENEMY_IDLE);
@@ -391,10 +400,20 @@ void EnemyWalk::PhysicsUpdate(StateMachine& Sm, float Dt){
     }
 
     _UpdateTime = false;
-    if(DistSq < reinterpret_cast<Enemy*>(&Sm)->GetFollowRange())
+
+
+    if(DistSq < EnemySM->GetAttackRange() && _AttackCooldownTimer.Get()>=EnemySM->GetAttackCooldown())
     {
         Path = std::queue<Vector2>();
-        reinterpret_cast<Enemy*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt);
+        _AttackCooldownTimer.Restart();
+        Sm.SetState(ENEMY_ATTACK);
+        return;
+    }
+
+    if(DistSq < EnemySM->GetFollowRange())
+    {
+        Path = std::queue<Vector2>();
+        EnemySM->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt);
         return;
     }
     
@@ -448,11 +467,12 @@ void EnemyWalk::PhysicsUpdate(StateMachine& Sm, float Dt){
         }
         NextPoint = Path.front();
     }
-    reinterpret_cast<Enemy*>(&Sm)->MoveTo(NextPoint, Dt);
+    EnemySM->MoveTo(NextPoint, Dt);
 }
 
 void EnemyWalk::Update(StateMachine& Sm, float Dt)
 {
+    _AttackCooldownTimer.Update(Dt);
 
     if(!_HasSetLimit)
     {
@@ -516,31 +536,9 @@ void EnemyDeath::Update(StateMachine& Sm, float Dt)
 }
 
 
-
-// ___________________________________________________________________EnemyFighting___________________________________________________________________
-
-EnemyFighting::EnemyFighting(const StateInfo& Specs):GenericState(Specs){}
-
-void EnemyFighting::Update(StateMachine& Sm, float Dt){
-    Enemy* EnemySM = reinterpret_cast<Enemy*>(&Sm);
-
-    _AttackCooldownTimer.Update(Dt);
-
-    if(Dummy::Self != nullptr && EnemySM->Parent.Box.Center().Distance(Dummy::Self->Parent.Box.Center()) >=  EnemySM->GetAttackRange()){
-        Sm.SetState(ENEMY_IDLE);
-        return;
-    }
-
-    if(_AttackCooldownTimer.Get() >= EnemySM->GetAttackCooldown()){
-        Sm.SetState(ENEMY_ATTACK);
-        _AttackCooldownTimer.Restart();
-    }
-}
-
-
 // ___________________________________________________________________EnemyAttack___________________________________________________________________
 
-EnemyAttack::EnemyAttack(const StateInfo& Specs):GenericState(Specs){
+EnemyAttack::EnemyAttack(const StateInfo& Specs):GenericState(Specs), _HasAttacked(false){
     _AttackTimer.Restart();
 }
 
@@ -548,16 +546,34 @@ void EnemyAttack::PhysicsUpdate(StateMachine& Sm, float Dt){
 
     _AttackTimer.Update(Dt);
     Enemy* EnemySM = reinterpret_cast<Enemy*>(&Sm);
+
     if(_AttackTimer.Get()>ATTACK_TIME){
-        Sm.SetState(ENEMY_FIGHTING);
+        Sm.SetState(ENEMY_IDLE);
         _AttackTimer.Restart();
+        _HasAttacked = false;
+        return;
     }
 
-    // TODO create collider (see player for reference)
-
-    if(Dummy::Self != nullptr)
+    if(!_HasAttacked && Player::Self && _AttackTimer.Get() >= EnemySM->GetAttackTimePoint())
     {
-        Dummy::Self->MyCollider->ApplyForce((Dummy::Self->Parent.Box.Center()-EnemySM->Parent.Box.Center()).Normalized()*DEFAULT_KNOCKBACK_FORCE);
+        EnemySM->MyCollider->SetVelocity(Vector2::ZERO);
+    
+        GameObject* Atk = new GameObject;
+        Atk->Represents = ENEMY_ATK_MASK;
+
+        Vector2 Direction = EnemySM->Parent.Box.Center().DistVector2(Player::Self->Parent.Box.Center());
+
+        Atk->Box.SetCenter(EnemySM->Parent.Box.Center() + Vector2(Direction.x/std::fabs(Direction.x) *40.0f, 0.0f));
+        Atk->AddComponent(new Attack(*Atk, EnemySM->MyStats, {10, 1, ScalingStats::Strength}, EnemySM->Parent.Interacts, 0.3));
+        AACircle* Ball = new AACircle(*Atk, ColliderKind::Trigger, Circle(0,0, 80));
+        Ball->SetFriction(0.0f);
+        Atk->AddComponent(Ball);
+
+        Engine::Instance().CurrentScene().AddGameObj(Atk);
+
+        _HasAttacked = true;
     }
+
+    
 }
 

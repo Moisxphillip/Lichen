@@ -137,6 +137,7 @@ GENERATED += $(OBJDIR)/Scene.o
 GENERATED += $(OBJDIR)/Shader.o
 GENERATED += $(OBJDIR)/SimpleMovement.o
 GENERATED += $(OBJDIR)/Slime.o
+GENERATED += $(OBJDIR)/SlimeEnemy.o
 GENERATED += $(OBJDIR)/Sound.o
 GENERATED += $(OBJDIR)/Sprite.o
 GENERATED += $(OBJDIR)/StageScene.o
@@ -228,6 +229,7 @@ OBJECTS += $(OBJDIR)/Scene.o
 OBJECTS += $(OBJDIR)/Shader.o
 OBJECTS += $(OBJDIR)/SimpleMovement.o
 OBJECTS += $(OBJDIR)/Slime.o
+OBJECTS += $(OBJDIR)/SlimeEnemy.o
 OBJECTS += $(OBJDIR)/Sound.o
 OBJECTS += $(OBJDIR)/Sprite.o
 OBJECTS += $(OBJDIR)/StageScene.o
@@ -477,6 +479,9 @@ $(OBJDIR)/Projectile.o: game/src/Enemy/Projectile.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Slime.o: game/src/Enemy/Slime.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/SlimeEnemy.o: game/src/Enemy/SlimeEnemy.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/EnemyTest.o: game/src/EnemyTest.cpp

@@ -9,8 +9,8 @@ class UIComponent;
 
 class UIController : public Component {
 private:
-    bool _UIHidden;
-    bool _UIFocused;
+    static bool _UIHidden;
+    static bool _UIFocused;
     std::vector<std::shared_ptr<UIComponent>> UIComponents;
 
 public: 
@@ -28,8 +28,8 @@ public:
     std::weak_ptr<UIComponent> GetComponentAtPosition(Vector2 Position);
     std::weak_ptr<UIComponent> GetComponentByClass(std::string Class);
 
-    bool IsUIHidden();
-    bool IsUIFocused();
+    static bool IsUIHidden();
+    static bool IsUIFocused();
     void ShowUI();
     void HideUI();
     void ToggleHideUI();

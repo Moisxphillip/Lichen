@@ -15,13 +15,15 @@
 
 #define DEFAULT_HP 20
 #define DEFAULT_ATTACK_COOLDOWN 3
-#define DEFAULT_DETECTION_RANGE 380*380
-#define DEFAULT_ATTACK_RANGE 150
+
 #define DEFAULT_DAMAGE 2
 #define DEFAULT_KNOCKBACK_FORCE 3000
 #define DEFAULT_MOVIMENTATION_SPEED 2000
 #define DEFAULT_SEARCH_TIME 0.8f
+
+#define DEFAULT_ATTACK_RANGE 90*90
 #define DEFAULT_FOLLOW_RANGE 80*80
+#define DEFAULT_DETECTION_RANGE 380*380
 #define DEFAULT_MEMORY_RANGE 550*550
 
 #define DEFAULT_INVULNERABILITY 0.6f
@@ -40,7 +42,7 @@
 
 
 class Enemy : public StateMachine {
-    private:
+    protected:
         Timer _HitCooldown;
         float _FlickTime;
         bool _Flick;
@@ -52,6 +54,7 @@ class Enemy : public StateMachine {
         float _Damage;
         float _KnockbackForce;
         float _MovimentationSpeed;
+        float _AttackTimePoint;
 
         float _SearchTime;
         float _FollowRange;
@@ -66,10 +69,10 @@ class Enemy : public StateMachine {
         
         ~Enemy();
 
-        void SMStart();
-        void MoveTo(Vector2 Destiny, float Dt);
-        void SMUpdate(float Dt);
-        void SMOnCollision(GameObject& Other);
+        virtual void SMStart();
+        virtual void MoveTo(Vector2 Destiny, float Dt);
+        virtual void SMUpdate(float Dt);
+        virtual void SMOnCollision(GameObject& Other);
         
         AARectangle* Collider;
 
@@ -83,6 +86,7 @@ class Enemy : public StateMachine {
         float GetSearchTime();
         float GetFollowRange();
         float GetMemoryFollowRange();
+        float GetAttackTimePoint();
 
         void SetAttackCooldown(float AttackCooldown);
         void SetDetectionRange(float DetectionRange);
@@ -94,6 +98,7 @@ class Enemy : public StateMachine {
         void SetSearchTime(float SearchTime);
         void SetFollowRange(float FollowRange);
         void SetMemoryFollowRange(float MemoryFollowRange);
+        void SettAttackTimePoint(float AttackTimePoint);
 
         class Builder{
         private:
@@ -120,6 +125,7 @@ class Enemy : public StateMachine {
             Builder& SetSearchTime(float SearchTime);
             Builder& SetFollowRange(float FollowRange);
             Builder& SetMemoryFollowRange(float MemoryFollowRange);
+            Builder& SetAttackTimePoint(float AttackTimePoint);
 
             void Reset();
             Enemy* Build();
@@ -131,60 +137,56 @@ class EnemyIdle : public GenericState
 {
     public:
         EnemyIdle(const StateInfo& Specs);
-        void PhysicsUpdate(StateMachine& Sm, float Dt);
+        virtual void PhysicsUpdate(StateMachine& Sm, float Dt);
 };
 
 class EnemyWalk : public GenericState
  {
-    private:
+    protected:
         bool _HasSetLimit;
         Timer _SearchPath;
         bool _UpdateTime;
+        Timer _AttackCooldownTimer;
         std::queue<Vector2> Path;
 
     public:
 
         EnemyWalk(const StateInfo& Specs);
-        void Start();
-        void PhysicsUpdate(StateMachine& Sm, float Dt);
-        void Update(StateMachine& Sm, float Dt);
+        virtual void Start();
+        virtual void PhysicsUpdate(StateMachine& Sm, float Dt);
+        virtual void Update(StateMachine& Sm, float Dt);
 };
 
 
 class EnemyHurt : public GenericState
 {
-    private:
+    protected:
         Timer _HurtTime;
     public:
         EnemyHurt(const StateInfo& Specs);
-        void Start();
-        void Update(StateMachine& Sm, float Dt);
+        virtual void Start();
+        virtual void Update(StateMachine& Sm, float Dt);
 };
 
 class EnemyDeath: public GenericState
 {
-    private:
+    protected:
         Timer _HurtTime;
     public:
         EnemyDeath(const StateInfo& Specs);
-        void Start();
-        void Update(StateMachine& Sm, float Dt);
-};
-
-class EnemyFighting : public GenericState {
-    private:
-        Timer _AttackCooldownTimer;
-    public:
-        EnemyFighting(const StateInfo& Specs);
-        void Update(StateMachine& Sm, float Dt);
+        virtual void Start();
+        virtual void Update(StateMachine& Sm, float Dt);
 };
 
 class EnemyAttack : public GenericState {
-    private:
+    protected:
         Timer _AttackTimer;
+        bool _HasAttacked;
     public:
         EnemyAttack(const StateInfo& Specs);
-        void PhysicsUpdate(StateMachine& Sm, float Dt);
+        virtual void PhysicsUpdate(StateMachine& Sm, float Dt);
 };
+
+
 
 #endif
