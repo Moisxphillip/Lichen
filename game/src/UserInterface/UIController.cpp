@@ -6,7 +6,10 @@
 
 UIController* UIController::CurrentUI = nullptr;
 
-UIController::UIController(GameObject& Parent):Component(Parent),_UIFocused(false), _UIHidden(false)
+bool UIController::_UIHidden = false;
+bool UIController::_UIFocused = false;
+
+UIController::UIController(GameObject& Parent):Component(Parent)
 {
     CurrentUI = this;
 }
@@ -26,12 +29,12 @@ void UIController::Start(){
 }
 
 void UIController::Update(float Dt){
+    _UIFocused = false;
+
     if(_UIHidden)
     {
         return;
     }
-
-    _UIFocused = false;
 
     Vector2 MousePos = Input::Instance().MousePosition();
 
