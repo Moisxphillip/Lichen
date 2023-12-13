@@ -139,7 +139,7 @@ void ParticleManager::Render()
     }
 }
 
-#define WIND_SPEED 180
+#define WIND_SPEED 160
 #define WIND_VARIATION 20
 
 #include <iostream>
@@ -155,24 +155,42 @@ void ParticleManager::_WindSimulation()
     }
 }
 
-Particle PremadeParticles::Leaf(Vector2 Position)
+Particle PremadeParticles::Leaf1(Vector2 Position)
 {
     Particle z;
     z.Type = 0;
-    // z.Size =  Vector2(1,1);
     z.Position = Position;
-    // z.Velocity =  Vector2(50,0);
-    // z.Acceleration =  Vector2(0,300);
-    // z.Angle = 2.0f * M_PI * Engine::RandomFloat();
     z.RotationPerSec = 2.0f * M_PI * (Engine::RandomFloat()-0.5f);
     z.Spread = 3.1415f/2.0f;
     z.Duration = 4.0f;
     z.Windswept = true;
-    // z.ColorInterpolation = true;
     z.StartColor = Color("#67c685");
-    // z.EndColor = Color("#00440088");
+    return z;
+}
 
-    // ParticleManager::Instance().Emit(z);
+Particle PremadeParticles::Leaf2(Vector2 Position)
+{
+    Particle z;
+    z.Type = 1;
+    z.Position = Position;
+    z.RotationPerSec = 2.0f * M_PI * (Engine::RandomFloat()-0.5f);
+    z.Spread = 3.1415f/2.0f;
+    z.Duration = 4.0f;
+    z.Windswept = true;
+    z.StartColor = Color("#f0e72e");
+    return z;
+}
+
+Particle PremadeParticles::Leaf3(Vector2 Position)
+{
+    Particle z;
+    z.Type = 1;
+    z.Position = Position;
+    z.RotationPerSec = 2.0f * M_PI * (Engine::RandomFloat()-0.5f);
+    z.Spread = 3.1415f/2.0f;
+    z.Duration = 4.0f;
+    z.Windswept = true;
+    z.StartColor = Color("#f95300");
     return z;
 }
 
@@ -185,13 +203,13 @@ Particle PremadeParticles::Spore(Vector2 Position)
     // z.Velocity =  Vector2(50,0);
     // z.Acceleration =  Vector2(0,300);
     // z.Angle = 2.0f * M_PI * Engine::RandomFloat();
-    z.RotationPerSec = 2.0f * M_PI * (Engine::RandomFloat()-0.5f);
+    z.RotationPerSec = 1.0f * M_PI * (Engine::RandomFloat()-0.5f);
     z.Spread = 3.1415f/2.0f;
     z.Duration = 4.0f;
-    z.Windswept = true;
-    // z.ColorInterpolation = true;
-    z.StartColor = Color("#00ff00ff");
-    // z.EndColor = Color("#00440088");
+    // z.Windswept = true;
+    z.ColorInterpolation = true;
+    z.StartColor = Color("#7c043700");
+    z.EndColor = Color("#7c0437ff");
 
     // ParticleManager::Instance().Emit(z);
     return z;

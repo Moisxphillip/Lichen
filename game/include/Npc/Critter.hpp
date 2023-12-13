@@ -5,7 +5,11 @@
 #include "Tools/Timer.hpp"
 #include "Tools/Xrand.hpp"
 
-
+class Critter
+{
+    public:
+        static int CritterCount;
+};
 
 //-------------------------------------------Bird----------------------------------------------
 class Bird : public StateMachine

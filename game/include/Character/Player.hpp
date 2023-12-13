@@ -14,6 +14,8 @@ class Player : public StateMachine
         Timer _HitCooldown;
         Stats _MyStats;
         int _ExpToLevelUp;
+        Timer _StaminaRec;
+        Timer _ManaRec;
 
     public:
         
@@ -29,6 +31,8 @@ class Player : public StateMachine
         void LevelUpMsg();
         void AddExperience(int Exp);
         void DoAttack();
+        void SoundAtk();
+        void SoundHurt();
         Stats& GetStats();
 };
 

@@ -239,7 +239,7 @@ void Malachi::Shoot()
     Vector2 Offset = Dir * 100;
     Blt->Box.SetPosition(Parent.Box.Center() + Offset);
     Blt->AddComponent(new Projectile(*Blt, Dir*2.0f, Sprt->GetWidth()/3, PLAYER_ATK_MASK | PLAYER_MASK));
-    Blt->AddComponent(new Attack(*Blt, MyStats, {10, 1, ScalingStats::Intelect},
+    Blt->AddComponent(new Attack(*Blt, MyStats, {MyStats.Int*2, 1, ScalingStats::Intelect},
         Blt->Interacts, 20.0f));
     Engine::Instance().CurrentScene().AddGameObj(Blt);
     }

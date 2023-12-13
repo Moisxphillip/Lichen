@@ -24,6 +24,11 @@
 #define PLAYER_DEFAULT_FRICTION 0.1f
 #define PLAYER_DEFAULT_INVULNERABILITY 1.5f
 
+#define PLAYER_REC_STAMINA_TIME 10.0f
+#define PLAYER_REC_MANA_TIME 1.5f
+
+#define PLAYER_SPECIAL_COST 20
+
 Player* Player::Self = nullptr;
 
 Player::Player(GameObject& Parent, std::string Label)
@@ -32,12 +37,15 @@ Player::Player(GameObject& Parent, std::string Label)
     _Type = COMPONENT_PLAYER;
     Parent.Represents = PLAYER_MASK;
     Parent.Interacts = ENEMY_ATK_MASK | INTERACT_MASK | CollisionMask::Terrain;
-    _MyStats = Stats{100, 100, 1, 0, 5, 25, 5, 5, 2, 3, 50, 100};
+    _MyStats = Stats{100, 100, 1, 0, 5, 5, 5, 5, 2, 3, 50, 100};
     _ExpToLevelUp = Combat::LevelUpExp(_MyStats.Level);
     MyCollider = nullptr;
     Self = this;
     _HitCooldown.SetLimit(PLAYER_DEFAULT_INVULNERABILITY);
     _HitCooldown.Update(PLAYER_DEFAULT_INVULNERABILITY);
+    
+    _ManaRec.SetLimit(PLAYER_REC_MANA_TIME);
+    _StaminaRec.SetLimit(PLAYER_REC_STAMINA_TIME);
 }
 
 Player::~Player()
@@ -99,6 +107,26 @@ bool Flick = false;
 float FlickTime = 0.0f;
 void Player::SMUpdate(float Dt)
 {   
+    if(_MyStats.Mana != _MyStats.MaxMana)
+    {
+        _ManaRec.Update(Dt);
+        if(_ManaRec.Get() >= PLAYER_REC_MANA_TIME - (PLAYER_REC_MANA_TIME * float(_MyStats.Int)/100.0f))
+        {
+            _MyStats.Mana++;
+            _ManaRec.Restart();
+        }
+    }
+    
+    if(_MyStats.Stamina != _MyStats.MaxStamina)
+    {
+        _StaminaRec.Update(Dt);
+        if(_StaminaRec.Get() >= PLAYER_REC_STAMINA_TIME - (PLAYER_REC_STAMINA_TIME * float(_MyStats.Dex)/100.0f))
+        {
+            _MyStats.Stamina++;
+            _StaminaRec.Restart();
+        }
+    }
+
     if(!_HitCooldown.Finished())
     {
         _HitCooldown.Update(Dt);
@@ -140,6 +168,7 @@ void Player::SMOnCollision(GameObject& Other)
             SetState(PLAYER_DEATH);
             return;
         }
+        SoundHurt();
         SetState(PLAYER_HURT);
         _HitCooldown.Restart();
         MyCollider->ApplyForce(Other.Box.Center().DistVector2(Parent.Box.Center()).Normalized() * Atk->Data.Knockback * KNOCKBACK);
@@ -209,14 +238,74 @@ void Player::DoAttack()
     Direction.x <= 0 ? SetFlip(Flip::H) : SetFlip(Flip::N);
 
     Atk->Box.SetCenter(Parent.Box.Center() + Vector2(Direction.x/std::fabs(Direction.x) *40.0f, 0.0f));
-    
-    Atk->AddComponent(new Attack(*Atk, GetStats(), {10, 1, ScalingStats::Strength}, Parent.Interacts, 0.3));
+    _MyStats.Str;
+    Atk->AddComponent(new Attack(*Atk, GetStats(), {_MyStats.Str * 2, 1, ScalingStats::Strength}, Parent.Interacts, 0.3));
     AACircle* Ball = new AACircle(*Atk, ColliderKind::Trigger, Circle(0,0, 80));
     Ball->SetFriction(0.0f);
     Atk->AddComponent(Ball);
 
+    SoundAtk();
+
     Engine::Instance().CurrentScene().AddGameObj(Atk);
     SetState(PLAYER_ATTACK);
+}
+#include "Tools/ElementLoader.hpp"
+void Player::SoundAtk()
+{
+    int i = Engine::RandomUint()%5;
+    switch(i)
+    {
+        case 0:
+            FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/player/player_atk_1.ogg", 20);
+            break;
+        case 1:
+            FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/player/player_atk_2.ogg", 20);
+            break;
+        case 2:
+            FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/player/player_atk_3.ogg", 20);
+            break;
+        case 3:
+            FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/player/player_atk_4.ogg", 20);
+            break;
+        case 4:
+            FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/player/player_atk_5.ogg", 20);
+            break;
+        default:
+            break;
+    }
+
+    i = Engine::RandomUint()%2;
+    if(i)
+    {
+        FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/player/attack_slash_1.ogg", 30);
+        return;
+    }
+    FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/player/attack_slash_2.ogg", 30);
+}
+
+void Player::SoundHurt()
+{
+    int i = Engine::RandomUint()%5;
+    switch(i)
+    {
+        case 0:
+            FastCreate::PlayOnce("./res/audio/player/player_hurt_1.ogg", 20);
+            break;
+        case 1:
+            FastCreate::PlayOnce("./res/audio/player/player_hurt_2.ogg", 20);
+            break;
+        case 2:
+            FastCreate::PlayOnce("./res/audio/player/player_hurt_3.ogg", 20);
+            break;
+        case 3:
+            FastCreate::PlayOnce("./res/audio/player/player_hurt_4.ogg", 20);
+            break;
+        case 4:
+            FastCreate::PlayOnce("./res/audio/player/player_hurt_5.ogg", 20);
+            break;
+        default:
+            break;
+    }
 }
 
 Stats& Player::GetStats()
@@ -240,16 +329,9 @@ void PlayerIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
         return;
     }
 
-    if(Ip.MouseJustPressed(MouseButton::Right))
+    if(Ip.MouseJustPressed(MouseButton::Right) && Player::Self->GetStats().Mana > PLAYER_SPECIAL_COST)
     {
-        if(Player::Self->GetStats().Mana>0)
-        {
-            Player::Self->GetStats().Mana-=5;
-        }
-        else
-        {
-            Player::Self->GetStats().Mana=100;
-        }
+        Player::Self->GetStats().Mana-=PLAYER_SPECIAL_COST;
         Sm.SetState(PLAYER_SPECIAL);
         return;
     }
@@ -269,22 +351,15 @@ void PlayerIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
         return;
     }
 
-    if(Ip.KeyJustPressed(Key::Space))
+    if(Ip.KeyJustPressed(Key::Space) && Player::Self->GetStats().Stamina > 0)
     {
-        if(Player::Self->GetStats().Stamina>0)
-        {
-            Player::Self->GetStats().Stamina--;
-        }
-        else
-        {
-            Player::Self->GetStats().Stamina=3;
-        }
+        Player::Self->GetStats().Stamina--;
         Sm.SetState(PLAYER_DASH);
     }
 }
 
 //------------------------------WALK------------------------------
-#define WALK_FORCE 3000 //Newtons
+#define WALK_FORCE 3500 //Newtons
 
 
 PlayerWalk::PlayerWalk(const StateInfo& Specs)
@@ -302,6 +377,12 @@ void PlayerWalk::PhysicsUpdate(StateMachine& Sm, float Dt)
         return;
     }
 
+    if(Ip.MouseJustPressed(MouseButton::Right) && Player::Self->GetStats().Mana > PLAYER_SPECIAL_COST)
+    {
+        Player::Self->GetStats().Mana-=PLAYER_SPECIAL_COST;
+        Sm.SetState(PLAYER_SPECIAL);
+        return;
+    }
 
     int x = Ip.KeyPressedDown(Key::D) - Ip.KeyPressedDown(Key::A);
     int y = Ip.KeyPressedDown(Key::S) - Ip.KeyPressedDown(Key::W);
@@ -321,17 +402,9 @@ void PlayerWalk::PhysicsUpdate(StateMachine& Sm, float Dt)
     }
 
     //Go to dash
-    if(Ip.KeyJustPressed(Key::Space))
+    if(Ip.KeyJustPressed(Key::Space) && Player::Self->GetStats().Stamina > 0)
     {
-        // Sm.LastDirection = Vector2(x, y).Normalized();
-                if(Player::Self->GetStats().Stamina>0)
-        {
-            Player::Self->GetStats().Stamina--;
-        }
-        else
-        {
-            Player::Self->GetStats().Stamina=3;
-        }
+        Player::Self->GetStats().Stamina--;
         Sm.SetState(PLAYER_DASH);
     }
 

@@ -9,25 +9,23 @@ DistanceTrigger::DistanceTrigger(GameObject& Parent, Component* Subject, float M
 
 void DistanceTrigger::SetOnActivation(std::function<void()> Activation)
 {
-    if(_Mode != DistTriggerMode::Custom)
-    {
-        return;
-    }
     _OnActive = Activation;
 }
 
 void DistanceTrigger::SetOnInactivation(std::function<void()> Inactivation)
 {
-    if(_Mode != DistTriggerMode::Custom)
-    {
-        return;
-    }
     _OnInactive = Inactivation;
 }
 
 bool DistanceTrigger::_OnBounds()
 {
-    return _Subject->Parent.Box.Center().DistanceSquared(Player::Self->Parent.Box.Position()) < _MaxDistance;
+    return (Player::Self != nullptr ? _Subject->Parent.Box.Center().DistanceSquared(Player::Self->Parent.Box.Position()) < _MaxDistance : false);
+}
+
+void DistanceTrigger::Start()
+{
+    // bool Is = _OnBounds();
+    // _Active = _Subject->Active ;
 }
 
 void DistanceTrigger::Update(float Dt)
@@ -76,10 +74,7 @@ void DistanceTrigger::Update(float Dt)
             if(!_Active && _OnBounds())
             {
                 _Active = true;
-                if(_OnActive)
-                {
-                    _OnActive();
-                }
+                _OnActive();
             }
             else if (_Active && !_OnBounds())
             {

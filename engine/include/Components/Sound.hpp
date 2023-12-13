@@ -20,15 +20,16 @@ class Sound : public Component
     
     public:    
         bool Pan;
+        bool Side;
         bool Linear;
         bool SelfDestruct;
         Sound(GameObject& Parent);
         Sound(GameObject& Parent, std::string Path);
         ~Sound();
 
-        void Play(int Times = 0);
-        void Stop();
-        void Volume(int Value);
+        //Times 0: once
+        void Play(int Times = 0, int FadeIn = 0);
+        void Stop(int FadeOut = 0);
         void Open(std::string Path);
         bool IsOpen();
         bool IsPlaying();

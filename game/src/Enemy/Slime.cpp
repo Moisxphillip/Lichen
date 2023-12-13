@@ -52,7 +52,7 @@ void Slime::SMStart()
     MyCollider->SetFriction(SLIME_DEFAULT_FRICTION);
     MyCollider->GetBall().SetCenter(Parent.Box.Center());
     Parent.AddComponent(MyCollider);
-    Parent.AddComponent(new Attack(Parent, MyStats, {10, 1, ScalingStats::Strength}, Parent.Interacts));
+    Parent.AddComponent(new Attack(Parent, MyStats, {MyStats.Str*2, 1, ScalingStats::Strength}, Parent.Interacts));
     Parent.AddComponent(new DistanceTrigger(Parent, this, 2560, DistTriggerMode::Delete)); //TODO Adjust distance value to suitable values
     //Create an idle state
     StateInfo SI = {SLIME_IDLE, 6, 6, 0.2f, true, true}; //these are for setting up the spritesheet portion on update

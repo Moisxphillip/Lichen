@@ -27,6 +27,7 @@ class DistanceTrigger : public Component
         DistanceTrigger(GameObject& Parent, Component* Subject, float MaxDistance, DistTriggerMode Mode = DistTriggerMode::Disable);
         void SetOnActivation(std::function<void()> Activation);
         void SetOnInactivation(std::function<void()> Inactivation);
+        void Start();
         void Update(float Dt);
 };
 

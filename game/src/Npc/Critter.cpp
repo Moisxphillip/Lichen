@@ -6,13 +6,17 @@
 #define BIRD_FLY SMState::Type02
 #define BIRD_PECK SMState::Type03
 
+int Critter::CritterCount = 0;
+
 Bird::Bird(GameObject& Parent, std::string Label)
 : StateMachine(Parent, Label)
 {
+    Critter::CritterCount++;
 }
 
 Bird::~Bird()
 {
+    Critter::CritterCount--;
 }
 
 void Bird::SMStart()
@@ -137,10 +141,12 @@ void BirdPeck::Update(StateMachine& Sm, float Dt)
 Worm::Worm(GameObject& Parent, std::string Label)
 : StateMachine(Parent, Label)
 {
+    Critter::CritterCount++;
 }
 
 Worm::~Worm()
 {
+    Critter::CritterCount--;
 }
 
 void Worm::SMStart()

@@ -68,7 +68,9 @@ class ParticleManager
 class PremadeParticles
 {
     public:
-        static Particle Leaf(Vector2 Position);
+        static Particle Leaf1(Vector2 Position);
+        static Particle Leaf2(Vector2 Position);
+        static Particle Leaf3(Vector2 Position);
         static Particle Spore(Vector2 Position);
         static Particle Energy(Vector2 Position);
 

@@ -77,6 +77,7 @@ GENERATED += $(OBJDIR)/AACollider.o
 GENERATED += $(OBJDIR)/AARay.o
 GENERATED += $(OBJDIR)/AARectangle.o
 GENERATED += $(OBJDIR)/AStar.o
+GENERATED += $(OBJDIR)/ActiveArea.o
 GENERATED += $(OBJDIR)/Alien.o
 GENERATED += $(OBJDIR)/Attack.o
 GENERATED += $(OBJDIR)/Bullet.o
@@ -167,6 +168,7 @@ OBJECTS += $(OBJDIR)/AACollider.o
 OBJECTS += $(OBJDIR)/AARay.o
 OBJECTS += $(OBJDIR)/AARectangle.o
 OBJECTS += $(OBJDIR)/AStar.o
+OBJECTS += $(OBJDIR)/ActiveArea.o
 OBJECTS += $(OBJDIR)/Alien.o
 OBJECTS += $(OBJDIR)/Attack.o
 OBJECTS += $(OBJDIR)/Bullet.o
@@ -535,6 +537,9 @@ $(OBJDIR)/MainMenu.o: game/src/Scene/MainMenu.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/TestScene.o: game/src/TestScene.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/ActiveArea.o: game/src/Tools/ActiveArea.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Controls.o: game/src/Tools/Controls.cpp

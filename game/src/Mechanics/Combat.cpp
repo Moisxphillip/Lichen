@@ -3,6 +3,7 @@
 #include "Core/Engine.hpp"
 #include "Components/Text.hpp"
 #include "Tools/TimedText.hpp"
+#include "Tools/ElementLoader.hpp"
 #include "Tools/SimpleMovement.hpp"
 
 #include <cmath>
@@ -42,6 +43,7 @@ int Combat::CalculateDamage(Stats& Attacker, AttackData& AtkData, Stats& Defende
         Position += Vector2(Engine::RandomFloat() * 80.0f, 0.0f).Rotated(2.0f*M_PI * Engine::RandomFloat());
         Dmg->Box.SetPosition(Position);
         Engine::Instance().CurrentScene().AddGameObj(Dmg);
+        FastCreate::PlayPanOnce(Position, "./res/audio/other/hit_feedback.ogg", 60);
     }
 
     return FinalDamage;

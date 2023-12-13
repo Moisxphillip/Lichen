@@ -4,7 +4,7 @@
 #include "Tools/Tools.hpp"
 #include <ctime>
 
-#define SOUNDCHANNELS 64
+#define SOUNDCHANNELS 48
 
 //Set value for singleton class
 Engine* Engine::_GameInstance = nullptr;
