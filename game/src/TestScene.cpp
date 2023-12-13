@@ -432,84 +432,87 @@ void Test01::Resume()
     // Snd->AddComponent(Dt);
     // AddGameObj(Snd);
 
-    if(text && Engine::Instance().GetPing())
-    {
-        text->SetText(std::to_string(1.0f/Dt) + " Fps");
-    }
+
+    // ______________________________________________________ Added logic___________________
+
+//     if(text && Engine::Instance().GetPing())
+//     {
+//         text->SetText(std::to_string(1.0f/Dt) + " Fps");
+//     }
 
    
-    if(Input::Instance().KeyJustPressed(Key::Number1))
-    {
-        // GameObject* slimeObj = new GameObject();
-        // Slime* slime = new Slime(*slimeObj);
-        // slimeObj->Box.SetCenter(Input::Instance().MousePosition());
-        // slimeObj->AddComponent(slime);
-        // AddGameObj(slimeObj);
+//     if(Input::Instance().KeyJustPressed(Key::Number1))
+//     {
+//         // GameObject* slimeObj = new GameObject();
+//         // Slime* slime = new Slime(*slimeObj);
+//         // slimeObj->Box.SetCenter(Input::Instance().MousePosition());
+//         // slimeObj->AddComponent(slime);
+//         // AddGameObj(slimeObj);
 
 
-        GameObject* slimeObj = new GameObject();
-        EnemyType enmy = static_cast<EnemyType> (Engine::RandomUint() % (int)EnemyType::TOTAL);
-        std::cout<<enmy<<std::endl;
+//         GameObject* slimeObj = new GameObject();
+//         EnemyType enmy = static_cast<EnemyType> (Engine::RandomUint() % (int)EnemyType::TOTAL);
+//         std::cout<<enmy<<std::endl;
 
-        slimeObj->AddComponent(EnemyFactory::CreateEnemy(*slimeObj, EnemyType::SLIME, Input::Instance().MousePosition()));
-        AddGameObj(slimeObj);
-    }
-    if(Input::Instance().KeyJustPressed(Key::Number2) && Player::Self == nullptr)
-    {
-            GameObject* playerObj = new GameObject();
-            Player* player = new Player(*playerObj);
-            playerObj->Box.SetCenter(Vector2(640, 750));
-            playerObj->AddComponent(player);
-            AddGameObj(playerObj);
-    }
-    if(Input::Instance().KeyJustPressed(Key::Number3) && Malachi::Self == nullptr)
-    {
-            GameObject* Obj = new GameObject();
-            Malachi* Mala = new Malachi(*Obj);
-            Obj->Box.SetCenter(Input::Instance().MousePosition());
-            Obj->AddComponent(Mala);
-            AddGameObj(Obj);
-    }
+//         slimeObj->AddComponent(EnemyFactory::CreateEnemy(*slimeObj, EnemyType::SLIME, Input::Instance().MousePosition()));
+//         AddGameObj(slimeObj);
+//     }
+//     if(Input::Instance().KeyJustPressed(Key::Number2) && Player::Self == nullptr)
+//     {
+//             GameObject* playerObj = new GameObject();
+//             Player* player = new Player(*playerObj);
+//             playerObj->Box.SetCenter(Vector2(640, 750));
+//             playerObj->AddComponent(player);
+//             AddGameObj(playerObj);
+//     }
+//     if(Input::Instance().KeyJustPressed(Key::Number3) && Malachi::Self == nullptr)
+//     {
+//             GameObject* Obj = new GameObject();
+//             Malachi* Mala = new Malachi(*Obj);
+//             Obj->Box.SetCenter(Input::Instance().MousePosition());
+//             Obj->AddComponent(Mala);
+//             AddGameObj(Obj);
+//     }
 
-    if(Input::Instance().KeyJustPressed(Key::Number8))
-    {
-        _Fader->SetFinishColor(Color("#1228093a"));
-    }
-    if(Input::Instance().KeyJustPressed(Key::Number9))
-    {
-        _Fader->SetFinishColor(Color("#50148a33"));
-    }
-    if(Input::Instance().KeyJustPressed(Key::Number0))
-    {
-        _Fader->SetFinishColor(Color("#00000000"));
-    }
+//     if(Input::Instance().KeyJustPressed(Key::Number8))
+//     {
+//         _Fader->SetFinishColor(Color("#1228093a"));
+//     }
+//     if(Input::Instance().KeyJustPressed(Key::Number9))
+//     {
+//         _Fader->SetFinishColor(Color("#50148a33"));
+//     }
+//     if(Input::Instance().KeyJustPressed(Key::Number0))
+//     {
+//         _Fader->SetFinishColor(Color("#00000000"));
+//     }
 
-    ParticleManager::Instance().Update(Dt);
-    if((Input::Instance().KeyPressedDown(Key::Escape) || Input::Instance().QuitRequested())) 
-	{
-		_PopRequested = true;
-		_QuitRequested = true;
-        text = nullptr;
-    }
-}
+//     ParticleManager::Instance().Update(Dt);
+//     if((Input::Instance().KeyPressedDown(Key::Escape) || Input::Instance().QuitRequested())) 
+// 	{
+// 		_PopRequested = true;
+// 		_QuitRequested = true;
+//         text = nullptr;
+//     }
+// }
 
-void Test01::Render()
-{
-    ParticleManager::Instance().Render();
-}
+// void Test01::Render()
+// {
+//     ParticleManager::Instance().Render();
+// }
 
 
-void Test01::Start()
-{
-    LoadAssets();
-}
+// void Test01::Start()
+// {
+//     LoadAssets();
+// }
 
-void Test01::Pause()
-{
+// void Test01::Pause()
+// {
 
-}
+// }
 
-void Test01::Resume()
-{
+// void Test01::Resume()
+// {
 
-}
+// }

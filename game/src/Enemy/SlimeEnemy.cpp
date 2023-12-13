@@ -49,28 +49,7 @@ void Slime::SMOnCollision(GameObject& Other)
     }
 }
 
-void Slime::Update(float Dt)
-{
-    // if (_CurrState == SMState::None)
-    // {
-    //     return;
-    // }
-    // SMState Now = _CurrState;
-    // _States[_CurrState].get()->Update(*this, Dt);
-    // SMUpdate(Dt);
-    // for(int i = 0; i<(int)_Sections.size(); i++)
-    // {
-    //     _Sections[i].get()->Update(Dt);
-    // }
-    // // if(Now != _CurrState)
-    // // {
-    // //     Update(Dt);
-    // // }
-    _Sections[0].get()->
-}
-
-
-
+   
 // ___________________________________________________________________EnemyAttack___________________________________________________________________
 
 SlimeAttack::SlimeAttack(const StateInfo& Specs):EnemyAttack(Specs), _HasAttacked(false){
