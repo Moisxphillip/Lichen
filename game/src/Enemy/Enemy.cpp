@@ -91,8 +91,8 @@ void Enemy::SMOnCollision(GameObject& Other)
 {
     if(_CurrState != ENEMY_HURT &&  _CurrState != ENEMY_DEATH && !Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) && static_cast<bool>(Other.Represents & PLAYER_ATK_MASK))
     {
-        // Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
-        // int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats, Parent.Box.Center());
+        Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
+        int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats, Parent.Box.Center());
 
         // TODO reaadd drop
         if(MyStats.HP <= 0)
@@ -114,10 +114,10 @@ void Enemy::SMOnCollision(GameObject& Other)
             // return;
         }
 
-        // SetState(ENEMY_HURT);
-        // MyCollider->ApplyForce(Other.Box.Center().DistVector2(Parent.Box.Center()).Normalized() * Atk->Data.Knockback * 50000);
-        // MyCollider->SetFriction(0.05f);
-        // _HitCooldown.Restart();
+        SetState(ENEMY_HURT);
+        MyCollider->ApplyForce(Other.Box.Center().DistVector2(Parent.Box.Center()).Normalized() * Atk->Data.Knockback * 50000);
+        MyCollider->SetFriction(0.05f);
+        _HitCooldown.Restart();
     }
 }
 
