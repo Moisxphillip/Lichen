@@ -124,11 +124,13 @@ GENERATED += $(OBJDIR)/MainMenu.o
 GENERATED += $(OBJDIR)/Malachi.o
 GENERATED += $(OBJDIR)/Minion.o
 GENERATED += $(OBJDIR)/Music.o
+GENERATED += $(OBJDIR)/MusicPlayer.o
 GENERATED += $(OBJDIR)/Particles.o
 GENERATED += $(OBJDIR)/PenguinBody.o
 GENERATED += $(OBJDIR)/PenguinCannon.o
 GENERATED += $(OBJDIR)/Physics.o
 GENERATED += $(OBJDIR)/Player.o
+GENERATED += $(OBJDIR)/Progress.o
 GENERATED += $(OBJDIR)/Projectile.o
 GENERATED += $(OBJDIR)/Rectangle.o
 GENERATED += $(OBJDIR)/Renderer.o
@@ -216,11 +218,13 @@ OBJECTS += $(OBJDIR)/MainMenu.o
 OBJECTS += $(OBJDIR)/Malachi.o
 OBJECTS += $(OBJDIR)/Minion.o
 OBJECTS += $(OBJDIR)/Music.o
+OBJECTS += $(OBJDIR)/MusicPlayer.o
 OBJECTS += $(OBJDIR)/Particles.o
 OBJECTS += $(OBJDIR)/PenguinBody.o
 OBJECTS += $(OBJDIR)/PenguinCannon.o
 OBJECTS += $(OBJDIR)/Physics.o
 OBJECTS += $(OBJDIR)/Player.o
+OBJECTS += $(OBJDIR)/Progress.o
 OBJECTS += $(OBJDIR)/Projectile.o
 OBJECTS += $(OBJDIR)/Rectangle.o
 OBJECTS += $(OBJDIR)/Renderer.o
@@ -529,6 +533,9 @@ $(OBJDIR)/Inventory.o: game/src/Mechanics/Inventory.cpp
 $(OBJDIR)/Item.o: game/src/Mechanics/Item.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Progress.o: game/src/Mechanics/Progress.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Critter.o: game/src/Npc/Critter.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -566,6 +573,9 @@ $(OBJDIR)/JsonParser.o: game/src/Tools/JsonParser.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/LoopSprite.o: game/src/Tools/LoopSprite.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/MusicPlayer.o: game/src/Tools/MusicPlayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/SimpleMovement.o: game/src/Tools/SimpleMovement.cpp

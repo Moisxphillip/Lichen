@@ -156,6 +156,7 @@ void Test01::LoadAssets()
     GameObject* Go = new GameObject();
     ActiveArea* Aa = new ActiveArea(*Go, Rectangle(0,0,95*64,56*64));
     AmbVilla = new Sound(*Go, "./res/audio/ambience/prairie.ogg");
+    AmbVilla->SetVolume(127);
     Go->AddComponent(AmbVilla);
     Aa->SetOnActivation(
         []()
@@ -195,6 +196,7 @@ void Test01::LoadAssets()
     Go = new GameObject();
     Aa = new ActiveArea(*Go, Rectangle(0, 56.1f*64, 95*64, 60*64));
     AmbForest = new Sound(*Go, "./res/audio/ambience/forest.ogg");
+    AmbForest->SetVolume(127);
     Go->AddComponent(AmbForest);
     Aa->SetOnActivation(
         []()
@@ -234,6 +236,7 @@ void Test01::LoadAssets()
     Aa = new ActiveArea(*Go, Rectangle(95.1f*64,0, 54*64, 103*64));
     AmbMush = new Sound(*Go, "./res/audio/ambience/mushroom_forest.ogg");
     Go->AddComponent(AmbMush);
+    AmbMush->SetVolume(127);
     Aa->SetOnActivation(
         []()
         {
@@ -299,8 +302,14 @@ void Test01::Update(float Dt)
    
     if(Input::Instance().KeyJustPressed(Key::Number1))
     {
+        // GameObject* slimeObj = new GameObject();
+        // slimeObj->AddComponent(EnemyFactory::CreateEnemy(*slimeObj, EnemyType::SLIME, Input::Instance().MousePosition()));
+        // AddGameObj(slimeObj);
+
         GameObject* slimeObj = new GameObject();
-        slimeObj->AddComponent(EnemyFactory::CreateEnemy(*slimeObj, EnemyType::SLIME, Input::Instance().MousePosition()));
+        EnemyType enmy = static_cast<EnemyType> (Engine::RandomUint() % (int)EnemyType::TOTAL);
+        std::cout<<enmy<<std::endl;
+        slimeObj->AddComponent(EnemyFactory::CreateEnemy(*slimeObj, enmy, Input::Instance().MousePosition()));
         AddGameObj(slimeObj);
     }
     if(Input::Instance().KeyJustPressed(Key::Number2) && Player::Self == nullptr)

@@ -239,7 +239,7 @@ void Player::DoAttack()
 
     Atk->Box.SetCenter(Parent.Box.Center() + Vector2(Direction.x/std::fabs(Direction.x) *40.0f, 0.0f));
     _MyStats.Str;
-    Atk->AddComponent(new Attack(*Atk, GetStats(), {_MyStats.Str * 2, 1, ScalingStats::Strength}, Parent.Interacts, 0.3));
+    Atk->AddComponent(new Attack(*Atk, GetStats(), {_MyStats.Str * 2, 1, ScalingStats::Strength}, Parent.Interacts | ENEMY_MASK , 0.3));
     AACircle* Ball = new AACircle(*Atk, ColliderKind::Trigger, Circle(0,0, 80));
     Ball->SetFriction(0.0f);
     Atk->AddComponent(Ball);

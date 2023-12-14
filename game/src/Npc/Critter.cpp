@@ -1,11 +1,13 @@
 #include "Npc/Critter.hpp"
 #include "Character/Player.hpp"
+#include "Tools/DistanceTrigger.hpp"
 
 //Define names for the SMState enums, so it's easier to know which state you're using
 #define BIRD_IDLE SMState::Type01
 #define BIRD_FLY SMState::Type02
 #define BIRD_PECK SMState::Type03
 
+int Critter::MaxCritterCount = 20;
 int Critter::CritterCount = 0;
 
 Bird::Bird(GameObject& Parent, std::string Label)
@@ -22,7 +24,7 @@ Bird::~Bird()
 void Bird::SMStart()
 {
     //Add the spritesheet(s) with all states and frames
-    Sprite* Sheet = new Sprite(Parent, "./res/img/Npc/BirdSprite.png", 24, 8, 3);
+    Sprite* Sheet = new Sprite(Parent, "./res/img/npc/bird_8x3f.png", 24, 8, 3);
     Sheet->SetScale(Vector2(2,2));
     Parent.Depth = DepthMode::Dynamic;
     Parent.Box.Redimension(Vector2(Sheet->GetWidth(), Sheet->GetHeight()));
@@ -38,8 +40,10 @@ void Bird::SMStart()
     AddState(BIRD_FLY, new BirdFly(SI));
     
     //Peck
-    SI = {BIRD_PECK, 16, 3, 0.1, true, true};
+    SI = {BIRD_PECK, 16, 6, 0.1, true, true};
     AddState(BIRD_PECK, new BirdPeck(SI));
+    
+    Parent.AddComponent(new DistanceTrigger(Parent, this, 2560, DistTriggerMode::Delete));
 }
 
 //------------------------------IDLE------------------------------
@@ -63,6 +67,7 @@ void BirdIdle::Start()
 
 void BirdIdle::Update(StateMachine& Sm, float Dt)
 {
+    if(Player::Self == nullptr) return;
     if(Sm.Parent.Box.Center().DistanceSquared(Player::Self->Parent.Box.Center()) < BIRD_MIN_DIST)
     {
         Sm.SetState(BIRD_FLY);
@@ -86,6 +91,7 @@ BirdFly::BirdFly(const StateInfo& Specs)
 
 void BirdFly::Update(StateMachine& Sm, float Dt)
 {
+    if(Player::Self == nullptr) return;
     if(!_Init)
     {
         _Direction = Player::Self->Parent.Box.Center().DistVector2(Sm.Parent.Box.Center()).Normalized();
@@ -119,6 +125,7 @@ void BirdPeck::Start()
 
 void BirdPeck::Update(StateMachine& Sm, float Dt)
 {
+    if(Player::Self == nullptr) return;
     if(Sm.Parent.Box.Center().DistanceSquared(Player::Self->Parent.Box.Center()) < BIRD_MIN_DIST)
     {
         Sm.SetState(BIRD_FLY);
@@ -152,19 +159,21 @@ Worm::~Worm()
 void Worm::SMStart()
 {
     // Add the spritesheet(s) with all states and frames
-    Sprite* Sheet = new Sprite(Parent, "./res/img/Npc/worm_5x1f_15x15px.png", 24, 8, 3);
+    Sprite* Sheet = new Sprite(Parent, "./res/img/npc/worm_5x1f_15x15px.png", 6, 6, 1);
     Parent.Depth = DepthMode::Dynamic;
     Parent.Box.Redimension(Vector2(Sheet->GetWidth(), Sheet->GetHeight()));
     AddSprite(Sheet);
     
     //Idle
-    StateInfo SI = {BIRD_IDLE, 0, 2, 0.5, true, true}; //these are for setting up the spritesheet portion on update
+    StateInfo SI = {WORM_IDLE, 0, 2, 0.5, true, true}; //these are for setting up the spritesheet portion on update
     AddState(WORM_IDLE, new WormIdle(SI));
     SetState(WORM_IDLE);
 
     //Flee
     SI = {WORM_FLEE, 0, 6, 0.1, true, true};
     AddState(WORM_FLEE, new WormFlee(SI));
+    
+    Parent.AddComponent(new DistanceTrigger(Parent, this, 2560, DistTriggerMode::Delete));
 }
 
 //------------------------------IDLE------------------------------
@@ -182,6 +191,7 @@ void WormIdle::Start()
 
 void WormIdle::Update(StateMachine& Sm, float Dt)
 {
+    if(Player::Self == nullptr) return;
     if(Sm.Parent.Box.Center().DistanceSquared(Player::Self->Parent.Box.Center()) < WORM_MIN_DIST)
     {
         Sm.SetState(WORM_FLEE);
@@ -189,7 +199,7 @@ void WormIdle::Update(StateMachine& Sm, float Dt)
 }
 
 //------------------------------FLEE------------------------------
-#define WORM_SPEED 200
+#define WORM_SPEED 100
 
 WormFlee::WormFlee(const StateInfo& Specs)
 : GenericState(Specs)
@@ -199,6 +209,7 @@ WormFlee::WormFlee(const StateInfo& Specs)
 
 void WormFlee::Update(StateMachine& Sm, float Dt)
 {
+    if(Player::Self == nullptr) return;
     if(!_Init)
     {
         _Direction = Player::Self->Parent.Box.Center().DistVector2(Sm.Parent.Box.Center()).Normalized();
@@ -206,8 +217,102 @@ void WormFlee::Update(StateMachine& Sm, float Dt)
         _Init = true;
     }
 
-    Sm.Parent.Box+=_Direction*BIRD_FLIGHT_SPEED*Dt;
+    Sm.Parent.Box+=_Direction*WORM_SPEED*Dt;
     if(Sm.Parent.Box.Center().DistanceSquared(Player::Self->Parent.Box.Center()) > WORM_MAX_DIST)
+    {
+        Sm.Parent.RequestDelete();
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+//Define names for the SMState enums, so it's easier to know which state you're using
+#define FUNGI_IDLE SMState::Type01
+#define FUNGI_FLEE SMState::Type02
+
+SmallFungi::SmallFungi(GameObject& Parent, std::string Label)
+: StateMachine(Parent, Label)
+{
+    Critter::CritterCount++;
+}
+
+SmallFungi::~SmallFungi()
+{
+    Critter::CritterCount--;
+}
+
+void SmallFungi::SMStart()
+{
+    // Add the spritesheet(s) with all states and frames
+    Sprite* Sheet = new Sprite(Parent, "./res/img/npc/tinyshroom_4x3f_20x18px.png", 12, 4, 3);
+    Parent.Depth = DepthMode::Dynamic;
+    Parent.Box.Redimension(Vector2(Sheet->GetWidth(), Sheet->GetHeight()));
+    AddSprite(Sheet);
+    
+    //Idle
+    StateInfo SI = {FUNGI_IDLE, 8, 4, 0.2, true, true}; //these are for setting up the spritesheet portion on update
+    AddState(FUNGI_IDLE, new SmallFungiIdle(SI));
+    SetState(FUNGI_IDLE);
+
+    //Flee
+    SI = {FUNGI_FLEE, 4, 4, 0.2, true, true};
+    AddState(FUNGI_FLEE, new SmallFungiFlee(SI));
+
+    Parent.AddComponent(new DistanceTrigger(Parent, this, 2560, DistTriggerMode::Delete));
+}
+
+//------------------------------IDLE------------------------------
+#define FUNGI_MIN_DIST 130.f*130.f
+#define FUNGI_MAX_DIST 700.f*700.f
+
+SmallFungiIdle::SmallFungiIdle(const StateInfo& Specs)
+: GenericState(Specs)
+{
+}
+
+void SmallFungiIdle::Start()
+{
+}
+
+void SmallFungiIdle::Update(StateMachine& Sm, float Dt)
+{
+    if(Player::Self == nullptr) return;
+    if(Sm.Parent.Box.Center().DistanceSquared(Player::Self->Parent.Box.Center()) < FUNGI_MIN_DIST)
+    {
+        Sm.SetState(FUNGI_FLEE);
+    }
+}
+
+//------------------------------FLEE------------------------------
+#define FUNGI_SPEED 200
+
+SmallFungiFlee::SmallFungiFlee(const StateInfo& Specs)
+: GenericState(Specs)
+{
+    _Init = false;
+}
+
+void SmallFungiFlee::Update(StateMachine& Sm, float Dt)
+{
+    if(Player::Self == nullptr) return;
+    if(!_Init)
+    {
+        _Direction = Player::Self->Parent.Box.Center().DistVector2(Sm.Parent.Box.Center()).Normalized();
+        Sm.SetFlip(_Direction.x > 0.0f ? Flip::H : Flip::N);
+        _Init = true;
+    }
+
+    Sm.Parent.Box+=_Direction*FUNGI_SPEED*Dt;
+    if(Sm.Parent.Box.Center().DistanceSquared(Player::Self->Parent.Box.Center()) > FUNGI_MAX_DIST)
     {
         Sm.Parent.RequestDelete();
     }

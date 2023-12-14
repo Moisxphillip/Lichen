@@ -34,6 +34,10 @@
 #define PARTSPORE 12
 #define PARTREDLEAF 15
 
+#define SPAWNWORM 16
+#define SPAWNBIRD 17
+#define SPAWNMUSH 18
+
 #define POS Vector2((Column)*64, (Row+1)*64)
 
 void ElementLoader::LoadFromFile(std::string FilePath)
@@ -107,6 +111,18 @@ void ElementLoader::LoadFromFile(std::string FilePath)
 
                 case SEANOISE:
                     Engine::Instance().CurrentScene().AddGameObj(FastCreate::SeaNoise(POS));
+                    break;
+
+                case SPAWNBIRD:
+                    Engine::Instance().CurrentScene().AddGameObj(FastCreate::Birds(POS));
+                    break;
+
+                case SPAWNWORM:
+                    Engine::Instance().CurrentScene().AddGameObj(FastCreate::Worms(POS));
+                    break;
+
+                case SPAWNMUSH:
+                    Engine::Instance().CurrentScene().AddGameObj(FastCreate::Smushs(POS));
                     break;
 
                 default:
@@ -338,9 +354,81 @@ GameObject* FastCreate::Spores(Vector2 Position)
             ParticleManager::Instance().Emit(Z);
             return nullptr;
         });
-
     Go->AddComponent(Emt);
     Go->AddComponent(new DistanceTrigger(*Go, Emt, 1200));
+    return Go;
+}
+
+#include "Npc/Critter.hpp"
+GameObject* FastCreate::Birds(Vector2 Position)
+{
+    GameObject* Go = new GameObject();
+    Emitter* Emt = new Emitter(*Go, 10.0f, Vector2(64.0f*9.0f, 64.0f*9.0f));//Adjust this later
+    Go->Box.SetPosition(Position - Vector2(64.0f * 4.5f, 64.0f * 4.5f)); 
+    Emt->SetEmitCall(
+        [](Vector2 Pos)
+        {
+            if(Critter::CritterCount >= Critter::MaxCritterCount) 
+            {
+                return (GameObject*) nullptr;
+            }
+            GameObject* Obj = new GameObject();
+            Obj->AddComponent(new Bird(*Obj));
+            Obj->Box.SetPosition(Pos);
+            return Obj;
+        });
+
+    Go->AddComponent(Emt);
+    Go->AddComponent(new DistanceTrigger(*Go, Emt, 800, DistTriggerMode::Enable));
+    Go->AddComponent(new DistanceTrigger(*Go, Emt, 2500, DistTriggerMode::Disable));
+    return Go;
+}
+
+GameObject* FastCreate::Worms(Vector2 Position)
+{
+    GameObject* Go = new GameObject();
+    Emitter* Emt = new Emitter(*Go, 10.0f, Vector2(64.0f*5.0f, 64.0f*5.0f));//Adjust this later
+    Go->Box.SetPosition(Position - Vector2(64.0f * 2.5f, 64.0f * 2.5f)); 
+    Emt->SetEmitCall(
+        [](Vector2 Pos)
+        {
+            if(Critter::CritterCount >= Critter::MaxCritterCount) 
+            {
+                return (GameObject*) nullptr;
+            }
+            GameObject* Obj = new GameObject();
+            Obj->AddComponent(new Worm(*Obj));
+            Obj->Box.SetPosition(Pos);
+            return Obj;
+        });
+
+    Go->AddComponent(Emt);
+    Go->AddComponent(new DistanceTrigger(*Go, Emt, 800, DistTriggerMode::Enable));
+    Go->AddComponent(new DistanceTrigger(*Go, Emt, 2500, DistTriggerMode::Disable));
+    return Go;
+}
+
+GameObject* FastCreate::Smushs(Vector2 Position)
+{
+    GameObject* Go = new GameObject();
+    Emitter* Emt = new Emitter(*Go, 10.0f, Vector2(64.0f*4.0f, 64.0f*4.0f));//Adjust this later
+    Go->Box.SetPosition(Position - Vector2(64.0f * 2.0f, 64.0f * 2.0f)); 
+    Emt->SetEmitCall(
+        [](Vector2 Pos)
+        {
+            if(Critter::CritterCount >= Critter::MaxCritterCount) 
+            {
+                return (GameObject*) nullptr;
+            }
+            GameObject* Obj = new GameObject();
+            Obj->AddComponent(new SmallFungi(*Obj));
+            Obj->Box.SetPosition(Pos);
+            return Obj;
+        });
+
+    Go->AddComponent(Emt);
+    Go->AddComponent(new DistanceTrigger(*Go, Emt, 800, DistTriggerMode::Enable));
+    Go->AddComponent(new DistanceTrigger(*Go, Emt, 2500, DistTriggerMode::Disable));
     return Go;
 }
 

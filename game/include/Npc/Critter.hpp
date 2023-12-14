@@ -8,6 +8,7 @@
 class Critter
 {
     public:
+        static int MaxCritterCount;
         static int CritterCount;
 };
 
@@ -94,6 +95,41 @@ class WormFlee : public GenericState
         bool _Init;
     public:
         WormFlee(const StateInfo& Specs);
+        void Update(StateMachine& Sm, float Dt);
+};
+
+//-------------------------------------------SmallFungi----------------------------------------------
+class SmallFungi : public StateMachine
+{
+    private:
+
+    public:
+        SmallFungi(GameObject& Parent, std::string Label = "SmallFungi");
+        ~SmallFungi();
+        void SMStart();
+};
+
+//-------------------------------------------States----------------------------------------------
+
+//Idle
+class SmallFungiIdle : public GenericState
+{
+    private:
+
+    public:
+        SmallFungiIdle(const StateInfo& Specs);
+        void Start();
+        void Update(StateMachine& Sm, float Dt);
+};
+
+//Fly
+class SmallFungiFlee : public GenericState
+{
+    private:
+        Vector2 _Direction;
+        bool _Init;
+    public:
+        SmallFungiFlee(const StateInfo& Specs);
         void Update(StateMachine& Sm, float Dt);
 };
 

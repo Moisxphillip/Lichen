@@ -18,7 +18,9 @@ class Music
         void Play(int Times = -1, int FadeIn = 0);
         void Stop(int FadeOut  = 1500);
         void Open(std::string Path);
+        void SetVolume(int Volume = 255);
         bool IsOpen();
+        bool IsPlaying();
 
 };
 
