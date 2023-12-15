@@ -70,7 +70,16 @@ Sound* AreaMush = nullptr;
 
 void MainMap::LoadAssets()
 {
-    Progress::ResetGame();
+    if(Progress::ShouldReset)
+    {
+        Progress::ResetGame();
+    }
+    else
+    {
+        Progress::PlayerStats.HP = 100;
+        Progress::PlayerStats.Mana = 100;
+        Progress::PlayerStats.Stamina = 3;
+    }
 
     GameObject* playerObj = new GameObject();
     Player* player = new Player(*playerObj);
@@ -339,19 +348,29 @@ void MainMap::Update(float Dt)
     }
     if(Input::Instance().KeyJustPressed(Key::Number3) && Malachi::Self == nullptr)
     {
-            GameObject* Obj = new GameObject();
-            Malachi* Mala = new Malachi(*Obj);
-            Obj->Box.SetCenter(Input::Instance().MousePosition());
-            Obj->AddComponent(Mala);
-            AddGameObj(Obj);
+        GameObject* Obj = new GameObject();
+        Malachi* Mala = new Malachi(*Obj);
+        Obj->Box.SetCenter(Input::Instance().MousePosition());
+        Obj->AddComponent(Mala);
+        AddGameObj(Obj);
     }
     if(Input::Instance().KeyJustPressed(Key::Number4) && Biagia::Self == nullptr)
     {
-            GameObject* Obj = new GameObject();
-            Biagia* Mala = new Biagia(*Obj);
-            Obj->Box.SetCenter(Input::Instance().MousePosition());
-            Obj->AddComponent(Mala);
-            AddGameObj(Obj);
+        GameObject* Obj = new GameObject();
+        Biagia* Mala = new Biagia(*Obj);
+        Obj->Box.SetCenter(Input::Instance().MousePosition());
+        Obj->AddComponent(Mala);
+        AddGameObj(Obj);
+    }
+
+    if(Input::Instance().KeyJustPressed(Key::F1))//TODO change to scene change trigger
+    {
+        _PopRequested = true;
+        if(Player::Self && Player::Self->GetStats().HP > 0)
+        {
+            Progress::PlayerStats = Player::Self->GetStats();
+        }
+        Engine::Instance().Push(new FitzMap);
     }
 
     if(Input::Instance().QuitRequested())
@@ -379,6 +398,122 @@ void MainMap::Resume()
 {
 
 }
+
+// #include "Scene/FitzMap.hpp"
+// #include "Scene/MainGame.hpp"
+// #include "Mechanics/Progress.hpp"
+// #include "Core/Input.hpp"
+// #include "Components/Sprite.hpp"
+// #include "Components/Fade.hpp"
+// #include "Components/CameraFollower.hpp"
+// #include "Core/Engine.hpp"
+
+FitzMap::FitzMap()
+{
+    _QuitRequested = false; //Allows loop until quit is requested
+	_PopRequested = false;
+	_Started = false;
+}
+
+FitzMap::~FitzMap()
+{
+}
+
+void FitzMap::LoadAssets()
+{
+    // Progress::ResetGame();
+
+    GameObject* Go = new GameObject(52);
+    Go->Depth = DepthMode::Foreground;
+    Fade* Fd = new Fade(*Go, Color("#000000ff"), Color("#00000000"), 2.0f);
+    Fd->Delete = true;
+    Go->AddComponent(Fd);
+    Go->AddComponent(new CameraFollower(*Go));
+    AddGameObj(Go);
+
+    // Go = new GameObject();
+    // Go->AddComponent(new Sprite(*Go,"./res/img/title.png"));
+    // Go->Box.Redimension(Vector2(1280,720));
+    // Cam.Follow(Go);
+    // AddGameObj(Go);
+}
+
+void FitzMap::PhysicsUpdate(float Dt)
+{    
+}
+
+void FitzMap::Update(float Dt)
+{
+    // if(Input::Instance().KeyJustPressed(Key::Space) && !Starting)
+    // {
+    //     GameObject* Go = new GameObject(52);
+    //     Go->Depth = DepthMode::Foreground;
+    //     Fade* Fd = new Fade(*Go, Color("#00000000"), Color("#000000ff"), 2.0f);
+    //     Fd->Delete = true;
+    //     Go->AddComponent(Fd);
+    //     Go->AddComponent(new CameraFollower(*Go));
+    //     AddGameObj(Go);
+    //     Starting = true;
+    // }
+
+    if(Input::Instance().KeyJustPressed(Key::Escape))
+    // if(Player::Self == nullptr)//Use this later
+    {      
+		_PopRequested = true;
+        Progress::ShouldReset = false;
+        Engine::Instance().Push(new MainMap);
+    }
+
+
+    if(Input::Instance().QuitRequested())
+	{
+		_PopRequested = true;
+		_QuitRequested = true;
+    }
+}
+
+void FitzMap::Render()
+{
+}
+
+void FitzMap::Start()
+{
+    LoadAssets();
+}
+
+void FitzMap::Pause()
+{
+
+}
+
+void FitzMap::Resume()
+{
+    // Starting = false;
+    // ToPlay.Restart();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // ______________________________________________________ Added logic___________________
 

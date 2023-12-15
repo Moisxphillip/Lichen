@@ -428,12 +428,13 @@ void EnemyIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
 EnemyWalk::EnemyWalk(const StateInfo& Specs):GenericState(Specs), _HasSetLimit(false)
 {
     _AttackCooldownTimer.Restart();
-    _SearchPath.Restart();
+    _SearchPath.SetLimit(1.0f);
 }
 
 void EnemyWalk::Start()
 {
     _UpdateTime = false;
+    _SearchPath.Update(1.0f);
     if(Path.empty())
     {
         return;
@@ -584,6 +585,13 @@ void EnemyDeath::Update(StateMachine& Sm, float Dt)
     _HurtTime.Update(Dt);
     if(_HurtTime.Finished())
     {
+        GameObject* Sh = new GameObject();
+        Sh->Depth = DepthMode::Dynamic;
+        Sprite* Shieldn = new Sprite(*Sh, "./res/img/boss/deathblast.png", 10, 10, 1, 0.1, 1);
+        Sh->Box.Redimension(Vector2(Shieldn->GetWidth(), Shieldn->GetHeight()));
+        Sh->Box.SetCenter(Sm.Parent.Box.Center());
+        Sh->AddComponent(Shieldn);
+        Engine::Instance().CurrentScene().AddGameObj(Sh);
         Sm.Parent.RequestDelete();
     }
    

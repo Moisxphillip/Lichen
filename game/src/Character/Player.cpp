@@ -26,10 +26,10 @@
 #define PLAYER_DEFAULT_FRICTION 0.1f
 #define PLAYER_DEFAULT_INVULNERABILITY 1.5f
 
-#define PLAYER_REC_STAMINA_TIME 10.0f
-#define PLAYER_REC_MANA_TIME 1.5f
+#define PLAYER_REC_STAMINA_TIME 5.0f
+#define PLAYER_REC_MANA_TIME 0.5f
 
-#define PLAYER_SPECIAL_COST 20
+#define PLAYER_SPECIAL_COST 25
 
 Player* Player::Self = nullptr;
 Fade* Player::_Fade = nullptr;
@@ -40,7 +40,7 @@ Player::Player(GameObject& Parent, std::string Label)
     _Type = COMPONENT_PLAYER;
     Parent.Represents = PLAYER_MASK;
     Parent.Interacts = ENEMY_ATK_MASK |ENEMY_MASK | INTERACT_MASK | CollisionMask::Terrain;
-    _MyStats = Stats{100, 100, 1, 0, 5, 5, 5, 5, 2, 3, 50, 100};
+    _MyStats = Progress::PlayerStats;
     _ExpToLevelUp = Combat::LevelUpExp(_MyStats.Level);
     MyCollider = nullptr;
     Self = this;
@@ -67,7 +67,7 @@ Player::Player(GameObject& Parent, std::string Label)
 
 #include "Enemy/Biagia.hpp"
 #include "Enemy/Malachi.hpp"
-// #include "Enemy/Fitzgerald.hpp"
+#include "Enemy/FitzGerald.hpp"
 
 Player::~Player()
 {
@@ -80,10 +80,18 @@ Player::~Player()
     {
         Malachi::Self->Parent.RequestDelete();
     }
-    // if(Fitzgerald::Self != nullptr)
-    // {
-    //     Fitzgerald::Self->Parent.RequestDelete();
-    // }
+    
+    Progress::PlayerStats = _MyStats; 
+    if(_MyStats.HP <= 0)
+    {
+        Progress::PlayerStats.HP = 100; 
+        Progress::PlayerStats.Stamina = 3; 
+        Progress::PlayerStats.Mana = 100; 
+    }
+    if(FitzGerald::Self != nullptr)
+    {
+        FitzGerald::Self->Parent.RequestDelete();
+    }
 }
 
 void Player::SMStart()
@@ -324,7 +332,7 @@ void Player::DoSpecial()
     Atk->Angle = Direction.Angle();
     Atk->Box.SetCenter(Parent.Box.Center() + Vector2(Direction.x/std::fabs(Direction.x) *20.0f, Direction.y/std::fabs(Direction.y) *20.0f + 30.0f));
     _MyStats.Str;
-    Atk->AddComponent(new Attack(*Atk, GetStats(), {(_MyStats.Str+_MyStats.Int) * 2, 1,
+    Atk->AddComponent(new Attack(*Atk, GetStats(), {(_MyStats.Str+_MyStats.Int+5) * 2, 1,
         ScalingStats::Intelect}, Parent.Interacts | ENEMY_MASK , 1.0));
     AACircle* Ball = new AACircle(*Atk, ColliderKind::Trigger, Circle(0,0, Atk->Box.h/6));
     Ball->SetFriction(0.0f);

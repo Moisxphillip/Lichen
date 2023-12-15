@@ -11,6 +11,7 @@
 #include "Core/Input.hpp"
 #include "Enemy/Projectile.hpp"
 #include "Character/Player.hpp"
+#include "Tools/MusicPlayer.hpp"
 
 #define FITZGERALD_IDLE SMState::Type01
 #define FITZGERALD_PUNCHDOWN SMState::Type02
@@ -32,7 +33,7 @@ FitzGerald::FitzGerald(GameObject& Parent, std::string Label):StateMachine(Paren
     MyCollider = nullptr;
     Parent.Represents = ENEMY_MASK;
     Parent.Interacts = PLAYER_ATK_MASK;
-    MyStats = Stats{100, 100, 1, 0, 5, 5, 5, 5, 0, 0, 0, 0};
+    MyStats = Stats{100, 100, 15, 0, 20, 20, 20, 20, 0, 0, 0, 0};
     _HitCooldown.SetLimit(ENEMY_DEFAULT_INVULNERABILITY);
     _HitCooldown.Update(ENEMY_DEFAULT_INVULNERABILITY);
     _FlickTime = 0.0f;
@@ -42,11 +43,15 @@ FitzGerald::FitzGerald(GameObject& Parent, std::string Label):StateMachine(Paren
     {
         Arena[i] = nullptr;
     }
+    if(MusicPlayer::Self)
+    {
+        MusicPlayer::Self->PlaceSong("./res/audio/ost/boss.ogg");
+    }
 }
 
 FitzGerald::~FitzGerald()
 {
-     Self = nullptr;
+    Self = nullptr;
     if(Input::Instance().QuitRequested() || Player::Self == nullptr)
     {
         return;
@@ -60,7 +65,10 @@ FitzGerald::~FitzGerald()
         if(Arena[i] != nullptr)
             Arena[i]->RequestDelete();
     }
-
+    if(MusicPlayer::Self)//se der ruim tira
+    {
+        MusicPlayer::Self->PlaceSong("./res/audio/ost/village.ogg");
+    }
 }
 
 #define TOTAL_ATTACK_PATTERNS 2
@@ -159,7 +167,7 @@ void FitzGerald::SetScale(Vector2 Scale)
     _Sections[0].get()->SetScale(Scale);
 }
 
-
+#include "Tools/ElementLoader.hpp"
 void FitzGerald::SMOnCollision(GameObject& Other)
 {
         
@@ -176,6 +184,21 @@ void FitzGerald::SMOnCollision(GameObject& Other)
             // Drop->AddComponent(new Equipment(*Drop));
             // Drop->Box.SetCenter(Parent.B8ox.Center());
             // Engine::Instance().CurrentScene().AddGameObj(Drop);
+            int i = Engine::RandomUint()%3;
+            switch(i)
+            {
+                case 0:
+                    FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/boss/mage3_hurt1.wav", 20);
+                    break;
+                case 1:
+                    FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/boss/mage3_hurt2.wav", 20);
+                    break;
+                case 2:
+                    FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/boss/mage3_hurt3.wav", 20);
+                    break;
+                default:
+                    break;
+            }
             if(Player::Self != nullptr)
             {
                 Player::Self->AddExperience(Combat::DeathExp(MyStats.Level)*2);

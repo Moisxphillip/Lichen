@@ -29,6 +29,28 @@ class MainMap : public Scene
 
 };
 
+class FitzMap : public Scene
+{
+    private:
+        // Timer TextColorChange;
+        // Color TextColor;
+        
+    public:
+        static std::vector<std::vector<int>>* CollisionMap;
+        FitzMap();
+        ~FitzMap();
+
+        void LoadAssets();
+        void PhysicsUpdate(float);
+        void Update(float);
+        void Render();
+
+        void Start();
+        void Pause();
+        void Resume();
+
+};
+
 
 
 #endif//GAME_MAINGAME

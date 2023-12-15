@@ -33,9 +33,17 @@ int Combat::CalculateDamage(Stats& Attacker, AttackData& AtkData, Stats& Defende
     Defender.HP -= FinalDamage;
     if(Position != Vector2::ZERO) //Prompts damage text
     {
+        GameObject* Sh = new GameObject();
+        Sh->Depth = DepthMode::Foreground;
+        Sprite* Shieldn = new Sprite(*Sh, "./res/img/enemy/slash_4x1f.png", 4, 4, 1, 0.1, 0.4f);
+        Sh->Box.Redimension(Vector2(Shieldn->GetWidth(), Shieldn->GetHeight()));
+        Sh->Box.SetCenter(Position);
+        Sh->AddComponent(Shieldn);
+        Engine::Instance().CurrentScene().AddGameObj(Sh);
+
         Color NumColor((Roll == 20 ? "#f36901" : (Roll == 1 ? "#550183" : "#ffffff")));
         std::string Prompt =  std::to_string(FinalDamage);
-        GameObject* Dmg = new GameObject();
+        GameObject* Dmg = new GameObject(1);
         Dmg->Depth = DepthMode::Foreground;
         Text* Txt = new Text(*Dmg,"./res/ttf/alagard.ttf", 40, TextStyle::BLENDED, Prompt, NumColor);
         Dmg->AddComponent(Txt);
@@ -45,14 +53,6 @@ int Combat::CalculateDamage(Stats& Attacker, AttackData& AtkData, Stats& Defende
         Dmg->Box.SetPosition(Position);
         Engine::Instance().CurrentScene().AddGameObj(Dmg);
         FastCreate::PlayPanOnce(Position, "./res/audio/other/hit_feedback.ogg", 60);
-
-        GameObject* Sh = new GameObject();
-        Sh->Depth = DepthMode::Foreground;
-        Sprite* Shieldn = new Sprite(*Sh, "./res/img/enemy/slash_4x1f.png", 4, 4, 1, 0.1, 0.4f);
-        Sh->Box.Redimension(Vector2(Shieldn->GetWidth(), Shieldn->GetHeight()));
-        Sh->Box.SetCenter(Position);
-        Sh->AddComponent(Shieldn);
-        Engine::Instance().CurrentScene().AddGameObj(Sh);
     }
 
     return FinalDamage;

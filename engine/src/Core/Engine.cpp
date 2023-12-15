@@ -184,7 +184,7 @@ void Engine::Run()
             // {
             //     //TODO make suitable framerate control if needed
             // }
-            if(_ChangeScene())
+            if(_GameScene != nullptr)
             {
                 break;
             }
@@ -202,6 +202,7 @@ void Engine::Run()
                 SceneStack.top()->SceneResume();
             }
         }
+        _ChangeScene();
     }
 }
 
