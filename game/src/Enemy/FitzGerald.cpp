@@ -57,7 +57,7 @@ FitzGerald::~FitzGerald()
         return;
     }
 
-    Engine::Instance().CurrentScene().Cam.Follow(&(Player::Self->Parent));
+    // Engine::Instance().CurrentScene().Cam.Follow(&(Player::Self->Parent));
     
     //Cleanup Arena
     for(int i = 0; i<5; i++)
@@ -222,24 +222,31 @@ void FitzGerald::SetupArena()
         Arena[i]->Represents = CollisionMask::Terrain;
         Arena[i]->Depth = DepthMode::Foreground;
     }
+    
+    GameObject* Go = new GameObject();
+    Go->AddComponent(new Sprite(*Go,"./res/img/tile/arena.png"));
+    Go->Box.Redimension(Vector2(1280,720));
+    Engine::Instance().CurrentScene().AddGameObj(Go);
 
     Vector2 Center = Parent.Box.Center();
     //Colliders
+    Arena[0]->AddComponent(new AARectangle(*Arena[0], ColliderKind::Stationary, Rectangle(0,0,1280, 128)));
     Arena[0]->Box.SetPosition(Center - Vector2(0, 360+32));
-    Arena[0]->AddComponent(new AARectangle(*Arena[0], ColliderKind::Stationary, Rectangle(0,0,1280, 64)));
 
-    Arena[1]->Box.SetPosition(Center + Vector2(0, 360+32));
     Arena[1]->AddComponent(new AARectangle(*Arena[1], ColliderKind::Stationary, Rectangle(0,0,1280, 64)));
+    Arena[1]->Box.SetPosition(Center + Vector2(0, 360+32));
 
-    Arena[2]->Box.SetPosition(Center - Vector2(640+32, 0));
     Arena[2]->AddComponent(new AARectangle(*Arena[2], ColliderKind::Stationary, Rectangle(0,0,64, 720)));
+    Arena[2]->Box.SetPosition(Center - Vector2(640+32, 0));
 
-    Arena[3]->Box.SetPosition(Center + Vector2(640+32, 0));
     Arena[3]->AddComponent(new AARectangle(*Arena[3], ColliderKind::Stationary, Rectangle(0,0,64, 720)));
+    Arena[3]->Box.SetPosition(Center + Vector2(640+32, 0));
 
     // New Focal center
     Arena[4]->Box.SetPosition(Parent.Box.Center());
-    Engine::Instance().CurrentScene().Cam.Follow(Arena[4]);
+    // Engine::Instance().CurrentScene().Cam.Follow(Arena[4]);
+    Engine::Instance().CurrentScene().Cam.Follow(Go);
+    Go->Box.SetCenter(Arena[4]->Box.Position());
 
     for(int i = 0; i<5; i++)
     {

@@ -127,6 +127,7 @@ GENERATED += $(OBJDIR)/Malachi.o
 GENERATED += $(OBJDIR)/Minion.o
 GENERATED += $(OBJDIR)/Music.o
 GENERATED += $(OBJDIR)/MusicPlayer.o
+GENERATED += $(OBJDIR)/OnDelete.o
 GENERATED += $(OBJDIR)/Particles.o
 GENERATED += $(OBJDIR)/PenguinBody.o
 GENERATED += $(OBJDIR)/PenguinCannon.o
@@ -224,6 +225,7 @@ OBJECTS += $(OBJDIR)/Malachi.o
 OBJECTS += $(OBJDIR)/Minion.o
 OBJECTS += $(OBJDIR)/Music.o
 OBJECTS += $(OBJDIR)/MusicPlayer.o
+OBJECTS += $(OBJDIR)/OnDelete.o
 OBJECTS += $(OBJDIR)/Particles.o
 OBJECTS += $(OBJDIR)/PenguinBody.o
 OBJECTS += $(OBJDIR)/PenguinCannon.o
@@ -588,6 +590,9 @@ $(OBJDIR)/LoopSprite.o: game/src/Tools/LoopSprite.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/MusicPlayer.o: game/src/Tools/MusicPlayer.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/OnDelete.o: game/src/Tools/OnDelete.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/SimpleMovement.o: game/src/Tools/SimpleMovement.cpp

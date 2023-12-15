@@ -20,6 +20,7 @@
 
 #include "Enemy/EnemyFactory.hpp"
 #include "Enemy/Malachi.hpp"
+#include "Enemy/FitzGerald.hpp"
 
 #include "Mechanics/Inventory.hpp"
 #include "Mechanics/Progress.hpp"
@@ -346,7 +347,7 @@ void MainMap::Update(float Dt)
     {
         Player::Self->AddExperience(100);
     }
-    if(Input::Instance().KeyJustPressed(Key::Number3) && Malachi::Self == nullptr)
+    if(Input::Instance().KeyJustPressed(Key::Number2) && Malachi::Self == nullptr)
     {
         GameObject* Obj = new GameObject();
         Malachi* Mala = new Malachi(*Obj);
@@ -354,7 +355,15 @@ void MainMap::Update(float Dt)
         Obj->AddComponent(Mala);
         AddGameObj(Obj);
     }
-    if(Input::Instance().KeyJustPressed(Key::Number4) && Biagia::Self == nullptr)
+    if(Input::Instance().KeyJustPressed(Key::Number4) && Malachi::Self == nullptr)
+    {
+        GameObject* Obj = new GameObject();
+        FitzGerald* Mala = new FitzGerald(*Obj);
+        Obj->Box.SetCenter(Input::Instance().MousePosition());
+        Obj->AddComponent(Mala);
+        AddGameObj(Obj);
+    }
+    if(Input::Instance().KeyJustPressed(Key::Number3) && Biagia::Self == nullptr)
     {
         GameObject* Obj = new GameObject();
         Biagia* Mala = new Biagia(*Obj);
@@ -431,6 +440,19 @@ void FitzMap::LoadAssets()
     Go->AddComponent(new CameraFollower(*Go));
     AddGameObj(Go);
 
+    GameObject* playerObj = new GameObject();
+    Player* player = new Player(*playerObj);
+    playerObj->Box.SetCenter(Vector2(640, 400));
+    playerObj->AddComponent(player);
+    AddGameObj(playerObj);
+    Cam.Follow(playerObj);
+
+    GameObject* Obj = new GameObject();
+    FitzGerald* Mala = new FitzGerald(*Obj);
+    Obj->Box.SetCenter(Vector2(640, 200));
+    Obj->AddComponent(Mala);
+    AddGameObj(Obj);
+    
     // Go = new GameObject();
     // Go->AddComponent(new Sprite(*Go,"./res/img/title.png"));
     // Go->Box.Redimension(Vector2(1280,720));
@@ -456,7 +478,7 @@ void FitzMap::Update(float Dt)
     //     Starting = true;
     // }
 
-    if(Input::Instance().KeyJustPressed(Key::Escape))
+    if(Input::Instance().KeyJustPressed(Key::Escape) || Player::Self == nullptr)
     // if(Player::Self == nullptr)//Use this later
     {      
 		_PopRequested = true;

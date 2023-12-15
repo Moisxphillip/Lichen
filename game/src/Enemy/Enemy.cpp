@@ -587,7 +587,7 @@ void EnemyDeath::Update(StateMachine& Sm, float Dt)
     {
         GameObject* Sh = new GameObject();
         Sh->Depth = DepthMode::Dynamic;
-        Sprite* Shieldn = new Sprite(*Sh, "./res/img/boss/deathblast.png", 10, 10, 1, 0.1, 1);
+        Sprite* Shieldn = new Sprite(*Sh, "./res/img/enemy/deathblast.png", 10, 10, 1, 0.1, 1);
         Sh->Box.Redimension(Vector2(Shieldn->GetWidth(), Shieldn->GetHeight()));
         Sh->Box.SetCenter(Sm.Parent.Box.Center());
         Sh->AddComponent(Shieldn);
