@@ -431,6 +431,9 @@ FitzMap::~FitzMap()
 void FitzMap::LoadAssets()
 {
     // Progress::ResetGame();
+    GameObject* MPlayer = new GameObject();
+    MPlayer->AddComponent(new MusicPlayer(*MPlayer));
+    AddGameObj(MPlayer);
 
     GameObject* Go = new GameObject(52);
     Go->Depth = DepthMode::Foreground;
