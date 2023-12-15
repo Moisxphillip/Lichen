@@ -1,7 +1,7 @@
 #include "TestScene.hpp"
 #include "Dummy.hpp"
 #include "Enemy/Slime.hpp"
-// #include "Dialogue.hpp"
+#include "Dialogue.hpp"
 #include "Enemy/EnemyFactory.hpp"
 #include "Core/Engine.hpp"
 #include "Core/Input.hpp"
@@ -26,6 +26,7 @@
 #include "Tools/ElementLoader.hpp"
 #include "Components/Sound.hpp"
 #include "Enemy/Malachi.hpp"
+#include "Enemy/FitzGerald.hpp"
 
 
 #include "Tools/Xrand.hpp"
@@ -151,7 +152,20 @@ void Test01::LoadAssets()
     UI->AddComponent(Controller);
 
     AddGameObj(UI);
-    
+
+   
+
+
+    GameObject* dialeobj = new GameObject(3);
+    dialeobj->Depth = DepthMode::Foreground;
+    UI->SetLayer(51);
+    auto CF = new CameraFollower(*dialeobj);
+    CF->Offset = Vector2(700, 400);
+    dialeobj->AddComponent(new DialogueManager(*dialeobj, "res/dialogues/dialogue-example.json"));
+    dialeobj->AddComponent(CF);
+
+    AddGameObj(dialeobj);
+     
     //#######################################################
     GameObject* Go = new GameObject();
     ActiveArea* Aa = new ActiveArea(*Go, Rectangle(0,0,95*64,56*64));
@@ -272,10 +286,7 @@ void Test01::LoadAssets()
     AddGameObj(Go);
 
     
-    // GameObject* dialeobj = new GameObject(3);
-    // slimeObj->AddComponent(new DialogueManager(*dialeobj, "ala.json"));
-    // AddGameObj(dialeobj);
-    // Dialogueobj->Box.SetCenter(Vector2(640, 150));
+    
 
     ElementLoader::LoadFromFile("./res/map/map_props");
 }
@@ -323,9 +334,9 @@ void Test01::Update(float Dt)
     if(Input::Instance().KeyJustPressed(Key::Number3) && Malachi::Self == nullptr)
     {
             GameObject* Obj = new GameObject();
-            Malachi* Mala = new Malachi(*Obj);
+            FitzGerald* Fz= new FitzGerald(*Obj);
             Obj->Box.SetCenter(Input::Instance().MousePosition());
-            Obj->AddComponent(Mala);
+            Obj->AddComponent(Fz);
             AddGameObj(Obj);
     }
 

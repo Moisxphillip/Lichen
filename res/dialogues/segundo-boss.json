@@ -1,0 +1,27 @@
+{
+    "LeftSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "Dialogues": [{
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Left",
+            "Text":"Nhanharnharnhg, mais uma pronta para ser retorcida.",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Right",
+            "Text":"Vai catar coquinho, quem vai ser retorcida é você!",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Left",
+            "Text":"Vamos ver!",
+            "TextColor":"#FFFFFF"
+        }
+
+    ]
+}

@@ -1,0 +1,130 @@
+{
+    "LeftSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "Dialogues": [{
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Left",
+            "Text":"Você não é daqui certo? Não é um bom momento",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "Question":"O que deseja falar?",
+            "Answers":[{
+                    "Text":"O que aconteceu?",
+                    "FinalAnswer": true,
+                    "Dialogues":[
+                        {
+                            "LeftFocalSprite": -1,
+                            "RightFocalSprite": 0,
+                            "TextPosition": "Right",
+                            "Text":"O mesmo que aconteceu em todas as vilas da região! Fomos saqueados por uns sem-o-que-fazer!",
+                            "TextColor":"#FFFFFF"
+                        },
+                        {
+                            "LeftFocalSprite": -1,
+                            "RightFocalSprite": 0,
+                            "TextPosition": "Left",
+                            "Text":"Os guardas não chegaram a tempo e tivemos que nos virar",
+                            "TextColor":"#FFFFFF"
+                        },
+                        {
+                            "LeftFocalSprite": 0,
+                            "RightFocalSprite": -1,
+                            "TextPosition": "Left",
+                            "Text":"Quem atacou vocês?",
+                            "TextColor":"#FFFFFF"
+                        }
+                    ]},{
+                    "Text":"Você é o ferreiro?",
+                    "FinalAnswer": false,
+                    "Dialogues":[
+                        {
+                            "LeftFocalSprite": -1,
+                            "RightFocalSprite": 0,
+                            "TextPosition": "Right",
+                            "Text":"Eu tenho uma martela, uma bigorna e uma forja, adivinha o que eu sou?",
+                            "TextColor":"#FF0000"
+                            
+                        },
+                        {
+                            "Question":"Você é...",
+                            "Answers":[{
+                                "Text":"Hmm... O ferreiro?",
+                                "FinalAnswer": true,
+                                "Dialogues":[{
+                                    "LeftFocalSprite": -1,
+                                    "RightFocalSprite": 0,
+                                    "TextPosition": "Right",
+                                    "Text":"...",
+                                    "TextColor":"#FF0000"
+                                    
+                                }]
+                                },{
+                                "Text":"Irineu?",
+                                "FinalAnswer": true,
+                                "Dialogues":[
+                                    {
+                                        "LeftFocalSprite": -1,
+                                        "RightFocalSprite": 0,
+                                        "TextPosition": "Right",
+                                        "Text":"Você não sabe nem eu",
+                                        "TextColor":"#FFFFFF"
+                                    }]},
+
+                                {"Text":"Tá bom, entendí...",
+                                "FinalAnswer": true,
+                                "Dialogues":[]
+                                }
+                            ]
+                        }
+                        ]
+                    },{
+                        
+                        "LeftFocalSprite": -1,
+                        "RightFocalSprite": 0,
+                        "TextPosition": "Right",
+                        "Text":"Não sei, eram um bando de magos malditos maléficos do mal",
+                        "TextColor":"#FFFFFF"
+                    },{
+                        
+                        "LeftFocalSprite": -1,
+                        "RightFocalSprite": 0,
+                        "TextPosition": "Right",
+                        "Text":"Se você me deixar de buxin chei essa noite eu acabo com a raça deles por você!",
+                        "TextColor":"#FFFFFF"
+                    },{
+                        
+                        "LeftFocalSprite": -1,
+                        "RightFocalSprite": 0,
+                        "TextPosition": "Right",
+                        "Text":"Ohh, você é uma guerreira?",
+                        "TextColor":"#FFFFFF"
+                    },
+                    {
+                        
+                        "LeftFocalSprite": -1,
+                        "RightFocalSprite": 0,
+                        "TextPosition": "Right",
+                        "Text":"Eu tenho uma lança nas costas, adivinha o que sou?",
+                        "TextColor":"#FFFFFF"
+                    },
+                    {
+                        
+                        "LeftFocalSprite": -1,
+                        "RightFocalSprite": 0,
+                        "TextPosition": "Right",
+                        "Text":"Um deles está aqui por perto causando uma zona e criando um monte de inimigos... eu tentaria destruir todas as suas criações para fazer ele apare ",
+                        "TextColor":"#FFFFFF"
+                    },
+                    {
+                        
+                        "LeftFocalSprite": -1,
+                        "RightFocalSprite": 0,
+                        "TextPosition": "Right",
+                        "Text":"Eu tentaria destruir todas os seus ninhos para fazer ele aparecer ",
+                        "TextColor":"#FFFFFF"
+                    }]
+
+    }]
+}

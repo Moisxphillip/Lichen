@@ -1,0 +1,12 @@
+{
+    "LeftSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "Dialogues": [{
+            "LeftSpriteSheet": -1,
+            "RightSpriteSheet": -1,
+            "TextPosition": "Right",
+            "Text":"Não é um bom momento, você deveria procurar o ferreiro...",
+            "TextColor":"#FFFFFF"
+        }
+    ]
+}

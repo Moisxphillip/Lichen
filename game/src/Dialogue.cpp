@@ -67,7 +67,6 @@ DialogueManager::~DialogueManager(){
 
 void DialogueManager::Update(float Dt)
 {
-    // Parent.Box.SetPosition(Camera::Position()+Vector2(0,484));
     _CurrentDialogue->Update(*this, Dt);
 }
 
@@ -77,10 +76,6 @@ void DialogueManager::LateUpdate(float Dt){
         _NextDialogue = nullptr;
     }
 
-    if(_CurrentDialogue->HasEnded)
-    {
-        std::cout<<_CurrentDialogue->HasEnded<<std::endl;
-    }
     while(_CurrentDialogue->HasEnded && _CurrentDialogue->NextDialogue != nullptr){
         _CurrentDialogue = _CurrentDialogue->NextDialogue;
     }
@@ -88,7 +83,7 @@ void DialogueManager::LateUpdate(float Dt){
 
 void DialogueManager::Render()
 {
-    _BackgroundImage->Render();
+    _BackgroundImage->Render((Parent.Box.Position()+Vector2(0,485)).x, (Parent.Box.Position()+Vector2(0,485)).y);
     _CurrentDialogue->Render(*this);
 }
 
@@ -227,9 +222,8 @@ void DialogueText::Update(DialogueManager& Dm,  float Dt)
 void DialogueText::Render(DialogueManager& Dm)
 {
     
-    Vector2 ParentPosition = Dm.Parent.Box.Position();
+    Vector2 ParentPosition = Dm.Parent.Box.Position()+Vector2(100,400);
 
-    std::cout<<_LeftFocalCharacter<<std::endl;
     Sprite * LeftCharacter = Dm.GetLeftCurrentCharacter(_LeftFocalCharacter);
     if(LeftCharacter != nullptr)
     {
@@ -238,7 +232,6 @@ void DialogueText::Render(DialogueManager& Dm)
         LeftCharacter->Render(LeftPos.x, LeftPos.y);
     }
 
-    std::cout<<_RightFocalCharacter<<std::endl;
     Sprite * RightCharacter = Dm.GetRightCurrentCharacter(_RightFocalCharacter);
     if(RightCharacter != nullptr)
     {
@@ -254,12 +247,12 @@ void DialogueText::Render(DialogueManager& Dm)
         TextToWrite= _TextLine.substr(0,ceil(_ElapsedTime/SECONDS_PER_LETTER));
     }
 
-    Vector2 TextPos = ParentPosition;
+    Vector2 TextPos = ParentPosition+Vector2(0,200);
 
     switch(_Alignment)
     {
         case TextAlignment::LEFT:
-            TextPos += Vector2(300, 80);
+            TextPos += Vector2(300, 0);
             break;
         case TextAlignment::RIGHT:
             TextPos += Vector2(700,80);
@@ -324,7 +317,7 @@ void DialogueAnswers::Update(DialogueManager& Dm,  float Dt)
 
 void DialogueAnswers::Render(DialogueManager& Dm)
 {
-    Vector2 BasePos = Dm.Parent.Box.Position()+Vector2(600, 30);
+    Vector2 BasePos = Dm.Parent.Box.Position()+Vector2(600, 550);
     Dm.WriteText(0, _Question, BasePos,TextAlignment::CENTER, Color("#FFFFFF"));
 
     BasePos+=Vector2(0,60);

@@ -1,0 +1,50 @@
+{
+    "LeftSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "Dialogues": [{
+            "LeftSpriteSheet": 0,
+            "RightSpriteSheet": 0,
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Arrrghhh, alguém me ajude!",
+            "TextColor":"#FFFFFF"
+        },{
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Right",
+            "Text":"Oioioi, eu estou aqui, o que aconteceu?",
+            "TextColor":"#FFFFFF"
+        },{
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Me torceram do avesso! Eu tentei me precaver mas tomaram a minha poção! ",
+            "TextColor":"#FFFFFF"
+        },{
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Pera, o que?",
+            "TextColor":"#FFFFFF"
+        },{
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Não immporta, eu vi ela indo para o caminho esquerdo, ou o meu direito, sei lá, ta tudo retorcido!",
+            "TextColor":"#FFFFFF"
+        },{
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Siga em frente, olhe para o lado. Desce o sarrafo nela!",
+            "TextColor":"#FFFFFF"
+        },{
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Tá bom... ok...",
+            "TextColor":"#FFFFFF"
+        }
+    ]
+}

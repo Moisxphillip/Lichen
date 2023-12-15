@@ -1,0 +1,26 @@
+{
+    "LeftSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "Dialogues": [{
+            "LeftSpriteSheet": 0,
+            "RightSpriteSheet": 0,
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Quem anda mexendo com as minhas criações?!",
+            "TextColor":"#FFFFFF"
+        },{
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Right",
+            "Text":"Sou eu! Vai chorar ksksks?",
+            "TexColor":"#FFFFFF"
+        },{
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Você vai ver o que eu vou fazer!",
+            "TextColor":"#FFFFFF"
+        }
+    ]
+}

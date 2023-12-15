@@ -1,0 +1,24 @@
+{
+    "LeftSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "Dialogues": [{
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": -1,
+            "TextPosition": "Center",
+            "Text":"Uma aventureira de cabelos verdes vaga solitária...",
+            "TextColor":"#FFFFFF"
+        },{
+            "LeftSpriteSheet": 1,
+            "RightSpriteSheet": 0,
+            "TextPosition": "Left",
+            "Text":"Preciso encontrar algum lugar para passar a noite.",
+            "TextColor":"#FFFFFF"
+        },{
+            "LeftSpriteSheet": 1,
+            "RightSpriteSheet": 0,
+            "TextPosition": "Left",
+            "Text":"À distância ela avista uma vila...",
+            "TextColor":"#FFFFFF"
+        }
+    ]
+}

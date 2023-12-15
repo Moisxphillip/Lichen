@@ -1,0 +1,14 @@
+{
+    "LeftSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "Dialogues": [{
+            "LeftSpriteSheet": 0,
+            "RightSpriteSheet": 0,
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Você percebe que derrotou seus inimigos, mas não o vazio dentro de você...",
+            "TextColor":"#FFFFFF"
+        }
+    ]
+}

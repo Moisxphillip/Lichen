@@ -39,8 +39,8 @@ Player::Player(GameObject& Parent, std::string Label)
 {
     _Type = COMPONENT_PLAYER;
     Parent.Represents = PLAYER_MASK;
-    Parent.Interacts = ENEMY_ATK_MASK | INTERACT_MASK | CollisionMask::Terrain;
-    _MyStats = Progress::PlayerStats;
+    Parent.Interacts = ENEMY_ATK_MASK |ENEMY_MASK | INTERACT_MASK | CollisionMask::Terrain;
+    _MyStats = Stats{100, 100, 1, 0, 5, 5, 5, 5, 2, 3, 50, 100};
     _ExpToLevelUp = Combat::LevelUpExp(_MyStats.Level);
     MyCollider = nullptr;
     Self = this;

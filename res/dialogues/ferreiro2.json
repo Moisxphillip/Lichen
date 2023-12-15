@@ -1,0 +1,48 @@
+{
+    "LeftSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "Dialogues": [{
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Left",
+            "Text":"Eai, o que rolouw",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Right",
+            "Text":"Eu cuidei do mago, já posso forrar o buxo?",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Left",
+            "Text":"Calma lá! Eu disse que eram 3 magos! Não é tão fácil assim...",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Left",
+            "Text":"Você não disse nada disso!",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Left",
+            "Text":"Pois está dito agora...",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Left",
+            "Text":"Tem um mercenário que chegou há um tempo e estava indo atrás dos magos, eu procuraria por ele na floresta...",
+            "TextColor":"#FFFFFF"
+        }
+
+    ]
+}

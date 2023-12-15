@@ -1,0 +1,91 @@
+{
+    "LeftSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "Dialogues": [{
+            "LeftSpriteSheet": 0,
+            "RightSpriteSheet": 0,
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Oi, turu bem?",
+            "TextColor":"#FFFFFF"
+        },{
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Right",
+            "Text":"Zika, e tu?",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "Question":"Como você está?",
+            "Answers":[{
+                    "Text":"Turu bemm too",
+                    "FinalAnswer": false,
+                    "Dialogues":[
+                        {
+                            "LeftFocalSprite": -1,
+                            "RightFocalSprite": 0,
+                            "TextPosition": "Right",
+                            "Text":"Poh, pilka",
+                            "TextColor":"#FFFFFF"
+                        },
+                        {
+                            "LeftFocalSprite": 0,
+                            "RightFocalSprite": -1,
+                            "TextPosition": "Left",
+                            "Text":"PSeh, na paz",
+                            "TextColor":"#FFFFFF"
+                        }
+                    ]
+                    },{
+                    "Text":"Ta uma disgrama",
+                    "FinalAnswer": true,
+                    "Dialogues":[
+                        {
+                            "LeftFocalSprite": -1,
+                            "RightFocalSprite": 0,
+                            "TextPosition": "Right",
+                            "Text":"Vish, qq rolou?",
+                            "TextColor":"#FF0000"
+                            
+                        },
+                        {
+                            "Question":"Qq rolou?",
+                            "Answers":[{
+                                "Text":"Bati o dedinho do pé",
+                                "FinalAnswer": true,
+                                "Dialogues":[
+                                    {
+                                        "LeftFocalSprite": -1,
+                                        "RightFocalSprite": 0,
+                                        "TextPosition": "Right",
+                                        "Text":"Putz, já fiz isso tbm",
+                                        "TextColor":"#FFFFFF"
+                                    }
+                                ]},{
+                                "Text":"Curioso veio encher meu saco",
+                                "FinalAnswer": true,
+                                "Dialogues":[
+                                    {
+                                        "LeftFocalSprite": -1,
+                                        "RightFocalSprite": 0,
+                                        "TextPosition": "Right",
+                                        "Text":"Pohh, foi mal...",
+                                        "TextColor":"#FFFFFF"
+                                    }
+                                ]
+                                }
+                            ]
+                        }
+                    ]
+
+            }]}
+        ,{
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Segue o baile então...",
+            "TextColor":"#FFFFFF"
+        }
+    ]
+}
