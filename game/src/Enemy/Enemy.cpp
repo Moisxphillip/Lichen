@@ -100,7 +100,7 @@ void Enemy::SMOnCollision(GameObject& Other)
     {
         Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
         int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats, Parent.Box.Center());
-
+        PlayHurt();
         // TODO reaadd drop
         if(MyStats.HP <= 0)
         {
@@ -355,8 +355,55 @@ Enemy* Enemy::Builder:: Build(){
     Reset();
     return Enemy;
 }
+#include "Tools/ElementLoader.hpp"
 
+void Enemy::PlaySeek()
+{
+    if(_Label == "Slime")
+    {
+        FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/enemy/slime_target.ogg", 20);
+    }
+    else if(_Label == "Grub")
+    {
+        FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/enemy/grub_target.ogg", 20);
+    }
+    else if(_Label == "Wolf")
+    {
+        FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/enemy/wolf_target.ogg", 20);
+    }
+    else if(_Label == "Mushroom")
+    {
+        FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/enemy/mushroom_target.ogg", 20);
+    }
+    else if(_Label == "Golem")
+    {
+        FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/enemy/golem_target.ogg", 20);
+    }
+}
 
+void Enemy::PlayHurt()
+{
+    if(_Label == "Slime")
+    {
+        FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/enemy/slime_hurt.ogg", 20);
+    }
+    else if(_Label == "Grub")
+    {
+        FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/enemy/grub_hurt.ogg", 20);
+    }
+    else if(_Label == "Wolf")
+    {
+        FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/enemy/wolf_hurt.ogg", 20);
+    }
+    else if(_Label == "Mushroom")
+    {
+        FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/enemy/mushroom_hurt.ogg", 20);
+    }
+    else if(_Label == "Golem")
+    {
+        FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/enemy/golem_hurt.ogg", 20);
+    }
+}
 
 // ___________________________________________________________________EnemyIdle___________________________________________________________________
 
@@ -369,6 +416,7 @@ void EnemyIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
 
     if(DistSq < reinterpret_cast<Enemy*>(&Sm)->GetDetectionRange())
     {
+        reinterpret_cast<Enemy*>(&Sm)->PlaySeek();
         Sm.SetState(ENEMY_WALK);
         return;
     }
@@ -376,7 +424,6 @@ void EnemyIdle::PhysicsUpdate(StateMachine& Sm, float Dt)
 
 
 // ___________________________________________________________________EnemyWalk___________________________________________________________________
-
 
 EnemyWalk::EnemyWalk(const StateInfo& Specs):GenericState(Specs), _HasSetLimit(false)
 {

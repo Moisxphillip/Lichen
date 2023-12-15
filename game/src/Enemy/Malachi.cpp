@@ -34,7 +34,7 @@ Malachi::Malachi(GameObject& Parent, std::string Label)
     MyCollider = nullptr;
     Parent.Represents = ENEMY_MASK;
     Parent.Interacts = REFLECTED_BULLET_MASK | PLAYER_ATK_MASK;
-    MyStats = Stats{100, 100, 5, 0, 5, 5, 5, 5, 0, 0, 0, 0};
+    MyStats = Stats{100, 100, 5, 0, 10, 10, 10, 10, 0, 0, 0, 0};
     _HitCooldown.SetLimit(ENEMY_DEFAULT_INVULNERABILITY);
     _HitCooldown.Update(ENEMY_DEFAULT_INVULNERABILITY);
     _FlickTime = 0.0f;
@@ -168,7 +168,7 @@ void Malachi::SMUpdate(float Dt)
         }
     }    
 }
-
+#include "Tools/ElementLoader.hpp"
 void Malachi::SMOnCollision(GameObject& Other)
 {
 
@@ -190,6 +190,20 @@ void Malachi::SMOnCollision(GameObject& Other)
     {
         Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
         int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats, Parent.Box.Center());
+
+        int i = Engine::RandomUint()%2;
+        switch(i)
+        {
+            case 0:
+                FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/boss/mage1_hurt1.wav", 20);
+                break;
+            case 1:
+                FastCreate::PlayPanOnce(Parent.Box.Center(), "./res/audio/boss/mage1_hurt2.wav", 20);
+                break;
+            default:
+                break;
+        }
+
         if(MyStats.HP <= 0)
         {
             // SetState(_DEATH);
@@ -334,6 +348,18 @@ MalachiAtkDown::MalachiAtkDown (const StateInfo& Specs)
 void MalachiAtkDown::Start()
 {
     _AtkTime.Restart();
+    int i = Engine::RandomUint()%2;
+    switch(i)
+    {
+        case 0:
+            FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/boss/mage1_shoot1.wav", 20);
+            break;
+        case 1:
+            FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/boss/mage1_shoot2.wav", 20);
+            break;
+        default:
+            break;
+    }
 }
 
 void MalachiAtkDown::Update(StateMachine& Sm, float Dt)
@@ -357,6 +383,18 @@ MalachiAtkHoriz::MalachiAtkHoriz(const StateInfo& Specs)
 
 void MalachiAtkHoriz::Start()
 {
+    int i = Engine::RandomUint()%2;
+    switch(i)
+    {
+        case 0:
+            FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/boss/mage1_shoot1.wav", 20);
+            break;
+        case 1:
+            FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/boss/mage1_shoot2.wav", 20);
+            break;
+        default:
+            break;
+    }
     _AtkTime.Restart();
 }
 

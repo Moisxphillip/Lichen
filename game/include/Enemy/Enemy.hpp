@@ -100,6 +100,8 @@ class Enemy : public StateMachine {
         void SetFollowRange(float FollowRange);
         void SetMemoryFollowRange(float MemoryFollowRange);
         void SettAttackTimePoint(float AttackTimePoint);
+        void PlaySeek();
+        void PlayHurt();
 
         class Builder{
         private:

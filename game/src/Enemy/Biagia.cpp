@@ -33,7 +33,7 @@ Biagia::Biagia(GameObject& Parent, std::string Label)
     MyCollider = nullptr;
     Parent.Represents = ENEMY_MASK;
     Parent.Interacts = REFLECTED_BULLET_MASK | PLAYER_ATK_MASK;
-    MyStats = Stats{100, 100, 10, 0, 5, 5, 5, 5, 0, 0, 0, 0};
+    MyStats = Stats{100, 100, 10, 0, 15, 15, 15, 15, 0, 0, 0, 0};
     _HitCooldown.SetLimit(ENEMY_DEFAULT_INVULNERABILITY);
     _HitCooldown.Update(ENEMY_DEFAULT_INVULNERABILITY);
     _FlickTime = 0.0f;
@@ -185,7 +185,7 @@ void Biagia::SMUpdate(float Dt)
 }
 
 #include "Enemy/Enemy.hpp"
-
+#include "Tools/ElementLoader.hpp"
 void Biagia::SMOnCollision(GameObject& Other)
 {   
     if (_CurrState == BIAGIA_VULNERABLE && !Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) 
@@ -193,6 +193,18 @@ void Biagia::SMOnCollision(GameObject& Other)
     {
         Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
         int Dmg = Combat::CalculateDamage(Atk->Attacker, Atk->Data, MyStats, Parent.Box.Center());
+        int i = Engine::RandomUint()%2;
+        switch(i)
+        {
+            case 0:
+                FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/boss/mage2_hurt1.wav", 20);
+                break;
+            case 1:
+                FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/boss/mage2_hurt2.wav", 20);
+                break;
+            default:
+                break;
+        }
         if(MyStats.HP <= 0)
         {
             // SetState(_DEATH);
@@ -373,6 +385,7 @@ BiagiaSpawn::BiagiaSpawn (const StateInfo& Specs)
 void BiagiaSpawn::Start()
 {
     _AtkTime.Restart();
+    FastCreate::PlayPanOnce(Vector2::ZERO, "./res/audio/boss/mage2_snap.wav", 20);
 }
 
 void BiagiaSpawn::Update(StateMachine& Sm, float Dt)
