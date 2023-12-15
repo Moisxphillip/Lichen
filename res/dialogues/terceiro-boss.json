@@ -1,0 +1,34 @@
+{
+    "LeftSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "Dialogues": [{
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Left",
+            "Text":"Você vai provar do suco!",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Right",
+            "Text":"Quem você acha que é rapaz? Chris Bumstead?",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Left",
+            "Text":"Aqui não é a agua com músculo!",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Left",
+            "Text":"FAKE NATTY!",
+            "TextColor":"#FFFFFF"
+        }
+
+    ]
+}

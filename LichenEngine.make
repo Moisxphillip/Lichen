@@ -109,6 +109,7 @@ GENERATED += $(OBJDIR)/Equipment.o
 GENERATED += $(OBJDIR)/EventChain.o
 GENERATED += $(OBJDIR)/Fade.o
 GENERATED += $(OBJDIR)/Filter.o
+GENERATED += $(OBJDIR)/FitzGerald.o
 GENERATED += $(OBJDIR)/FontHandler.o
 GENERATED += $(OBJDIR)/GameObject.o
 GENERATED += $(OBJDIR)/GameStats.o
@@ -205,6 +206,7 @@ OBJECTS += $(OBJDIR)/Equipment.o
 OBJECTS += $(OBJDIR)/EventChain.o
 OBJECTS += $(OBJDIR)/Fade.o
 OBJECTS += $(OBJDIR)/Filter.o
+OBJECTS += $(OBJDIR)/FitzGerald.o
 OBJECTS += $(OBJDIR)/FontHandler.o
 OBJECTS += $(OBJDIR)/GameObject.o
 OBJECTS += $(OBJDIR)/GameStats.o
@@ -481,6 +483,9 @@ $(OBJDIR)/Enemy.o: game/src/Enemy/Enemy.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/EnemyFactory.o: game/src/Enemy/EnemyFactory.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/FitzGerald.o: game/src/Enemy/FitzGerald.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Malachi.o: game/src/Enemy/Malachi.cpp
