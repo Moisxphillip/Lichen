@@ -349,11 +349,11 @@ void MainMap::Update(float Dt)
     }
     if(Input::Instance().KeyJustPressed(Key::Number2) && Malachi::Self == nullptr)
     {
-        GameObject* Obj = new GameObject();
-        Malachi* Mala = new Malachi(*Obj);
-        Obj->Box.SetCenter(Input::Instance().MousePosition());
-        Obj->AddComponent(Mala);
-        AddGameObj(Obj);
+            GameObject* Obj = new GameObject();
+            FitzGerald* Fz= new FitzGerald(*Obj);
+            Obj->Box.SetCenter(Input::Instance().MousePosition());
+            Obj->AddComponent(Fz);
+            AddGameObj(Obj);
     }
     if(Input::Instance().KeyJustPressed(Key::Number4) && Malachi::Self == nullptr)
     {

@@ -1,10 +1,10 @@
 {
     "LeftSideSpriteSheets":["res/img/elfa.png"],
-    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/Portrait/ferraz.png"],
     "Dialogues": [{
             "LeftFocalSprite": -1,
             "RightFocalSprite": 0,
-            "TextPosition": "Left",
+            "TextPosition": "Right",
             "Text":"Você não é daqui certo? Não é um bom momento",
             "TextColor":"#FFFFFF"
         },
@@ -24,7 +24,7 @@
                         {
                             "LeftFocalSprite": -1,
                             "RightFocalSprite": 0,
-                            "TextPosition": "Left",
+                            "TextPosition": "Right",
                             "Text":"Os guardas não chegaram a tempo e tivemos que nos virar",
                             "TextColor":"#FFFFFF"
                         },

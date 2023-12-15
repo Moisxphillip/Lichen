@@ -1,0 +1,67 @@
+{
+    "LeftSideSpriteSheets":["res/img/elfa.png"],
+    "RightSideSpriteSheets":["res/img/elfa.png"],
+    "Dialogues": [{
+            "LeftSpriteSheet": 0,
+            "RightSpriteSheet": 0,
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"E então, consegui derrotá-la?",
+            "TextColor":"#FFFFFF"
+        },{
+            "LeftFocalSprite": -1,
+            "RightFocalSprite": 0,
+            "TextPosition": "Right",
+            "Text":"Sim, aqui está a porção",
+            "TextColor":"#FFFFFF"
+        },
+        {
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Obrigado!",
+            "TextColor":"#FFFFFF"
+        }
+        ,
+        {
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"O Mercenário bebe a porção!",
+            "TextColor":"#FFFFFF"
+        }
+        ,
+        {
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Obrigado, ainda resta um inimigo",
+            "TextColor":"#FFFFFF"
+        }
+        ,
+        {
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Siga até o final da floresta de cogumelos, você deve enctrá-lo na torre",
+            "TextColor":"#FFFFFF"
+        }
+        ,
+        {
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Mas cuidado com o que ee te oferecer...",
+            "TextColor":"#FFFFFF"
+        }
+        ,
+        {
+            "LeftFocalSprite": 0,
+            "RightFocalSprite": -1,
+            "TextPosition": "Left",
+            "Text":"Eu não sei, foi só o que eu ouvi.",
+            "TextColor":"#FFFFFF"
+        }
+    ]
+}

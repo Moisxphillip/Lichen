@@ -134,7 +134,7 @@ void DialogueManager::WriteText(int idx, std::string TextLine, Vector2 Position,
     }
     else if (idx == _Texts.size())
     {
-        _Texts.emplace_back(new Text(Parent, "./res/ttf/Caviar.ttf", 20, TextStyle::SOLID, TextLine, TextColor));
+        _Texts.emplace_back(new Text(Parent, "./res/ttf/Pixel-UniCode.ttf", 20, TextStyle::SOLID, TextLine, TextColor));
     }
     else
     {

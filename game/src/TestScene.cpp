@@ -331,7 +331,7 @@ void Test01::Update(float Dt)
             playerObj->AddComponent(player);
             AddGameObj(playerObj);
     }
-    if(Input::Instance().KeyJustPressed(Key::Number3) && Malachi::Self == nullptr)
+    if(Input::Instance().KeyJustPressed(Key::Number3) && FitzGerald::Self == nullptr)
     {
             GameObject* Obj = new GameObject();
             FitzGerald* Fz= new FitzGerald(*Obj);

@@ -79,7 +79,7 @@ FitzGerald::~FitzGerald()
 
 void FitzGerald::SMStart()
 {
-    Sprite* FitzGerald = new Sprite(Parent, "res/img/boss/fitzgerald_6x6f_158x160px.png", 36, 6, 6, 0.1f);
+    Sprite* FitzGerald = new Sprite(Parent, "res/img/boss/fitzgerald_6x6f_158x160px.png", 40,5,8, 0.1f);
     FitzGerald->SetScale(2,2);
     Parent.Depth = DepthMode::Dynamic;
     Parent.Box.Redimension(Vector2(FitzGerald->GetWidth(), FitzGerald->GetHeight()));
@@ -89,37 +89,37 @@ void FitzGerald::SMStart()
     Parent.AddComponent(MyCollider);
     
     //Create an idle state
-    StateInfo SI = {FITZGERALD_IDLE, 0, 6, 0.1f, true, true}; //these are for setting up the spritesheet portion on update
+    StateInfo SI = {FITZGERALD_IDLE, 0, 4, 0.1f, true, true}; //these are for setting up the spritesheet portion on update
     AddState(FITZGERALD_IDLE, new FitzGeraldIdle(SI));
     SetState(FITZGERALD_IDLE);
 
     // //Punch state
-    SI = {FITZGERALD_PUNCHDOWN, 6, 5, 0.1f, false, true}; //these are for setting up the spritesheet portion on update
+    SI = {FITZGERALD_PUNCHDOWN, 5, 5, 0.1f, false, true}; //these are for setting up the spritesheet portion on update
     AddState(FITZGERALD_PUNCHDOWN, new FitzGeraldPunchDown(SI));
 
     // //SwipeDown state
-    SI = {FITZGERALD_SWIPEDOWN, 12, 4, 0.1f, false, true}; //these are for setting up the spritesheet portion on update
+    SI = {FITZGERALD_SWIPEDOWN, 10, 4, 0.1f, false, true}; //these are for setting up the spritesheet portion on update
     AddState(FITZGERALD_SWIPEDOWN, new FitzGeraldSwipeDown(SI));
 
     // //PunchDownm state
-    SI = {FITZGERALD_ATTACKHORIZ, 18, 5, 0.1f, false, true}; //these are for setting up the spritesheet portion on update
+    SI = {FITZGERALD_ATTACKHORIZ, 15, 5, 0.1f, false, true}; //these are for setting up the spritesheet portion on update
     AddState(FITZGERALD_ATTACKHORIZ, new FitzGeraldHorizontalPunch(SI));
 
     // //Pose state
-    SI = {FITZGERALD_POSE, 24, 3, 0.1f, false, true};
+    SI = {FITZGERALD_POSE, 20, 3, 0.1f, false, true};
     AddState(FITZGERALD_POSE, new FitzGeraldTeleportPose(SI));
     
     // //TPing state
-    SI = {FITZGERALD_TELEPORTING, 26, 1, 0.1f, false, true};
+    SI = {FITZGERALD_TELEPORTING, 30, 3, 0.1f, false, true};
     AddState(FITZGERALD_TELEPORTING, new FitzGeraldTeleporting(SI));
     
 
     ////TPd state
-    SI = {FITZGERALD_TELEPORTED, 26, 1, 0.1f, false, true};
+    SI = {FITZGERALD_TELEPORTED, 25, 3, 0.1f, false, true};
     AddState(FITZGERALD_TELEPORTED, new FitzGeraldTeleported(SI));
     
     // //Hurt state
-    SI = {FITZGERALD_HURT, 30, 1, 0.0f, false, true};
+    SI = {FITZGERALD_HURT, 35, 1, 0.0f, false, true};
     AddState(FITZGERALD_HURT, new FitzGeraldHurt(SI));
 
     AttackPattern = 0;
