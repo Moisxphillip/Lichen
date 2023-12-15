@@ -1,9 +1,13 @@
 #ifndef GAME_PROGRESS
 #define GAME_PROGRESS
 
+#include "Mechanics/Combat.hpp"
+
 class Progress
 {
     public:
+        static Stats PlayerStats;
+        static bool ShouldReset;
         static void ResetGame();
         static bool TookQuest1;
         static bool DestroyedSpawns;

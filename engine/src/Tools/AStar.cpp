@@ -11,6 +11,8 @@ std::vector<Point> AStar::Search(const std::vector<std::vector<int>>& Grid, cons
     {
         return std::vector<Point>();
     }
+    int Limiter = 0;
+    
     int Rows = Grid.size();
     int Columns = Grid[0].size();
     std::vector<Point> Path;
@@ -22,8 +24,9 @@ std::vector<Point> AStar::Search(const std::vector<std::vector<int>>& Grid, cons
     AStar::Node StartNode = {Start, 0, _CalculateHeuristic(Start, Goal)};
     OpenNodes.push(StartNode);
 
-    while (!OpenNodes.empty()) 
+    while (!OpenNodes.empty() && Limiter < 300) 
     {
+        Limiter++;
         AStar::Node CurrentNode = OpenNodes.top();
         OpenNodes.pop();
         Point CurrentPoint = CurrentNode.Coordinates;

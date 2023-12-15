@@ -10,17 +10,18 @@
 #include "Core/Engine.hpp"
 
 #include "Character/Player.hpp"
-#include "TestScene.hpp"
+// #include "TestScene.hpp"
 #include "Definitions.hpp"
 #include "Tools/DistanceTrigger.hpp"
 
-#include "TestScene.hpp"
+#include "Scene/MainGame.hpp"
 #include "Mechanics/Progress.hpp"
 
 int GridWidthSize = 64;
 int GridHeightSize = 64;
 
 int Enemy::EnemyCount = 0;
+int Enemy::MaxEnemyCount = 20;
 
 
 Enemy::Enemy(GameObject& Parent, std::string Label, Stats EnemyStats): 
@@ -419,12 +420,12 @@ void EnemyWalk::PhysicsUpdate(StateMachine& Sm, float Dt){
     if(DistSq < EnemySM->GetFollowRange())
     {
         Path = std::queue<Vector2>();
-        EnemySM->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt);
+        EnemySM->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,64), Dt);
         return;
     }
     
     _UpdateTime = true;
-    if(Player::Self != nullptr && _SearchPath.Finished() && Test01::CollisionMap != nullptr && Path.size()< 4)
+    if(Player::Self != nullptr && _SearchPath.Finished() && MainMap::CollisionMap != nullptr && Path.size()< 4)
     {
         Path = std::queue<Vector2>();//empty old Path values
         _SearchPath.SetLimit(1.0f+ Engine::RandomFloat());
@@ -445,11 +446,11 @@ void EnemyWalk::PhysicsUpdate(StateMachine& Sm, float Dt){
         // MaxY+=3;
         
         std::vector<Point> path = AStar::Search(
-            /*AStar::TrimSubgrid(*/*Test01::CollisionMap/*, MinY, MinX, MaxY-MinY, MaxX-MinX)*/,
+            /*AStar::TrimSubgrid(*/*MainMap::CollisionMap/*, MinY, MinX, MaxY-MinY, MaxX-MinX)*/,
             {(int)Sm.Parent.Box.Center().x/64, 
             (int)Sm.Parent.Box.Center().y/64}, 
             {(int)Player::Self->Parent.Box.Center().x/64,
-            (int)(Player::Self->Parent.Box.Center().y+32)/64});
+            (int)(Player::Self->Parent.Box.Center().y+64)/64});
 
         for(int i = 1; i < (int)path.size(); i++)
         {

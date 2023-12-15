@@ -122,10 +122,10 @@ void Image::Render(Renderer& RenderDevice, glm::mat4& Projection, Vector2 Positi
         //Calculate image size
         float X = (Dst.w) * (Scale.x), Y = (Dst.h) *(Scale.y);
         // float X = (Dst.w) * (Scale.x + 17e-3), Y = (Dst.h) *(Scale.y + 17e-3);//Deforms the tiles tho, find a better way to do this later
-        _Square[0].x = 0; _Square[0].y = 0;
-        _Square[1].x =  X; _Square[1].y = 0;
-        _Square[2].x =  X; _Square[2].y =  Y;
-        _Square[3].x = 0; _Square[3].y =  Y;
+        _Square[0].x = -X/2; _Square[0].y = -Y/2;
+        _Square[1].x =  X/2; _Square[1].y = -Y/2;
+        _Square[2].x =  X/2; _Square[2].y =  Y/2;
+        _Square[3].x = -X/2; _Square[3].y =  Y/2;
         VbAltered = true;
     }
 

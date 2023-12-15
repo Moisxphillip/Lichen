@@ -2,6 +2,7 @@
 
 #include "Core/Engine.hpp"
 #include "Components/Text.hpp"
+#include "Components/Sprite.hpp"
 #include "Tools/TimedText.hpp"
 #include "Tools/ElementLoader.hpp"
 #include "Tools/SimpleMovement.hpp"
@@ -44,6 +45,14 @@ int Combat::CalculateDamage(Stats& Attacker, AttackData& AtkData, Stats& Defende
         Dmg->Box.SetPosition(Position);
         Engine::Instance().CurrentScene().AddGameObj(Dmg);
         FastCreate::PlayPanOnce(Position, "./res/audio/other/hit_feedback.ogg", 60);
+
+        GameObject* Sh = new GameObject();
+        Sh->Depth = DepthMode::Foreground;
+        Sprite* Shieldn = new Sprite(*Sh, "./res/img/enemy/slash_4x1f.png", 4, 4, 1, 0.1, 0.4f);
+        Sh->Box.Redimension(Vector2(Shieldn->GetWidth(), Shieldn->GetHeight()));
+        Sh->Box.SetCenter(Position);
+        Sh->AddComponent(Shieldn);
+        Engine::Instance().CurrentScene().AddGameObj(Sh);
     }
 
     return FinalDamage;

@@ -39,6 +39,11 @@ class FastCreate
         static GameObject* Birds(Vector2 Position);
         static GameObject* Worms(Vector2 Position);
         static GameObject* Smushs(Vector2 Position);
+        
+        static GameObject* BreakableSpawn(Vector2 Position);
+        static GameObject* SlimeSpawn(Vector2 Position);
+        static GameObject* ForestSpawn(Vector2 Position);
+        static GameObject* MushSpawn(Vector2 Position);
 
         static GameObject* SeaNoise(Vector2 Position);
         static GameObject* TreeNoise(Vector2 Position);

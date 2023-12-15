@@ -64,6 +64,7 @@ class Enemy : public StateMachine {
         Stats MyStats;
         AACollider* MyCollider;
         static int EnemyCount;
+        static int MaxEnemyCount;
 
         Enemy(GameObject& Parent, std::string Label = "Enemy", Stats EnemyStats = DEFAULT_STATS);
         

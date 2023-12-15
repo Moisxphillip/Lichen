@@ -80,6 +80,7 @@ GENERATED += $(OBJDIR)/AStar.o
 GENERATED += $(OBJDIR)/ActiveArea.o
 GENERATED += $(OBJDIR)/Alien.o
 GENERATED += $(OBJDIR)/Attack.o
+GENERATED += $(OBJDIR)/Biagia.o
 GENERATED += $(OBJDIR)/Bullet.o
 GENERATED += $(OBJDIR)/Camera.o
 GENERATED += $(OBJDIR)/CameraFollower.o
@@ -141,6 +142,7 @@ GENERATED += $(OBJDIR)/SimpleMovement.o
 GENERATED += $(OBJDIR)/Slime.o
 GENERATED += $(OBJDIR)/SlimeEnemy.o
 GENERATED += $(OBJDIR)/Sound.o
+GENERATED += $(OBJDIR)/Spawner.o
 GENERATED += $(OBJDIR)/Sprite.o
 GENERATED += $(OBJDIR)/StageScene.o
 GENERATED += $(OBJDIR)/StateMachine.o
@@ -174,6 +176,7 @@ OBJECTS += $(OBJDIR)/AStar.o
 OBJECTS += $(OBJDIR)/ActiveArea.o
 OBJECTS += $(OBJDIR)/Alien.o
 OBJECTS += $(OBJDIR)/Attack.o
+OBJECTS += $(OBJDIR)/Biagia.o
 OBJECTS += $(OBJDIR)/Bullet.o
 OBJECTS += $(OBJDIR)/Camera.o
 OBJECTS += $(OBJDIR)/CameraFollower.o
@@ -235,6 +238,7 @@ OBJECTS += $(OBJDIR)/SimpleMovement.o
 OBJECTS += $(OBJDIR)/Slime.o
 OBJECTS += $(OBJDIR)/SlimeEnemy.o
 OBJECTS += $(OBJDIR)/Sound.o
+OBJECTS += $(OBJDIR)/Spawner.o
 OBJECTS += $(OBJDIR)/Sprite.o
 OBJECTS += $(OBJDIR)/StageScene.o
 OBJECTS += $(OBJDIR)/StateMachine.o
@@ -470,6 +474,9 @@ $(OBJDIR)/Dialogue.o: game/src/Dialogue.cpp
 $(OBJDIR)/Dummy.o: game/src/Dummy.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Biagia.o: game/src/Enemy/Biagia.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/Enemy.o: game/src/Enemy/Enemy.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
@@ -579,6 +586,9 @@ $(OBJDIR)/MusicPlayer.o: game/src/Tools/MusicPlayer.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/SimpleMovement.o: game/src/Tools/SimpleMovement.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/Spawner.o: game/src/Tools/Spawner.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/TimedText.o: game/src/Tools/TimedText.cpp

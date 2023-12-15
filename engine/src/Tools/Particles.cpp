@@ -214,3 +214,21 @@ Particle PremadeParticles::Spore(Vector2 Position)
     // ParticleManager::Instance().Emit(z);
     return z;
 }
+
+Particle PremadeParticles::Energy(Vector2 Position)
+{
+    Particle z;
+    z.Type = 15;
+    z.Position = Position;
+    z.Velocity = Vector2(20,0);
+    z.Velocity.Rotate(2.0f * M_PI * (Engine::RandomFloat()-0.5f));
+    z.RotationPerSec = 1.0f * M_PI * (Engine::RandomFloat()-0.5f);
+    z.Spread = 3.1415f/2.0f;
+    z.Duration = 2.0f;
+    z.ColorInterpolation = true;
+    z.StartColor = Color("#86b2ffff");
+    z.EndColor = Color("#86b2ff00");
+
+    // ParticleManager::Instance().Emit(z);
+    return z;
+}

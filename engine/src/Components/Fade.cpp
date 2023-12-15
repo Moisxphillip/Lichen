@@ -10,6 +10,7 @@ Fade::Fade(GameObject& GameObj, Color StartColour, Color FinishColour, float Tim
     _FadeStep.SetLimit(TimeSpan);
     _FadeStep.Restart();
     _Type = ComponentType::Fade;
+    Delete = false;
 }
 
 Fade::~Fade()
@@ -33,7 +34,11 @@ void Fade::Update(float Dt)
     {
         _FadeStep.Update(Dt);
         _FadeFilter.FilterColor = Color::Interpolation(_Start, _Finish, std::clamp(_FadeStep.Get()/_Limit, 0.0f, 1.0f));
-    }    
+    }
+    else if(Delete)
+    {
+        Parent.RequestDelete();
+    }
 }
 
 void Fade::SetFinishColor(Color New)
@@ -46,4 +51,9 @@ void Fade::SetFinishColor(Color New)
 Color Fade::GetColor()
 {
     return _FadeFilter.FilterColor;
+}
+
+bool Fade::IsFinished()
+{
+    return _FadeStep.Finished();
 }

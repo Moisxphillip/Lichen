@@ -67,11 +67,13 @@ void Sprite::SetClip(int x, int y, int w, int h)
 
 int Sprite::GetWidth()
 {
+    // return (_ClipRect.w* _Scale.x);
     return (_SpriteWidth/_XFrames * _Scale.x);
 }
 
 int Sprite::GetHeight()
 {
+    // return (_ClipRect.h* _Scale.y);
     return (_SpriteHeight/_YFrames * _Scale.y);
 }
 
@@ -211,8 +213,8 @@ void Sprite::Render(float x, float y)
 void Sprite::Render(float x, float y, float Angle)
 {
     Vector2 Destiny;
-    Destiny.x = x*_Parallax.x;
-    Destiny.y = y*_Parallax.y;
+    Destiny.x = (x + _ClipRect.w*_Scale.x/2) *_Parallax.x;
+    Destiny.y = (y + _ClipRect.h* _Scale.y/2)*_Parallax.y;
     int Layer = 0;//(Parent.Depth == DepthMode::Dynamic ? Destiny.y + GetHeight() : Parent.GetLayer());
     _SpriteImage->Render(Engine::Instance().GetRenderer(),
         Engine::Instance().GetWindow().GetProjection(),

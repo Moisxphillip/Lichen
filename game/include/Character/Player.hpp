@@ -8,6 +8,8 @@
 #include "Mechanics/Combat.hpp"
 #include "Mechanics/Attack.hpp"
 
+#include "Components/Fade.hpp"
+
 class Player : public StateMachine
 {
     private:
@@ -16,9 +18,11 @@ class Player : public StateMachine
         int _ExpToLevelUp;
         Timer _StaminaRec;
         Timer _ManaRec;
+        bool _CheatMode;
 
     public:
         
+        static Fade* _Fade;
         AACircle* MyCollider;
         static Player* Self;
         Player(GameObject& Parent, std::string Label = "Player");
@@ -31,7 +35,10 @@ class Player : public StateMachine
         void LevelUpMsg();
         void AddExperience(int Exp);
         void DoAttack();
+        void DoSpecial();
         void SoundAtk();
+        void SoundSpecial();
+        void SoundDash();
         void SoundHurt();
         Stats& GetStats();
 };
@@ -78,6 +85,8 @@ class PlayerAttack : public GenericState
 {
     private:
         Timer _AttackTime;
+        Timer _UnleashTime;
+        bool _Unleash;
 
     public:
         PlayerAttack(const StateInfo& Specs);
@@ -92,6 +101,8 @@ class PlayerSpecial : public GenericState
 {
     private:
         Timer _SpecialTime;
+        Timer _UnleashTime;
+        bool _Unleash;
 
     public:
         PlayerSpecial(const StateInfo& Specs);
@@ -116,11 +127,13 @@ class PlayerHurt : public GenericState
 };
 
 //Death
+#include "Components/Fade.hpp"
 class PlayerDeath : public GenericState
 {
     private:
         Timer _DeathTime;
 
+    
     public:
         PlayerDeath(const StateInfo& Specs);
         void Start();

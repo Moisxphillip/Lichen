@@ -1,58 +1,59 @@
-#include "Enemy/Malachi.hpp"
-
+#include "Enemy/Biagia.hpp"
+#include "Mechanics/Progress.hpp"
 #include "Core/Engine.hpp"
 #include "Components/Sprite.hpp"
 #include "Character/Player.hpp"
 #include "Components/AARectangle.hpp"
-#include "TestScene.hpp"
 #include "Definitions.hpp"
 #include "Mechanics/Equipment.hpp"
 #include "Core/Input.hpp"
-#include "Enemy/Projectile.hpp"
 
 
 //Define names for the SMState enums, so it's easier to know which state you're using
-#define MALACHI_IDLE SMState::Type01
-#define MALACHI_ATTACKDOWN SMState::Type02
-#define MALACHI_ATTACKHORIZ SMState::Type03
-#define MALACHI_POSE SMState::Type04
-#define MALACHI_TELEPORTING SMState::Type05
-#define MALACHI_TELEPORTED SMState::Type06
-#define MALACHI_HURT SMState::Type07
-#define MALACHI_VULNERABLE SMState::Type08
+#define BIAGIA_IDLE SMState::Type01
+#define BIAGIA_SPAWN SMState::Type02
+#define BIAGIA_ATTACKHORIZ SMState::Type03
+#define BIAGIA_POSE SMState::Type04
+#define BIAGIA_TELEPORTING SMState::Type05
+#define BIAGIA_TELEPORTED SMState::Type06
+#define BIAGIA_HURT SMState::Type07
+#define BIAGIA_VULNERABLE SMState::Type08
 
 
 #define ENEMY_DEFAULT_INVULNERABILITY 0.4f
+#define MAX_SUMMONS 6
+#include "Enemy/EnemyFactory.hpp"
 
-Malachi* Malachi::Self = nullptr;
 
+Biagia* Biagia::Self = nullptr;
 #include "Tools/MusicPlayer.hpp"
-
-Malachi::Malachi(GameObject& Parent, std::string Label)
+Biagia::Biagia(GameObject& Parent, std::string Label)
 : StateMachine(Parent, Label)
 {
     MyCollider = nullptr;
     Parent.Represents = ENEMY_MASK;
     Parent.Interacts = REFLECTED_BULLET_MASK | PLAYER_ATK_MASK;
-    MyStats = Stats{100, 100, 5, 0, 5, 5, 5, 5, 0, 0, 0, 0};
+    MyStats = Stats{100, 100, 10, 0, 5, 5, 5, 5, 0, 0, 0, 0};
     _HitCooldown.SetLimit(ENEMY_DEFAULT_INVULNERABILITY);
     _HitCooldown.Update(ENEMY_DEFAULT_INVULNERABILITY);
     _FlickTime = 0.0f;
     _Flick = false;
     Self = this;
     Shield = nullptr;
-    if(MusicPlayer::Self)
-    {
-        MusicPlayer::Self->PlaceSong("./res/audio/ost/boss.ogg");
-    }
-
+    Summons = 0;
     for(int i = 0; i<5; i++)
     {
         Arena[i] = nullptr;
     }
+    Progress::DisableSpawn = true;
+    Progress::KillMinions = true;
+    if(MusicPlayer::Self)
+    {
+        MusicPlayer::Self->PlaceSong("./res/audio/ost/boss.ogg");
+    }
 }
 
-Malachi::~Malachi()
+Biagia::~Biagia()
 {
     Self = nullptr;
     if(Input::Instance().QuitRequested())
@@ -76,56 +77,55 @@ Malachi::~Malachi()
     {
         Shield->Parent.RequestDelete();
     }
+
+    Progress::DisableSpawn = false;
+    Progress::KillMinions = false;
     if(MusicPlayer::Self)
     {
         MusicPlayer::Self->PlaceSong("./res/audio/ost/village.ogg");
     }
 }
 
-// #define MALACHI_DEFAULT_FRICTION 0.1f
-void Malachi::SMStart()
+// #define BIAGIA_DEFAULT_FRICTION 0.1f
+void Biagia::SMStart()
 {
-    Sprite* malachi = new Sprite(Parent, "./res/img/boss/malachi_6x9f_110x109px.png", 54, 6, 9, 0.1f);
+    Sprite* malachi = new Sprite(Parent, "./res/img/boss/biagia_6x6f.png", 36, 6, 6, 0.1f);
     Parent.Depth = DepthMode::Dynamic;
     Parent.Box.Redimension(Vector2(malachi->GetWidth(), malachi->GetHeight()));
     AddSprite(malachi);
     MyCollider = new AACircle(Parent, ColliderKind::Trigger, Circle(0,0,malachi->GetHeight()/4));
-    // MyCollider->SetFriction(MALACHI_DEFAULT_FRICTION);
+    // MyCollider->SetFriction(BIAGIA_DEFAULT_FRICTION);
     MyCollider->GetBall().SetCenter(Parent.Box.Center());
     Parent.AddComponent(MyCollider);
     
     //Create an idle state
-    StateInfo SI = {MALACHI_IDLE, 0, 6, 0.1f, true, true}; //these are for setting up the spritesheet portion on update
-    AddState(MALACHI_IDLE, new MalachiIdle(SI));
-    SetState(MALACHI_IDLE);
+    StateInfo SI = {BIAGIA_IDLE, 0, 6, 0.1f, true, true}; //these are for setting up the spritesheet portion on update
+    AddState(BIAGIA_IDLE, new BiagiaIdle(SI));
+    SetState(BIAGIA_IDLE);
 
     //AtkDown state
-    SI = {MALACHI_ATTACKDOWN, 6, 3, 0.1f, false, true};
-    AddState(MALACHI_ATTACKDOWN, new MalachiAtkDown(SI));
-    
-    //AtkHoriz state
-    SI = {MALACHI_ATTACKHORIZ, 18, 3, 0.1f, false, true};
-    AddState(MALACHI_ATTACKHORIZ, new MalachiAtkHoriz(SI));
+    SI = {BIAGIA_SPAWN, 12, 5, 0.1f, false, true};
+    AddState(BIAGIA_SPAWN, new BiagiaSpawn(SI));
     
     //Pose state
-    SI = {MALACHI_POSE, 24, 3, 0.1f, false, true};
-    AddState(MALACHI_POSE, new MalachiTeleportPose(SI));
+    SI = {BIAGIA_POSE, 6, 3, 0.1f, false, true};
+    AddState(BIAGIA_POSE, new BiagiaTeleportPose(SI));
     
     //TPing state
-    SI = {MALACHI_TELEPORTING, 30, 3, 0.1f, false, true};
-    AddState(MALACHI_TELEPORTING, new MalachiTeleporting(SI));
+    SI = {BIAGIA_TELEPORTING, 24, 3, 0.1f, false, true};
+    AddState(BIAGIA_TELEPORTING, new BiagiaTeleporting(SI));
     
     //TPd state
-    SI = {MALACHI_TELEPORTED, 36, 4, 0.1f, false, true};
-    AddState(MALACHI_TELEPORTED, new MalachiTeleported(SI));
+    SI = {BIAGIA_TELEPORTED, 30, 3, 0.1f, false, true};
+    AddState(BIAGIA_TELEPORTED, new BiagiaTeleported(SI));
     
     //Hurt state
-    SI = {MALACHI_HURT, 42, 1, 0.0f, false, true};
-    AddState(MALACHI_HURT, new MalachiHurt(SI));
+    SI = {BIAGIA_HURT, 18, 1, 0.0f, false, true};
+    AddState(BIAGIA_HURT, new BiagiaHurt(SI));
     
     //Vulnerable state
-    SI = {MALACHI_VULNERABLE, 48, 3, 0.1f, true, true};
-    AddState(MALACHI_VULNERABLE, new MalachiVulnerable(SI));
+    SI = {BIAGIA_VULNERABLE, 18, 1, 0.0f, true, true};
+    AddState(BIAGIA_VULNERABLE, new BiagiaVulnerable(SI));
 
     SetupArena();
     GameObject* Sh = new GameObject();
@@ -136,11 +136,26 @@ void Malachi::SMStart()
     Engine::Instance().CurrentScene().AddGameObj(Sh);
 }
 
-void Malachi::SMUpdate(float Dt)
+void Biagia::SMUpdate(float Dt)
 {
     if(Shield != nullptr && Shield->Active)
     {
         Shield->Parent.Box.SetCenter(Parent.Box.Center());
+    }
+
+    if(_CurrState != BIAGIA_VULNERABLE && Summons >= MAX_SUMMONS && Enemy::EnemyCount == 0)
+    {
+        Shield->Active = false;
+        SetState(BIAGIA_VULNERABLE);
+        Summons = 0;
+
+        GameObject* Sh = new GameObject();
+        Sh->Depth = DepthMode::Dynamic;
+        Sprite* Shieldn = new Sprite(*Sh, "./res/img/boss/bubble.png", 4, 4, 1, 0.1, 0.4);
+        Sh->Box.Redimension(Vector2(Shieldn->GetWidth(), Shieldn->GetHeight()));
+        Sh->Box.SetCenter(Parent.Box.Center());
+        Sh->AddComponent(Shieldn);
+        Engine::Instance().CurrentScene().AddGameObj(Sh);
     }
 
     if(!_HitCooldown.Finished())
@@ -169,23 +184,11 @@ void Malachi::SMUpdate(float Dt)
     }    
 }
 
-void Malachi::SMOnCollision(GameObject& Other)
-{
+#include "Enemy/Enemy.hpp"
 
-    if(_CurrState != MALACHI_VULNERABLE && static_cast<bool>(Other.Represents & REFLECTED_BULLET_MASK))
-    {
-        Shield->Active = false;
-        SetState(MALACHI_VULNERABLE);
-
-        GameObject* Sh = new GameObject();
-        Sh->Depth = DepthMode::Dynamic;
-        Sprite* Shieldn = new Sprite(*Sh, "./res/img/boss/bubble.png", 4, 4, 1, 0.1, 0.4);
-        Sh->Box.Redimension(Vector2(Shieldn->GetWidth(), Shieldn->GetHeight()));
-        Sh->Box.SetCenter(Parent.Box.Center());
-        Sh->AddComponent(Shieldn);
-        Engine::Instance().CurrentScene().AddGameObj(Sh);
-    }
-    else if (_CurrState == MALACHI_VULNERABLE && !Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) 
+void Biagia::SMOnCollision(GameObject& Other)
+{   
+    if (_CurrState == BIAGIA_VULNERABLE && !Parent.IsDead() && Other.Contains(COMPONENT_ATTACK) 
         && static_cast<bool>(Other.Represents & PLAYER_ATK_MASK) && _HitCooldown.Finished())
     {
         Attack* Atk = (Attack*)Other.GetComponent(COMPONENT_ATTACK);
@@ -205,14 +208,14 @@ void Malachi::SMOnCollision(GameObject& Other)
             Parent.RequestDelete();
             return;
         }
-        // SetState(MALACHI_HURT);
+        // SetState(BIAGIA_HURT);
         // MyCollider->ApplyForce(Other.Box.Center().DistVector2(Parent.Box.Center()).Normalized() * Atk->Data.Knockback * 50000);
         // MyCollider->SetFriction(0.05f);
         _HitCooldown.Restart();
     }
 }
 
-void Malachi::SetupArena()
+void Biagia::SetupArena()
 {
     for(int i = 0; i<5; i++)
     {
@@ -245,33 +248,62 @@ void Malachi::SetupArena()
     }
 }
 
-void Malachi::Shoot()
+void Biagia::Spawn()
 {
-    int Max = 3+ Engine::RandomUint()%3;
-    for(int i = 0; i<Max; i++)
+
+    int i = Engine::RandomUint()%3;
+    int Lvl = 6;
+
+    GameObject* Go = new GameObject();
+    Stats EnStats = {Stats{50+Lvl, 50+Lvl, Lvl, 0, 5+Lvl, 5+Lvl, 5+Lvl, 5+Lvl, 0, 0, 0, 0}};
+    Vector2 Position(300 * Engine::RandomFloat(), 0.0f);
+    Position.Rotate(M_PI*2*Engine::RandomFloat());
+    Position+=Arena[4]->Box.Position();
+    switch(i)
     {
-    GameObject* Blt = new GameObject();
-    Blt->Depth = DepthMode::Dynamic;
-    Blt->Represents = ENEMY_ATK_MASK;
-    Sprite* Sprt = new Sprite(*Blt, "./res/img/boss/spark.png", 7, 7, 1, 0.1f);
-    Blt->Box.Redimension(Vector2(Sprt->GetWidth(), Sprt->GetHeight()));
-    Blt->AddComponent(Sprt);
-    Vector2 Dir = Player::Self != nullptr ?  Parent.Box.Center().DistVector2(Player::Self->Parent.Box.Center()).Normalized() : Vector2(1, 0);
-    Dir.Rotate((Engine::RandomFloat() - 0.5f)*1.5f);
-    Vector2 Offset = Dir * 100;
-    Blt->Box.SetPosition(Parent.Box.Center() + Offset);
-    Blt->AddComponent(new Projectile(*Blt, Dir*2.0f, Sprt->GetWidth()/3, PLAYER_ATK_MASK | PLAYER_MASK));
-    Blt->AddComponent(new Attack(*Blt, MyStats, {MyStats.Int*2, 1, ScalingStats::Intelect},
-        Blt->Interacts, 20.0f));
-    Engine::Instance().CurrentScene().AddGameObj(Blt);
+        case 0:
+            Go->AddComponent(EnemyFactory::CreateEnemy(*Go, EnemyType::SLIME, Position, EnStats));
+            break;
+        case 1:
+            Go->AddComponent(EnemyFactory::CreateEnemy(*Go, EnemyType::GRUB, Position, EnStats));
+            break;
+        case 2:
+            Go->AddComponent(EnemyFactory::CreateEnemy(*Go, EnemyType::WOLF, Position, EnStats));
+            break;
+        default:
+            break;
     }
+    Engine::Instance().CurrentScene().AddGameObj(Go);
+    Summons++;
+
+    //TODO poof smoke when spawn
+    // _ToSpawn.Restart();
+
+    // int Max = 3+ Engine::RandomUint()%3;
+    // for(int i = 0; i<Max; i++)
+    // {
+    // GameObject* Blt = new GameObject();
+    // Blt->Depth = DepthMode::Dynamic;
+    // Blt->Represents = ENEMY_ATK_MASK;
+    // Sprite* Sprt = new Sprite(*Blt, "./res/img/boss/spark.png", 7, 7, 1, 0.1f);
+    // Blt->Box.Redimension(Vector2(Sprt->GetWidth(), Sprt->GetHeight()));
+    // Blt->AddComponent(Sprt);
+    // Vector2 Dir = Player::Self != nullptr ?  Parent.Box.Center().DistVector2(Player::Self->Parent.Box.Center()).Normalized() : Vector2(1, 0);
+    // Dir.Rotate((Engine::RandomFloat() - 0.5f)*1.5f);
+    // Vector2 Offset = Dir * 100;
+    // Blt->Box.SetPosition(Parent.Box.Center() + Offset);
+    // Blt->AddComponent(new Projectile(*Blt, Dir*2.0f, Sprt->GetWidth()/3, PLAYER_ATK_MASK | PLAYER_MASK));
+    // Blt->AddComponent(new Attack(*Blt, MyStats, {MyStats.Int*2, 1, ScalingStats::Intelect},
+    //     Blt->Interacts, 20.0f));
+    // Engine::Instance().CurrentScene().AddGameObj(Blt);
+    // }
 }
 //------------------------------IDLE------------------------------
 
 
 #define IDLE_TIME 1.0f
 
-MalachiIdle::MalachiIdle(const StateInfo& Specs)
+BiagiaIdle::BiagiaIdle(const StateInfo& Specs)
 : GenericState(Specs)
 {
     _TeleportChance = 50;
@@ -279,13 +311,13 @@ MalachiIdle::MalachiIdle(const StateInfo& Specs)
     _ChangeState.SetLimit(IDLE_TIME + 0.5*Engine::RandomFloat());
 }
 
-void MalachiIdle::Start()
+void BiagiaIdle::Start()
 {
     _ChangeState.SetLimit(IDLE_TIME + 0.5*Engine::RandomFloat());
     _ChangeState.Restart();
 }
 
-void MalachiIdle::Update(StateMachine& Sm, float Dt)
+void BiagiaIdle::Update(StateMachine& Sm, float Dt)
 {
     _ChangeState.Update(Dt);
     if(!_ChangeState.Finished())
@@ -299,11 +331,15 @@ void MalachiIdle::Update(StateMachine& Sm, float Dt)
     float Shot = _ShootChance/100.0f;
     float Rnd = Engine::RandomFloat();
     
-    if(Rnd < Tp)
+    if(Rnd < Tp || reinterpret_cast<Biagia*>(&Sm)->Summons >= MAX_SUMMONS)
     {
-        _ShootChance+=10;
-        _TeleportChance-=10;
-        Sm.SetState(MALACHI_POSE);
+        if( reinterpret_cast<Biagia*>(&Sm)->Summons < MAX_SUMMONS)
+        {
+            _ShootChance+=10;
+            _TeleportChance-=10;
+        }
+
+        Sm.SetState(BIAGIA_POSE);
     }
     else
     {
@@ -311,207 +347,185 @@ void MalachiIdle::Update(StateMachine& Sm, float Dt)
         _TeleportChance+=10;
         Vector2 Dist = Sm.Parent.Box.Center().DistVector2(Player::Self->Parent.Box.Center());
         Dist.x > 0.0f ? Sm.SetFlip(Flip::H) : Sm.SetFlip(Flip::N);
-        Dist.y > std::abs(Dist.x) ? Sm.SetState(MALACHI_ATTACKDOWN) : Sm.SetState(MALACHI_ATTACKHORIZ);
+        if(Progress::KillMinions)
+        {
+            Progress::KillMinions = false;
+        }
+        Sm.SetState(BIAGIA_SPAWN);
     }
 
     // if(Engine::RandomUint() & 1)
     // {
     //     Vector2 Dist = Sm.Parent.Box.Center().DistVector2(Player::Self->Parent.Box.Center());
     //     Dist.x > 0.0f ? Sm.SetFlip(Flip::H) : Sm.SetFlip(Flip::N);
-    //     Dist.y > std::abs(Dist.x) ? Sm.SetState(MALACHI_ATTACKDOWN) : Sm.SetState(MALACHI_ATTACKHORIZ);
+    //     Dist.y > std::abs(Dist.x) ? Sm.SetState(BIAGIA_SPAWN) : Sm.SetState(BIAGIA_ATTACKHORIZ);
     //     return;
     // }
 }
 
-//------------------------------ATKDOWN------------------------------
-MalachiAtkDown::MalachiAtkDown (const StateInfo& Specs)
+//------------------------------SPAWN------------------------------
+BiagiaSpawn::BiagiaSpawn (const StateInfo& Specs)
 : GenericState(Specs)
 {
     _AtkTime.SetLimit(0.5f);
 }
 
-
-void MalachiAtkDown::Start()
+void BiagiaSpawn::Start()
 {
     _AtkTime.Restart();
 }
 
-void MalachiAtkDown::Update(StateMachine& Sm, float Dt)
+void BiagiaSpawn::Update(StateMachine& Sm, float Dt)
 {
     _AtkTime.Update(Dt);
     if(_AtkTime.Finished())
     {
         
-        reinterpret_cast<Malachi*>(&Sm)->Shoot();
-        Sm.SetState(MALACHI_IDLE);
+        reinterpret_cast<Biagia*>(&Sm)->Spawn();
+        Sm.SetState(BIAGIA_IDLE);
     }
 }
-
-//------------------------------ATKHORIZ------------------------------
-MalachiAtkHoriz::MalachiAtkHoriz(const StateInfo& Specs)
-: GenericState(Specs)
-{
-    _AtkTime.SetLimit(0.5f);
-}
-
-
-void MalachiAtkHoriz::Start()
-{
-    _AtkTime.Restart();
-}
-
-// reinterpret_cast<Malachi*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
-void MalachiAtkHoriz::Update(StateMachine& Sm, float Dt)
-{
-    _AtkTime.Update(Dt);
-    if(_AtkTime.Finished())
-    {
-        reinterpret_cast<Malachi*>(&Sm)->Shoot();
-        Sm.SetState(MALACHI_IDLE);
-    }
-}
-
 
 //------------------------------TELEPORTPOSE------------------------------
 #define TELEPORT_TIME 0.3f
 
-MalachiTeleportPose::MalachiTeleportPose (const StateInfo& Specs)
+BiagiaTeleportPose::BiagiaTeleportPose (const StateInfo& Specs)
 : GenericState(Specs)
 {
     _Tp.SetLimit(TELEPORT_TIME);
 }
 
-void MalachiTeleportPose::Start()
+void BiagiaTeleportPose::Start()
 {
     _Tp.Restart();
 }
 
-// reinterpret_cast<Malachi*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
+// reinterpret_cast<Biagia*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
 
-void MalachiTeleportPose::Update(StateMachine& Sm, float Dt)
+void BiagiaTeleportPose::Update(StateMachine& Sm, float Dt)
 {
     _Tp.Update(Dt);
     if(_Tp.Finished())
     {
-        Sm.SetState(MALACHI_TELEPORTING);
+        Sm.SetState(BIAGIA_TELEPORTING);
     }
 }
 
 
 //------------------------------TELEPORTING------------------------------
-MalachiTeleporting::MalachiTeleporting(const StateInfo& Specs)
+BiagiaTeleporting::BiagiaTeleporting(const StateInfo& Specs)
 : GenericState(Specs)
 {
     _Tp.SetLimit(TELEPORT_TIME);
 }
 
-void MalachiTeleporting::Start()
+void BiagiaTeleporting::Start()
 {
     _Tp.Restart();
 }
 
-// reinterpret_cast<Malachi*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
-void MalachiTeleporting::Update(StateMachine& Sm, float Dt)
+// reinterpret_cast<Biagia*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
+void BiagiaTeleporting::Update(StateMachine& Sm, float Dt)
 {
     _Tp.Update(Dt);
     if(_Tp.Finished())
     {
-        Malachi* Mm = reinterpret_cast<Malachi*>(&Sm);
+        Biagia* Mm = reinterpret_cast<Biagia*>(&Sm);
         Mm->MyCollider->Position = Mm->Arena[4]->Box.Position() 
             + Vector2(1000 * (Engine::RandomFloat()-0.5f), 500 * (Engine::RandomFloat()-0.5f));        
-        Sm.SetState(MALACHI_TELEPORTED);
+        Sm.SetState(BIAGIA_TELEPORTED);
     }
 }
 
 
 
 //------------------------------ ------------------------------
-MalachiTeleported::MalachiTeleported(const StateInfo& Specs)
+BiagiaTeleported::BiagiaTeleported(const StateInfo& Specs)
 : GenericState(Specs)
 {
     _Tp.SetLimit(TELEPORT_TIME+0.1f);
 }
 
-void MalachiTeleported::Start()
+void BiagiaTeleported::Start()
 {
     _Tp.Restart();
 }
 
-// reinterpret_cast<Malachi*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
-void MalachiTeleported::Update(StateMachine& Sm, float Dt)
+// reinterpret_cast<Biagia*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
+void BiagiaTeleported::Update(StateMachine& Sm, float Dt)
 {
     _Tp.Update(Dt);
     if(_Tp.Finished())
     {
-        Sm.SetState(MALACHI_IDLE);
+        Sm.SetState(BIAGIA_IDLE);
     }
 }
 
 
 //------------------------------HURT------------------------------
-MalachiHurt::MalachiHurt(const StateInfo& Specs)
+BiagiaHurt::BiagiaHurt(const StateInfo& Specs)
 : GenericState(Specs)
 {
 }
 
 
-void MalachiHurt::Start()
+void BiagiaHurt::Start()
 {
 }
 
-// reinterpret_cast<Malachi*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
-void MalachiHurt::Update(StateMachine& Sm, float Dt)
+// reinterpret_cast<Biagia*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
+void BiagiaHurt::Update(StateMachine& Sm, float Dt)
 {
 }
 
-void MalachiHurt::PhysicsUpdate(StateMachine& Sm, float Dt)
+void BiagiaHurt::PhysicsUpdate(StateMachine& Sm, float Dt)
 {
 }
 
-void MalachiHurt::OnCollision(StateMachine& Sm, GameObject& Other)
+void BiagiaHurt::OnCollision(StateMachine& Sm, GameObject& Other)
 {
 }
 
 //------------------------------VULNERABLE------------------------------
 #define VULNERABLE_LIMIT 4.0f
 
-MalachiVulnerable::MalachiVulnerable (const StateInfo& Specs)
+BiagiaVulnerable::BiagiaVulnerable (const StateInfo& Specs)
 : GenericState(Specs)
 {
     _VulnerableTime.SetLimit(VULNERABLE_LIMIT);
 }
 
-void MalachiVulnerable::Start()
+void BiagiaVulnerable::Start()
 {
     _VulnerableTime.Restart();
 }
 
-void MalachiVulnerable::Update(StateMachine& Sm, float Dt)
+void BiagiaVulnerable::Update(StateMachine& Sm, float Dt)
 {
     _VulnerableTime.Update(Dt);
     if(_VulnerableTime.Finished())
     {
-        reinterpret_cast<Malachi*>(&Sm)->Shield->Active = true;
-        Sm.SetState(MALACHI_IDLE);
+        reinterpret_cast<Biagia*>(&Sm)->Shield->Active = true;
+        Sm.SetState(BIAGIA_IDLE);
     }
 }
 
 // //------------------------------ ------------------------------
-// Malachi ::Malachi (const StateInfo& Specs)
+// Biagia ::Biagia (const StateInfo& Specs)
 // : GenericState(Specs)
 // {
 // }
 
 
-// void Malachi ::Start()
+// void Biagia ::Start()
 // {
 // }
 
-// // reinterpret_cast<Malachi*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
-// void Malachi ::PhysicsUpdate(StateMachine& Sm, float Dt)
+// // reinterpret_cast<Biagia*>(&Sm)->MoveTo(Player::Self->Parent.Box.Center()+Vector2(0,32), Dt); 
+// void Biagia ::PhysicsUpdate(StateMachine& Sm, float Dt)
 // {
 // }
 
-// void Malachi ::OnCollision(StateMachine& Sm, GameObject& Other)
+// void Biagia ::OnCollision(StateMachine& Sm, GameObject& Other)
 // {
 // }

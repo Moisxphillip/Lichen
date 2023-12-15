@@ -15,11 +15,13 @@ class Fade : public Component
 
     public:
 
+        bool Delete;
         Fade(GameObject& Parent, Color StartColour, Color FinishColour, float TimeSpan);
         ~Fade();
         void SetSpan(float TimeSpan);
         void SetFinishColor(Color Colour);
         Color GetColor();
+        bool IsFinished();
 
         void Render();
         void Update(float Dt);

@@ -38,6 +38,11 @@
 #define SPAWNBIRD 17
 #define SPAWNMUSH 18
 
+#define BREAKSPAWN 19
+#define SPAWNSLIME 20 
+#define SPAWNWOLF 21
+#define SPAWNMUSHROOM 22
+
 #define POS Vector2((Column)*64, (Row+1)*64)
 
 void ElementLoader::LoadFromFile(std::string FilePath)
@@ -123,6 +128,22 @@ void ElementLoader::LoadFromFile(std::string FilePath)
 
                 case SPAWNMUSH:
                     Engine::Instance().CurrentScene().AddGameObj(FastCreate::Smushs(POS));
+                    break;
+
+                case BREAKSPAWN:
+                    Engine::Instance().CurrentScene().AddGameObj(FastCreate::BreakableSpawn(POS));
+                    break;
+
+                case SPAWNSLIME:
+                    Engine::Instance().CurrentScene().AddGameObj(FastCreate::SlimeSpawn(POS));
+                    break;
+
+                case SPAWNWOLF:
+                    Engine::Instance().CurrentScene().AddGameObj(FastCreate::ForestSpawn(POS));
+                    break;
+
+                case SPAWNMUSHROOM:
+                    Engine::Instance().CurrentScene().AddGameObj(FastCreate::MushSpawn(POS));
                     break;
 
                 default:
@@ -429,6 +450,43 @@ GameObject* FastCreate::Smushs(Vector2 Position)
     Go->AddComponent(Emt);
     Go->AddComponent(new DistanceTrigger(*Go, Emt, 800, DistTriggerMode::Enable));
     Go->AddComponent(new DistanceTrigger(*Go, Emt, 2500, DistTriggerMode::Disable));
+    return Go;
+}
+#include "Tools/Spawner.hpp"
+GameObject* FastCreate::BreakableSpawn(Vector2 Position)
+{
+    GameObject* Go = new GameObject();
+    Go->Box.SetPosition(Position);
+    Spawner* Spwn = new Spawner(*Go, 15.0f, 0.0f, 1280, 1, 5, 100, std::vector{EnemyType::SLIME}, true);
+    Go->AddComponent(Spwn);
+
+    return Go;
+}
+
+GameObject* FastCreate::SlimeSpawn(Vector2 Position)
+{
+    GameObject* Go = new GameObject();
+    Go->Box.SetPosition(Position);
+    Spawner* Spwn = new Spawner(*Go, 15.0f, 900.0f, 1800.0f, 1, 5, 100, std::vector{EnemyType::SLIME});
+    Go->AddComponent(Spwn);
+    return Go;
+}
+
+GameObject* FastCreate::ForestSpawn(Vector2 Position)
+{
+    GameObject* Go = new GameObject();
+    Go->Box.SetPosition(Position);
+    Spawner* Spwn = new Spawner(*Go, 15.0f, 900.0f, 1800.0f, 5, 10, 100, std::vector{EnemyType::GRUB, EnemyType::WOLF});
+    Go->AddComponent(Spwn);
+    return Go;
+}
+
+GameObject* FastCreate::MushSpawn(Vector2 Position)
+{
+    GameObject* Go = new GameObject();
+    Go->Box.SetPosition(Position);
+    Spawner* Spwn = new Spawner(*Go, 15.0f, 900.0f, 1800.0f, 10, 15, 100, std::vector{EnemyType::GOLEM, EnemyType::MUSHROOM});
+    Go->AddComponent(Spwn);
     return Go;
 }
 

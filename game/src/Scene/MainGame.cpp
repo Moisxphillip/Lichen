@@ -119,7 +119,7 @@ void MainMap::LoadAssets()
     Tiles->Depth = DepthMode::Foreground;//TODO hide
     Tset = new TileSet(64,64, "./res/img/tile/ground.png");
     Map = new TileMap(*Tiles, "./res/map/map_collision",Tset);
-    Map->LoadCollision("./res/map/v2/mapa_v2");
+    Map->LoadCollision("./res/map/map_collision");
     Map->Enabled = false;
     CollisionMap = &(Map->_TileMatrix);
     Tiles->AddComponent(Map);
@@ -317,24 +317,14 @@ void MainMap::PhysicsUpdate(float Dt)
 {    
 }
 
+#include "Enemy/Biagia.hpp"
+
 void MainMap::Update(float Dt)
 {
     Input& input = Input::Instance();
 
     //TODO remove all this and add cheats
-    if(Input::Instance().KeyJustPressed(Key::Number1))
-    {
-        // GameObject* slimeObj = new GameObject();
-        // slimeObj->AddComponent(EnemyFactory::CreateEnemy(*slimeObj, EnemyType::SLIME, Input::Instance().MousePosition()));
-        // AddGameObj(slimeObj);
-
-        GameObject* slimeObj = new GameObject();
-        EnemyType enmy = static_cast<EnemyType> (Engine::RandomUint() % (int)EnemyType::TOTAL);
-        std::cout<<enmy<<std::endl;
-        slimeObj->AddComponent(EnemyFactory::CreateEnemy(*slimeObj, enmy, Input::Instance().MousePosition()));
-        AddGameObj(slimeObj);
-    }
-    if(Input::Instance().KeyJustPressed(Key::Number2) && Player::Self == nullptr)
+    if(Player::Self == nullptr)
     {
             GameObject* playerObj = new GameObject();
             Player* player = new Player(*playerObj);
@@ -342,10 +332,23 @@ void MainMap::Update(float Dt)
             playerObj->AddComponent(player);
             AddGameObj(playerObj);
     }
+
+    if(Input::Instance().KeyJustPressed(Key::Number1)&& Player::Self != nullptr)
+    {
+        Player::Self->AddExperience(100);
+    }
     if(Input::Instance().KeyJustPressed(Key::Number3) && Malachi::Self == nullptr)
     {
             GameObject* Obj = new GameObject();
             Malachi* Mala = new Malachi(*Obj);
+            Obj->Box.SetCenter(Input::Instance().MousePosition());
+            Obj->AddComponent(Mala);
+            AddGameObj(Obj);
+    }
+    if(Input::Instance().KeyJustPressed(Key::Number4) && Biagia::Self == nullptr)
+    {
+            GameObject* Obj = new GameObject();
+            Biagia* Mala = new Biagia(*Obj);
             Obj->Box.SetCenter(Input::Instance().MousePosition());
             Obj->AddComponent(Mala);
             AddGameObj(Obj);
