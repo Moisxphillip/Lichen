@@ -163,6 +163,7 @@ GENERATED += $(OBJDIR)/UIComponent.o
 GENERATED += $(OBJDIR)/UIController.o
 GENERATED += $(OBJDIR)/UIItem.o
 GENERATED += $(OBJDIR)/UIPlayerBar.o
+GENERATED += $(OBJDIR)/UIRightBar.o
 GENERATED += $(OBJDIR)/Vector2.o
 GENERATED += $(OBJDIR)/VertexArray.o
 GENERATED += $(OBJDIR)/VertexBuffer.o
@@ -261,6 +262,7 @@ OBJECTS += $(OBJDIR)/UIComponent.o
 OBJECTS += $(OBJDIR)/UIController.o
 OBJECTS += $(OBJDIR)/UIItem.o
 OBJECTS += $(OBJDIR)/UIPlayerBar.o
+OBJECTS += $(OBJDIR)/UIRightBar.o
 OBJECTS += $(OBJDIR)/Vector2.o
 OBJECTS += $(OBJDIR)/VertexArray.o
 OBJECTS += $(OBJDIR)/VertexBuffer.o
@@ -620,6 +622,9 @@ $(OBJDIR)/UIItem.o: game/src/UserInterface/UIItem.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/UIPlayerBar.o: game/src/UserInterface/UIPlayerBar.cpp
+	@echo "$(notdir $<)"
+	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
+$(OBJDIR)/UIRightBar.o: game/src/UserInterface/UIRightBar.cpp
 	@echo "$(notdir $<)"
 	$(SILENT) $(CXX) $(ALL_CXXFLAGS) $(FORCE_INCLUDE) -o "$@" -MF "$(@:%.o=%.d)" -c "$<"
 $(OBJDIR)/main.o: game/src/main.cpp

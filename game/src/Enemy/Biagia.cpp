@@ -21,7 +21,7 @@
 
 
 #define ENEMY_DEFAULT_INVULNERABILITY 0.4f
-#define MAX_SUMMONS 6
+#define MAX_SUMMONS 3
 #include "Enemy/EnemyFactory.hpp"
 
 

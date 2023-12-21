@@ -1,5 +1,5 @@
 #include "UserInterface/UIController.hpp"
-#include "UserInterface/UIBagMenu.hpp"
+#include "UserInterface/UIRightBar.hpp"
 #include "UserInterface/UIPlayerBar.hpp"
 #include "Core/Input.hpp"
 #include "Core/Camera.hpp"
@@ -24,8 +24,8 @@ UIController::~UIController(){
 }
 
 void UIController::Start(){
-    AddComponent(new UIBagButton({}, Vector2(1180,630)));
-    AddComponent(new UIPlayerBar({}, Vector2(40,40)));
+    AddComponent(new UIRightBar({}, Vector2(1000,620)));
+    AddComponent(new UIPlayerBar({}, Vector2(0,0)));
 }
 
 void UIController::Update(float Dt){
