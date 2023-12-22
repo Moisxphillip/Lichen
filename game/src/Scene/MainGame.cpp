@@ -178,7 +178,7 @@ void MainMap::LoadAssets()
         []()
         {
             Color NumColor("#ffffff");
-            std::string Prompt =  "Vila sem nome";
+            std::string Prompt =  "Vila da planície";
             GameObject* Place = new GameObject();
             Place->Depth = DepthMode::Foreground;
             Text* Txt = new Text(*Place,"./res/ttf/alagard.ttf", 50, TextStyle::BLENDED, Prompt, NumColor);
@@ -221,7 +221,7 @@ void MainMap::LoadAssets()
         []()
         {
             Color NumColor("#ffffff");
-            std::string Prompt =  "Floresta foda";
+            std::string Prompt =  "Floresta da Clareira";
             GameObject* Place = new GameObject();
             Place->Depth = DepthMode::Foreground;
             Text* Txt = new Text(*Place,"./res/ttf/alagard.ttf", 50, TextStyle::BLENDED, Prompt, NumColor);
@@ -264,7 +264,7 @@ void MainMap::LoadAssets()
         []()
         {
             Color NumColor("#ffffff");
-            std::string Prompt =  "Fungo no meu cerebro";
+            std::string Prompt =  "Fungesta";
             GameObject* Place = new GameObject();
             Place->Depth = DepthMode::Foreground;
             Text* Txt = new Text(*Place,"./res/ttf/alagard.ttf", 50, TextStyle::BLENDED, Prompt, NumColor);

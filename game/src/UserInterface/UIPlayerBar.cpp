@@ -10,9 +10,9 @@ void UIPlayerBar::GroupStart()
 {
     LoadImage("res/img/UI/PlayerBar.png");
 
-    AddComponent(new UILifeBar(weak_from_this(), Vector2(52,8)));
-    AddComponent(new UIStaminaBar(weak_from_this(), Vector2(85,56)));
-    AddComponent(new UIManaBar(weak_from_this(), Vector2(83,34)));
+    AddComponent(new UILifeBar(weak_from_this(), Vector2(80,12)));
+    AddComponent(new UIStaminaBar(weak_from_this(), Vector2(96,62)));
+    AddComponent(new UIManaBar(weak_from_this(), Vector2(97,39)));
 }
 
 
@@ -22,7 +22,7 @@ UILifeBar::UILifeBar(std::weak_ptr<UIComponent> ParentComponent, Vector2 Positio
 
 void UILifeBar::Start()
 {
-    LoadImage("res/img/UI/LifeBar.png");
+    LoadImage("res/img/UI/LifeBar65x12.png");
 }
 
 void UILifeBar::OnUpdate(Vector2 EventPos, float Dt)
@@ -46,7 +46,7 @@ UIStaminaBar::UIStaminaBar(std::weak_ptr<UIComponent> ParentComponent, Vector2 P
 
 void UIStaminaBar::Start()
 {
-    LoadImage("res/img/UI/DashBar.png");    
+    LoadImage("res/img/UI/DashBar97x62.png");    
 }
 
 void UIStaminaBar::OnUpdate(Vector2 EventPos, float Dt)
@@ -68,7 +68,7 @@ UIManaBar::UIManaBar(std::weak_ptr<UIComponent> ParentComponent, Vector2 Positio
 
 void UIManaBar::Start()
 {
-    LoadImage("res/img/UI/ManaBar.png");
+    LoadImage("res/img/UI/ManaBar96x39.png");
 }
 
 void UIManaBar::OnUpdate(Vector2 EventPos, float Dt)

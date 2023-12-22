@@ -13,7 +13,7 @@ int main (int argc, char** argv)
     // TitleScene* Begin = new TitleScene(); //Penguin
     // Test01* Begin = new Test01();//Tests
 
-    Engine::Instance("Give It Back!", 1280, 720, 1280, 720, false).Push(new MainMenu);
+    Engine::Instance("Give It Back!", 1280, 720, 1280, 720, true).Push(new MainMenu);
     // MainMap* Begin = new MainMap();
     // Engine::Instance("Give It Back!", 1280, 720, 1280, 720, false).Push(Begin);
     Engine::Instance().Run();
